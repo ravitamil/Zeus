@@ -80,6 +80,7 @@ screen_*.png
 google-services.json
 *client_secret*.json
 *credentials*.json
+*client_id*.txt
 *.env
 
 # OS junk
