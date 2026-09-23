@@ -75,6 +75,13 @@ screen_*.png
 /*.mp4
 /android/build/
 
+# Google Cloud & OAuth credentials
+*google*.json
+google-services.json
+*client_secret*.json
+*credentials*.json
+*.env
+
 # OS junk
 Thumbs.db
 desktop.ini
