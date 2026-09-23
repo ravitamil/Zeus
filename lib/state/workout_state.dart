@@ -1004,6 +1004,7 @@ mixin WorkoutState on FitCore, SettingsState, LibraryState, PlacesState, StatsSt
     _refreshWidgets();
     syncTrainReminder();
     refreshAwards();
+    unawaited(checkAndRunAutoBackup());
     notifyListeners();
   }
 

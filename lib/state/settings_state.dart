@@ -53,6 +53,9 @@ mixin SettingsState on FitCore, ToolsState, LibraryState {
   bool onboarded = false;
   bool alarmAllowed = true;
   int? alarmAskedAt;
+  String driveAutoBackup = 'off';
+  int? driveLastBackup;
+  bool isDriveBackingUp = false;
   String language = 'en';
 
   Locale get locale => localeOf(language);
@@ -418,4 +421,46 @@ mixin SettingsState on FitCore, ToolsState, LibraryState {
 
   Future<void> openNotificationSettings() =>
       AppSettings.openAppSettings(type: AppSettingsType.notification);
+
+  void setDriveAutoBackup(String val) {
+    if (!const ['off', 'daily', 'weekly'].contains(val)) return;
+    driveAutoBackup = val;
+    _persist();
+    notifyListeners();
+  }
+
+  Future<bool> backupToDriveNow() async {
+    if (isDriveBackingUp) return false;
+    isDriveBackingUp = true;
+    notifyListeners();
+    try {
+      final bytes = await buildBackupZip();
+      final ok = await GoogleDriveService.instance.uploadBackup(bytes);
+      if (ok) {
+        driveLastBackup = DateTime.now().millisecondsSinceEpoch;
+        _persist();
+      }
+      return ok;
+    } catch (_) {
+      return false;
+    } finally {
+      isDriveBackingUp = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> checkAndRunAutoBackup() async {
+    if (driveAutoBackup == 'off' || !GoogleDriveService.instance.isSignedIn || isDriveBackingUp) {
+      return;
+    }
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final last = driveLastBackup ?? 0;
+    final elapsed = now - last;
+    final intervalMs = driveAutoBackup == 'weekly'
+        ? const Duration(days: 7).inMilliseconds
+        : const Duration(days: 1).inMilliseconds;
+    if (elapsed >= intervalMs) {
+      await backupToDriveNow();
+    }
+  }
 }

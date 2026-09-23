@@ -24,6 +24,8 @@ import '../services/beeper.dart';
 import '../services/exercise_match.dart';
 import '../services/local_store.dart';
 import '../services/media_store.dart';
+import '../services/backup_zip.dart';
+import '../services/google_drive_service.dart';
 import '../services/progress_reminder.dart';
 import '../services/plan_share.dart';
 import '../services/rest_alarm.dart';
@@ -177,6 +179,8 @@ class FitState extends FitCore
     autoWarmup
       ..clear()
       ..addAll(((data['warmup'] as List?) ?? const []).cast<String>());
+    driveAutoBackup = data['driveAuto'] as String? ?? 'off';
+    driveLastBackup = (data['driveLast'] as num?)?.toInt();
   }
 
   void _restoreLiveSession(Map<String, dynamic> data) {
@@ -330,6 +334,8 @@ class FitState extends FitCore
         'exMode': modeOverride,
         'trainAt': trainReminderMin,
         'trainSmart': smartReminder,
+        'driveAuto': driveAutoBackup,
+        'driveLast': driveLastBackup,
         'alarmAskedAt': alarmAskedAt,
         'onboarded': onboarded,
         'favorites': favorites,

@@ -1,3 +1,5 @@
+import 'dart:async' show unawaited;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -6,6 +8,7 @@ import 'app/gymmane_app.dart';
 import 'catalog/exercise_catalog.dart';
 import 'services/alarm_store.dart';
 import 'services/device_kind.dart';
+import 'services/google_drive_service.dart';
 import 'services/home_widget_bridge.dart';
 import 'services/live_workout.dart';
 import 'services/local_store.dart';
@@ -35,6 +38,8 @@ Future<void> main() async {
   await RestAlarm.instance.init();
   fit.syncPhotoReminder();
   fit.syncTrainReminder();
+  await GoogleDriveService.instance.init();
+  unawaited(fit.checkAndRunAutoBackup());
 
   final watch = await DeviceKind.isWatch();
   _onWatch = watch;

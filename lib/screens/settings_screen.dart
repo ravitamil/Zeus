@@ -34,6 +34,7 @@ import '../widgets/profile_avatar.dart';
 import '../widgets/ruler_picker.dart';
 import '../widgets/timer_panel.dart';
 import 'profile_screen.dart';
+import '../widgets/google_drive_sheet.dart';
 import '../widgets/ui_kit.dart';
 
 const _kRepoUrl = 'https://github.com/InlitX/GymMane';
@@ -301,12 +302,13 @@ class SettingsScreen extends StatelessWidget {
             _sectionLabel(gc, t.data),
             const SizedBox(height: 8),
             _linkGroup(gc, [
+              (PhosphorIconsRegular.cloudArrowUp, 'Google Drive Backup', () => showGoogleDriveSheet(context)),
               (PhosphorIconsRegular.fileCsv, t.exportCsv, () => _exportCsv(context)),
               (PhosphorIconsRegular.fileZip, t.exportBackup, () => _exportBackup(context)),
               (PhosphorIconsRegular.downloadSimple, t.importBackup, () => _importBackup(context)),
               (PhosphorIconsRegular.arrowSquareIn, t.importFromApp, () => _openImportApps(context)),
               (PhosphorIconsRegular.trash, t.resetData, () => _resetAll(context)),
-            ], danger: 4),
+            ], danger: 5),
             const SizedBox(height: 18),
             _sectionLabel(gc, t.support),
             const SizedBox(height: 8),
