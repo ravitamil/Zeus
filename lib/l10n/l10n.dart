@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
+import '../catalog/exercise_catalog.dart';
 import 'app_localizations.dart';
 import 'catalog_es.dart';
 import 'catalog_it.dart';
@@ -75,6 +76,7 @@ extension GymL10n on AppLocalizations {
 
   String toolName(String id) => switch (id) {
         'rm' => toolNameRm,
+        'bmr' => 'BMR',
         'bmi' => toolNameBmi,
         'cal' => toolNameCal,
         'bf' => toolNameBf,
@@ -84,6 +86,7 @@ extension GymL10n on AppLocalizations {
 
   String toolTitle(String id) => switch (id) {
         'rm' => toolTitleRm,
+        'bmr' => 'BMR Calculator',
         'bmi' => toolTitleBmi,
         'cal' => toolTitleCal,
         'bf' => toolTitleBf,
@@ -93,6 +96,7 @@ extension GymL10n on AppLocalizations {
 
   String toolResultHint(String id) => switch (id) {
         'rm' => toolHintRm,
+        'bmr' => 'Basal metabolic rate (at rest)',
         'cal' => toolHintCal,
         'bf' => toolHintBf,
         'plate' => toolHintPlate,
@@ -112,6 +116,7 @@ extension GymL10n on AppLocalizations {
 
   String toolDesc(String id) => switch (id) {
         'rm' => toolDescRm,
+        'bmr' => 'Basal metabolic rate',
         'bmi' => toolDescBmi,
         'cal' => toolDescCal,
         'bf' => toolDescBf,
@@ -130,6 +135,7 @@ extension GymL10n on AppLocalizations {
         'Sedentary' => actSedentary,
         'Light' => actLight,
         'Active' => actActive,
+        'Very Active' => 'Very Active',
         _ => actModerate,
       };
 
@@ -238,6 +244,79 @@ extension GymL10n on AppLocalizations {
 
   List<String> catalogSteps(String id, List<String> fallback) =>
       _catalogSteps[appLanguage]?[id] ?? fallback;
+
+  String get calculatorsFolderDetail =>
+      calculatorsInside.replaceFirst(RegExp(r'\d+'), '${kToolMeta.length}');
+
+  String get accentColor => switch (appLanguage) {
+        'es' => 'Color de acento',
+        'fr' => "Couleur d'accent",
+        'de' => 'Akzentfarbe',
+        'it' => 'Colore accento',
+        'pt' => 'Cor de destaque',
+        'ru' => 'Цвет акцента',
+        'ja' => 'アクセントカラー',
+        'ko' => '강조 색상',
+        'zh' || 'zh_Hant' => '强调色',
+        'ar' => 'لون التمييز',
+        _ => 'Accent color',
+      };
+
+  String get accentColorSub => switch (appLanguage) {
+        'es' => 'Personaliza el color del tema',
+        'fr' => 'Personnaliser la couleur du thème',
+        'de' => 'Design-Farbe anpassen',
+        'it' => 'Personalizza il colore del tema',
+        'pt' => 'Personalizar a cor do tema',
+        'ru' => 'Настроить цвет темы',
+        'ja' => 'テーマカラーをカスタマイズ',
+        'ko' => '테마 색상 맞춤설정',
+        'zh' || 'zh_Hant' => '自定义主题颜色',
+        'ar' => 'تخصيص لون السمة',
+        _ => 'Customize application theme color',
+      };
+
+  String get colorsTab => switch (appLanguage) {
+        'es' => 'Colores',
+        'fr' => 'Couleurs',
+        'de' => 'Farben',
+        'it' => 'Colori',
+        'pt' => 'Cores',
+        'ru' => 'Цвета',
+        'ja' => 'カラー',
+        'ko' => '색상',
+        'zh' || 'zh_Hant' => '预设颜色',
+        'ar' => 'الألوان',
+        _ => 'Colors',
+      };
+
+  String get customTab => switch (appLanguage) {
+        'es' => 'Personalizado',
+        'fr' => 'Personnalisé',
+        'de' => 'Eigene',
+        'it' => 'Personalizzato',
+        'pt' => 'Personalizado',
+        'ru' => 'Свой цвет',
+        'ja' => 'カスタム',
+        'ko' => '사용자 지정',
+        'zh' || 'zh_Hant' => '自定义',
+        'ar' => 'مخصص',
+        _ => 'Custom',
+      };
+
+  String get resetDefault => switch (appLanguage) {
+        'es' => 'Predeterminado',
+        'fr' => 'Par défaut',
+        'de' => 'Standard',
+        'it' => 'Predefinito',
+        'pt' => 'Padrão',
+        'ru' => 'По умолчанию',
+        'ja' => 'デフォルト',
+        'ko' => '기본값',
+        'zh' || 'zh_Hant' => '默认',
+        'ar' => 'افتراضي',
+        _ => 'Default',
+      };
 }
 
 String _capitalize(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);

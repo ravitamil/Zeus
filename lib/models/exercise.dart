@@ -18,6 +18,9 @@ class Exercise {
     required this.art,
     required this.steps,
     this.mode = '',
+    this.videoPath = '',
+    this.tips = const [],
+    this.intro = '',
   });
   final String id;
   final String name;
@@ -28,46 +31,64 @@ class Exercise {
   final String art;
   final List<String> steps;
   final String mode;
+  final String videoPath;
+  final List<String> tips;
+  final String intro;
 
   Exercise copyWith({
     String? name,
     String? primary,
+    List<String>? secondary,
     String? equipment,
     String? difficulty,
     List<String>? steps,
     String? mode,
+    String? videoPath,
+    List<String>? tips,
+    String? intro,
   }) =>
       Exercise(
         id: id,
         name: name ?? this.name,
         primary: primary ?? this.primary,
-        secondary: secondary,
+        secondary: secondary ?? this.secondary,
         equipment: equipment ?? this.equipment,
         difficulty: difficulty ?? this.difficulty,
         art: art,
         steps: steps ?? this.steps,
         mode: mode ?? this.mode,
+        videoPath: videoPath ?? this.videoPath,
+        tips: tips ?? this.tips,
+        intro: intro ?? this.intro,
       );
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'n': name,
         'p': primary,
+        if (secondary.isNotEmpty) 's': secondary,
         'e': equipment,
         'd': difficulty,
+        if (art.isNotEmpty) 'a': art,
         if (steps.isNotEmpty) 'st': steps,
         if (mode.isNotEmpty) 'k': mode,
+        if (videoPath.isNotEmpty) 'v': videoPath,
+        if (tips.isNotEmpty) 'tp': tips,
+        if (intro.isNotEmpty) 'in': intro,
       };
   factory Exercise.fromJson(Map<String, dynamic> j) => Exercise(
         id: j['id'] as String,
         name: j['n'] as String,
         primary: j['p'] as String,
-        secondary: const [],
+        secondary: ((j['s'] as List?) ?? const []).whereType<String>().toList(),
         equipment: (j['e'] as String?) ?? 'Other',
         difficulty: (j['d'] as String?) ?? 'Beginner',
-        art: '',
+        art: (j['a'] as String?) ?? '',
         steps: ((j['st'] as List?) ?? const []).whereType<String>().toList(),
         mode: kExerciseModeIds.contains(j['k']) ? j['k'] as String : '',
+        videoPath: (j['v'] as String?) ?? '',
+        tips: ((j['tp'] as List?) ?? const []).whereType<String>().toList(),
+        intro: (j['in'] as String?) ?? '',
       );
 }
 

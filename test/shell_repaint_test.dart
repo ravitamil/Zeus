@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gymmane/widgets/ui_kit.dart';
-import 'package:gymmane/app/gymmane_app.dart';
-import 'package:gymmane/l10n/l10n.dart';
-import 'package:gymmane/services/local_store.dart';
-import 'package:gymmane/services/progress_reminder.dart';
-import 'package:gymmane/state/fit_state.dart';
+import 'package:zeus/widgets/ui_kit.dart';
+import 'package:zeus/app/gymmane_app.dart';
+import 'package:zeus/l10n/l10n.dart';
+import 'package:zeus/services/local_store.dart';
+import 'package:zeus/services/progress_reminder.dart';
+import 'package:zeus/state/fit_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

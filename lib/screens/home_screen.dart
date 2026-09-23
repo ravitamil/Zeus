@@ -87,7 +87,7 @@ class HomeScreen extends StatelessWidget {
                 Expanded(
                   child: HomeFolder(
                     title: _tc(t.tools),
-                    detail: t.calculatorsInside,
+                    detail: t.calculatorsFolderDetail,
                     peek: const ToolsPeek(),
                     onTap: fit.goTools,
                   ),

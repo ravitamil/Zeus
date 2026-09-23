@@ -68,6 +68,14 @@ test/preview_*.dart
 test/marketing_shots.dart
 site/
 
+# Heavy local assets - videos now tracked in repo
+
+# Debug & temporary files
+screen_*.png
+/*.mp4
+/android/build/
+
 # OS junk
 Thumbs.db
 desktop.ini
+

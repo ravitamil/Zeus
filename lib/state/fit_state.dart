@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../catalog/exercise_catalog.dart';
+import '../catalog/exercise_categories.dart';
 import '../catalog/program_templates.dart';
 import '../l10n/l10n.dart';
 import '../models/exercise.dart';
@@ -56,6 +57,7 @@ class FitState extends FitCore
       }
 
       themePref = _themeFrom(data, fallback: 'dark');
+      customAccentColor = (data['accentColor'] as num?)?.toInt();
       units = data['units'] as String? ?? 'kg';
 
       _applyLanguage(data['language'] as String? ?? language);
@@ -306,6 +308,7 @@ class FitState extends FitCore
         'profile': profile.toJson(),
         'dark': dark,
         'theme': themePref,
+        'accentColor': customAccentColor,
         'units': units,
         'language': language,
         'rest': restSeconds,
@@ -617,7 +620,7 @@ class FitState extends FitCore
   String planRequestText() {
     final here = allExercises.where(fitsHere).toList();
     final lines = <String>[
-      'GymMane · ${activePlace?.name ?? t.placeAll}',
+      'Zeus · ${activePlace?.name ?? t.placeAll}',
       t.planIntro,
       t.planFormat,
       planTemplate,
@@ -755,6 +758,7 @@ class FitState extends FitCore
 
   String exportPlanJson(List<Routine> list, {bool withSchedule = true}) {
     return encodePlan({
+      'zeus': 'plan',
       'gymmane': 'plan',
       'v': 1,
       'unit': 'kg',

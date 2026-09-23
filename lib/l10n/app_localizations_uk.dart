@@ -1294,7 +1294,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get importHint =>
-      'Обери резервну копію .zip (або старий .json), експортовану з GymMane. Поточні дані, включно з медіа, буде замінено.';
+      'Обери резервну копію .zip (або старий .json), експортовану з Zeus. Поточні дані, включно з медіа, буде замінено.';
 
   @override
   String get import => 'Імпортувати';
@@ -1346,7 +1346,7 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get aboutGymmane => 'Про GymMane';
+  String get aboutGymmane => 'Про Zeus';
 
   @override
   String get yourProfile => 'ТВІЙ ПРОФІЛЬ';
@@ -1971,7 +1971,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get planNothing => 'Жодна вправа з файлу не відповідає бібліотеці';
 
   @override
-  String get planFailed => 'Цей файл не є програмою, яку GymMane може прочитати';
+  String get planFailed => 'Цей файл не є програмою, яку Zeus може прочитати';
 
   @override
   String get routineGroup => 'Група';
@@ -2121,7 +2121,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get aiIntro =>
-      'GymMane ніколи напряму не зв’язується зі ШІ. Ти експортуєш список вправ, вставляєш його в асистент, яким уже користуєшся, а потім імпортуєш відповідь. Нічого саме не залишає телефон.';
+      'Zeus ніколи напряму не зв’язується зі ШІ. Ти експортуєш список вправ, вставляєш його в асистент, яким уже користуєшся, а потім імпортуєш відповідь. Нічого саме не залишає телефон.';
 
   @override
   String get aiStep1 =>
@@ -2160,7 +2160,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get awardFirstStepName => 'Перший крок';
 
   @override
-  String get awardFirstStepLine => 'Ласкаво просимо до GymMane. Ця нагорода — подарунок.';
+  String get awardFirstStepLine => 'Ласкаво просимо до Zeus. Ця нагорода — подарунок.';
 
   @override
   String get awardFirstWorkoutName => 'Перше тренування';
@@ -2757,14 +2757,14 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String shareMessage(String name) {
-    return '$name — відкрийте файл у GymMane, щоб додати.';
+    return '$name — відкрийте файл у Zeus, щоб додати.';
   }
 
   @override
   String get importRoutines => 'Імпортувати програми';
 
   @override
-  String get importPasteHint => 'Вставте програму сюди: поширену з GymMane, відповідь ШІ, JSON або CSV.';
+  String get importPasteHint => 'Вставте програму сюди: поширену з Zeus, відповідь ШІ, JSON або CSV.';
 
   @override
   String get pasteAction => 'Вставити';
@@ -2803,10 +2803,10 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get nothingToImport => 'Тут немає нічого, що GymMane може імпортувати';
+  String get nothingToImport => 'Тут немає нічого, що Zeus може імпортувати';
 
   @override
-  String get aiStepCopy => 'Скопіюйте запит. У ньому ваш список вправ і формат, який читає GymMane.';
+  String get aiStepCopy => 'Скопіюйте запит. У ньому ваш список вправ і формат, який читає Zeus.';
 
   @override
   String get aiStepAsk =>
@@ -2948,7 +2948,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get shareIntroBody =>
-      'Надішліть її партнеру, другу чи родині. Вони отримають невеликий файл, який відкривається в GymMane і додає програму одним дотиком, разом із підходами та вагами.';
+      'Надішліть її партнеру, другу чи родині. Вони отримають невеликий файл, який відкривається в Zeus і додає програму одним дотиком, разом із підходами та вагами.';
 
   @override
   String get removedFromRoutine => 'Прибрано з програми';
@@ -2997,4 +2997,70 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get gamificationSetting => 'Медалі та рівні';
+
+  @override
+  String get googleDriveBackup => 'Google Drive backup';
+
+  @override
+  String get googleDriveDescription => 'Keep your workouts and media backed up to your Google Drive';
+
+  @override
+  String get googleDriveConnect => 'Connect Google Drive';
+
+  @override
+  String get googleDriveDisconnect => 'Disconnect Google Drive';
+
+  @override
+  String get googleDriveConnected => 'Connected';
+
+  @override
+  String get googleDriveNotConnected => 'Not connected';
+
+  @override
+  String get googleDriveBackupNow => 'Back up to Drive now';
+
+  @override
+  String get googleDriveRestoreNow => 'Restore from Drive';
+
+  @override
+  String get googleDriveAutoBackup => 'Automatic Drive backup';
+
+  @override
+  String get googleDriveAutoBackupOff => 'Off';
+
+  @override
+  String get googleDriveAutoBackupDaily => 'Daily';
+
+  @override
+  String get googleDriveAutoBackupWeekly => 'Weekly';
+
+  @override
+  String get googleDriveBackingUp => 'Uploading to Google Drive…';
+
+  @override
+  String get googleDriveBackupSuccess => 'Backup saved to Google Drive';
+
+  @override
+  String get googleDriveBackupFailed => 'Failed to upload to Google Drive';
+
+  @override
+  String get googleDriveRestoring => 'Downloading from Google Drive…';
+
+  @override
+  String get googleDriveRestoreSuccess => 'Backup restored from Google Drive';
+
+  @override
+  String get googleDriveRestoreFailed => 'Failed to restore from Google Drive';
+
+  @override
+  String get googleDriveSignInFailed => 'Google Drive sign-in failed';
+
+  @override
+  String get googleDriveNoBackups => 'No backups found on Google Drive';
+
+  @override
+  String get googleDriveSelectBackup => 'Select a backup to restore';
+
+  @override
+  String get aboutZeus => 'About Zeus';
 }

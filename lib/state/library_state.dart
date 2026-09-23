@@ -34,11 +34,23 @@ mixin LibraryState on FitCore {
     notifyListeners();
   }
 
+  CategoryItem? exCategoryFilter;
+
+  void setCategoryFilter(CategoryItem? cat) {
+    if (exCategoryFilter?.id == cat?.id) {
+      exCategoryFilter = null;
+    } else {
+      exCategoryFilter = cat;
+    }
+    notifyListeners();
+  }
+
   void clearExFilters() {
     exSearch = '';
     exMuscleFilter = null;
     exDifficultyFilter = null;
     exEquipmentFilter = null;
+    exCategoryFilter = null;
     exFavouritesOnly = false;
     notifyListeners();
   }
@@ -74,6 +86,7 @@ mixin LibraryState on FitCore {
     final list = allExercises.where((ex) {
       if (exFavouritesOnly && favorites[ex.id] != true) return false;
       if (!matchesSearch(ex)) return false;
+      if (exCategoryFilter != null && !exCategoryFilter!.matches(ex)) return false;
       if (exMuscleFilter != null &&
           ex.primary != exMuscleFilter &&
           !ex.secondary.contains(exMuscleFilter)) {

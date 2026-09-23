@@ -23,6 +23,7 @@ import '../services/workout_import.dart';
 import '../state/fit_state.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
+import '../widgets/accent_color_picker.dart';
 import '../widgets/body_rulers.dart';
 import '../widgets/dialogs.dart';
 import '../widgets/entrance.dart';
@@ -80,6 +81,20 @@ class SettingsScreen extends StatelessWidget {
                     () => fit.themePref,
                     fit.setThemePref,
                     hint: t.themeAutoHint,
+                  ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => showAccentColorSheet(context),
+                    child: _prefRow(
+                      gc,
+                      PhosphorIconsRegular.paintBrushBroad,
+                      t.accentColor,
+                      Row(mainAxisSize: MainAxisSize.min, children: [
+                        AccentDot(color: gc.accent),
+                        const SizedBox(width: 6),
+                        Icon(PhosphorIconsRegular.caretRight, size: 15, color: gc.textTertiary),
+                      ]),
+                    ),
                   ),
                   GestureDetector(
                     behavior: HitTestBehavior.opaque,
@@ -479,11 +494,11 @@ class SettingsScreen extends StatelessWidget {
     }
     final dir = await getTemporaryDirectory();
     final stamp = DateTime.now().toIso8601String().split('T').first;
-    final file = File('${dir.path}/gymmane-workouts-$stamp.csv');
+    final file = File('${dir.path}/zeus-workouts-$stamp.csv');
     await file.writeAsString(fit.exportCsv());
     if (!context.mounted) return;
     await SharePlus.instance.share(
-      ShareParams(files: [XFile(file.path)], subject: 'GymMane workouts'),
+      ShareParams(files: [XFile(file.path)], subject: 'Zeus workouts'),
     );
   }
 
@@ -502,11 +517,11 @@ class SettingsScreen extends StatelessWidget {
   Future<void> _exportBackup(BuildContext context) async {
     final dir = await getTemporaryDirectory();
     final stamp = DateTime.now().toIso8601String().split('T').first;
-    final file = File('${dir.path}/gymmane-backup-$stamp.zip');
+    final file = File('${dir.path}/zeus-backup-$stamp.zip');
     await file.writeAsBytes(await buildBackupZip(), flush: true);
     if (!context.mounted) return;
     await SharePlus.instance.share(
-      ShareParams(files: [XFile(file.path)], subject: 'GymMane backup'),
+      ShareParams(files: [XFile(file.path)], subject: 'Zeus backup'),
     );
   }
 
@@ -790,7 +805,7 @@ class SettingsScreen extends StatelessWidget {
         return;
       }
       await HomeWidget.requestPinWidget(
-          qualifiedAndroidName: 'com.gymmane.app.$provider');
+          qualifiedAndroidName: 'com.zeus.app.$provider');
     } catch (_) {
       if (context.mounted) _snack(context, t.pinUnsupported);
     }

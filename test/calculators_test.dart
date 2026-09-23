@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gymmane/catalog/exercise_catalog.dart';
-import 'package:gymmane/state/fit_state.dart';
+import 'package:zeus/catalog/exercise_catalog.dart';
+import 'package:zeus/state/fit_state.dart';
 
 void main() {
   test('every tool in the menu has a screen behind it', () {
     expect(kToolMeta.map((t) => t.id).toSet(),
-        {'rm', 'bmi', 'cal', 'bf', 'plate', 'warmup'});
+        {'rm', 'bmr', 'bmi', 'cal', 'bf', 'plate', 'warmup'});
     for (final t in kToolMeta) {
       expect(t.name.trim(), isNotEmpty);
       expect(t.desc.trim(), isNotEmpty);
@@ -22,7 +22,7 @@ void main() {
     test('a single rep is the max itself', () {
       fit.rmWeight = 140;
       fit.rmReps = 1;
-      expect(fit.rmResult, closeTo(144.7, 0.05));
+      expect(fit.rmResult, 140.0);
     });
   });
 
@@ -67,14 +67,15 @@ void main() {
       expect(fit.tdee, 1543);
     });
 
-    test('macros split 30/40/30 and add back up to the target', () {
+    test('macros add back up to the target', () {
       fit.calSex = 'male';
       fit.calAge = 28;
       fit.calHeight = 175;
       fit.calWeight = 75;
       fit.calActivity = 1.55;
+      fit.calGoal = 'maintain';
       final kcal = fit.calProtein * 4 + fit.calCarbs * 4 + fit.calFat * 9;
-      expect(kcal, closeTo(fit.tdee, 6));
+      expect(kcal, closeTo(fit.targetCalories, 6));
     });
 
     test('the activity label matches the factor', () {
@@ -147,12 +148,12 @@ void main() {
   });
 
   group('Warm-up', () {
-    test('ramps 40/60/80/90% of the target, rounded to 2.5', () {
+    test('ramps progressive percentages of the target, rounded to 2.5', () {
       fit.warmupTarget = 100;
       final sets = fit.warmupSets;
-      expect(sets.map((s) => s.pct), ['40%', '60%', '80%', '90%']);
-      expect(sets.map((s) => s.weight), [40.0, 60.0, 80.0, 90.0]);
-      expect(sets.map((s) => s.reps), [10, 5, 3, 1]);
+      expect(sets.map((s) => s.pct), ['45%', '60%', '75%', '85%', '90%']);
+      expect(sets.map((s) => s.weight), [45.0, 60.0, 75.0, 85.0, 90.0]);
+      expect(sets.map((s) => s.reps), [10, 5, 3, 2, 1]);
     });
 
     test('weights land on loadable plate increments', () {

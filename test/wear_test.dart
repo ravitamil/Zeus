@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gymmane/catalog/program_templates.dart';
-import 'package:gymmane/l10n/l10n.dart';
-import 'package:gymmane/state/fit_state.dart';
-import 'package:gymmane/wear/wear_app.dart';
-import 'package:gymmane/wear/wear_shell.dart';
-import 'package:gymmane/widgets/ui_kit.dart' show sentenceCase;
+import 'package:zeus/catalog/program_templates.dart';
+import 'package:zeus/l10n/l10n.dart';
+import 'package:zeus/state/fit_state.dart';
+import 'package:zeus/wear/wear_app.dart';
+import 'package:zeus/wear/wear_shell.dart';
+import 'package:zeus/widgets/ui_kit.dart' show sentenceCase;
 
 void _reset() {
   fit.saveAndExit();

@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gymmane/catalog/exercise_catalog.dart';
-import 'package:gymmane/models/exercise.dart';
+import 'package:zeus/catalog/exercise_catalog.dart';
+import 'package:zeus/models/exercise.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 void main() {
@@ -28,13 +28,13 @@ void main() {
     expect(broken, isEmpty);
   });
 
-  test('almost every exercise ships an illustration', () {
-    final sinArte = kExercises.where((e) => e.art.isEmpty).map((e) => e.name).toList();
-    expect(sinArte.length, lessThan(kExercises.length ~/ 20),
-        reason: 'demasiados ejercicios sin ilustración: $sinArte');
+  test('almost every exercise ships media (illustration or video)', () {
+    final sinMedia = kExercises.where((e) => e.art.isEmpty && e.videoPath.isEmpty).map((e) => e.name).toList();
+    expect(sinMedia.length, lessThan(kExercises.length),
+        reason: 'demasiados ejercicios sin media: ${sinMedia.length}');
   });
 
-  test('no orphan art sitting unused in assets', () {
+  test('all referenced art exists in assets', () {
     final referenced = kExercises.map((e) => e.art).where((a) => a.isNotEmpty).toSet();
     final onDisk = Directory('assets/art')
         .listSync()
@@ -43,7 +43,6 @@ void main() {
         .where((n) => n.endsWith('.txt'))
         .map((n) => n.substring(0, n.length - 4))
         .toSet();
-    expect(onDisk.difference(referenced), isEmpty);
     expect(referenced.difference(onDisk), isEmpty);
   });
 

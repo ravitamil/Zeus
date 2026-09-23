@@ -17,6 +17,20 @@ mixin SettingsState on FitCore, ToolsState, LibraryState {
         _ => ThemeMode.dark,
       };
 
+  int? customAccentColor;
+
+  Color? get accentColor =>
+      customAccentColor != null ? Color(customAccentColor!) : null;
+
+  void setAccentColor(Color? color) {
+    customAccentColor = color?.toARGB32();
+    _persist();
+    _refreshWidgets();
+    notifyListeners();
+  }
+
+  void resetAccentColor() => setAccentColor(null);
+
   String demoSize = 'large';
   String alarmStyle = 'quiet';
   int restSeconds = 90;

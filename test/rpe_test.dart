@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gymmane/models/workout.dart';
-import 'package:gymmane/services/local_store.dart';
-import 'package:gymmane/services/workout_import.dart';
-import 'package:gymmane/state/fit_state.dart';
+import 'package:zeus/models/workout.dart';
+import 'package:zeus/services/local_store.dart';
+import 'package:zeus/services/workout_import.dart';
+import 'package:zeus/state/fit_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

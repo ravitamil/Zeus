@@ -1,0 +1,57 @@
+name: Upstream Sync
+
+on:
+  schedule:
+    - cron: '0 4 * * 1' # Runs every Monday at 04:00 UTC
+  workflow_dispatch:      # Allows manual trigger at any time
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    name: Check & Sync Upstream (InlitX/GymMane)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Setup Upstream Remote
+        run: |
+          git remote add upstream https://github.com/InlitX/GymMane.git || git remote set-url upstream https://github.com/InlitX/GymMane.git
+          git fetch upstream main --tags
+
+      - name: Check for new commits
+        id: check_upstream
+        run: |
+          BEHIND_COUNT=$(git rev-list --count main..upstream/main)
+          echo "Upstream is ahead by $BEHIND_COUNT commits"
+          echo "behind_count=$BEHIND_COUNT" >> $GITHUB_OUTPUT
+
+      - name: Create Sync Branch and PR if updates exist
+        if: steps.check_upstream.outputs.behind_count != '0'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH_NAME="upstream-sync-$(date +'%Y%m%d')"
+          git checkout -b "$BRANCH_NAME" upstream/main
+          git push origin "$BRANCH_NAME" --force
+          
+          # Check if PR already exists
+          EXISTING_PR=$(gh pr list --head "$BRANCH_NAME" --json number -q '.[0].number')
+          if [ -z "$EXISTING_PR" ]; then
+            gh pr create \
+              --title "Upstream Sync: InlitX/GymMane ($(date +'%Y-%m-%d'))" \
+              --body "Automated sync branch tracking latest commits from [InlitX/GymMane](https://github.com/InlitX/GymMane).\n\nPlease review, resolve any conflicts against \`main\`, and merge." \
+              --base main \
+              --head "$BRANCH_NAME"
+          fi

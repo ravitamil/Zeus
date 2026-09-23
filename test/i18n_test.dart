@@ -3,12 +3,12 @@ import 'dart:io';
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gymmane/catalog/exercise_catalog.dart';
-import 'package:gymmane/l10n/catalog_es.dart';
-import 'package:gymmane/l10n/l10n.dart';
-import 'package:gymmane/models/exercise.dart';
-import 'package:gymmane/services/local_store.dart';
-import 'package:gymmane/state/fit_state.dart';
+import 'package:zeus/catalog/exercise_catalog.dart';
+import 'package:zeus/l10n/catalog_es.dart';
+import 'package:zeus/l10n/l10n.dart';
+import 'package:zeus/models/exercise.dart';
+import 'package:zeus/services/local_store.dart';
+import 'package:zeus/state/fit_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

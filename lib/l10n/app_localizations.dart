@@ -2327,7 +2327,7 @@ abstract class AppLocalizations {
   /// No description provided for @importHint.
   ///
   /// In en, this message translates to:
-  /// **'Choose a .zip (or older .json) backup exported from GymMane. This replaces your current data, media included.'**
+  /// **'Choose a .zip (or older .json) backup exported from Zeus. This replaces your current data, media included.'**
   String get importHint;
 
   /// No description provided for @import.
@@ -2399,7 +2399,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutGymmane.
   ///
   /// In en, this message translates to:
-  /// **'About GymMane'**
+  /// **'About Zeus'**
   String get aboutGymmane;
 
   /// No description provided for @yourProfile.
@@ -3083,13 +3083,13 @@ abstract class AppLocalizations {
   /// No description provided for @calculatorsInside.
   ///
   /// In en, this message translates to:
-  /// **'6 calculators'**
+  /// **'7 calculators'**
   String get calculatorsInside;
 
   /// No description provided for @calculatorsInsideWhy.
   ///
   /// In en, this message translates to:
-  /// **'1RM, plates, BMI, calories, body fat and warm-up — all with published formulas.'**
+  /// **'1RM, BMR, plates, BMI, calories, body fat and warm-up — all with published formulas.'**
   String get calculatorsInsideWhy;
 
   /// No description provided for @mathInside.
@@ -3815,7 +3815,7 @@ abstract class AppLocalizations {
   /// No description provided for @aiIntro.
   ///
   /// In en, this message translates to:
-  /// **'GymMane never talks to an AI. You take your exercise list out, you paste it into whatever assistant you already use, and you bring its answer back in. Nothing leaves the phone on its own.'**
+  /// **'Zeus never talks to an AI. You take your exercise list out, you paste it into whatever assistant you already use, and you bring its answer back in. Nothing leaves the phone on its own.'**
   String get aiIntro;
 
   /// No description provided for @aiStep1.
@@ -3875,7 +3875,7 @@ abstract class AppLocalizations {
   /// No description provided for @awardFirstStepLine.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to GymMane. This one is on the house.'**
+  /// **'Welcome to Zeus. This one is on the house.'**
   String get awardFirstStepLine;
 
   /// No description provided for @awardFirstWorkoutName.
@@ -4955,7 +4955,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareMessage.
   ///
   /// In en, this message translates to:
-  /// **'{name} — open the file with GymMane to add it.'**
+  /// **'{name} — open the file with Zeus to add it.'**
   String shareMessage(String name);
 
   /// No description provided for @importRoutines.
@@ -4967,7 +4967,7 @@ abstract class AppLocalizations {
   /// No description provided for @importPasteHint.
   ///
   /// In en, this message translates to:
-  /// **'Paste a routine here: one shared from GymMane, an AI answer, JSON or CSV.'**
+  /// **'Paste a routine here: one shared from Zeus, an AI answer, JSON or CSV.'**
   String get importPasteHint;
 
   /// No description provided for @pasteAction.
@@ -5009,13 +5009,13 @@ abstract class AppLocalizations {
   /// No description provided for @nothingToImport.
   ///
   /// In en, this message translates to:
-  /// **'Nothing here GymMane can import'**
+  /// **'Nothing here Zeus can import'**
   String get nothingToImport;
 
   /// No description provided for @aiStepCopy.
   ///
   /// In en, this message translates to:
-  /// **'Copy the request. It carries your exercise list and the format GymMane reads.'**
+  /// **'Copy the request. It carries your exercise list and the format Zeus reads.'**
   String get aiStepCopy;
 
   /// No description provided for @aiStepAsk.
@@ -5273,7 +5273,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareIntroBody.
   ///
   /// In en, this message translates to:
-  /// **'Send it to your partner, a friend or your family. They get a small file that opens in GymMane and adds it in one tap, with its sets and weights.'**
+  /// **'Send it to your partner, a friend or your family. They get a small file that opens in Zeus and adds it in one tap, with its sets and weights.'**
   String get shareIntroBody;
 
   /// No description provided for @removedFromRoutine.
@@ -5365,6 +5365,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Medals and levels'**
   String get gamificationSetting;
+
+  /// No description provided for @googleDriveBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive backup'**
+  String get googleDriveBackup;
+
+  /// No description provided for @googleDriveDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your workouts and media backed up to your Google Drive'**
+  String get googleDriveDescription;
+
+  /// No description provided for @googleDriveConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Google Drive'**
+  String get googleDriveConnect;
+
+  /// No description provided for @googleDriveDisconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect Google Drive'**
+  String get googleDriveDisconnect;
+
+  /// No description provided for @googleDriveConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get googleDriveConnected;
+
+  /// No description provided for @googleDriveNotConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected'**
+  String get googleDriveNotConnected;
+
+  /// No description provided for @googleDriveBackupNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up to Drive now'**
+  String get googleDriveBackupNow;
+
+  /// No description provided for @googleDriveRestoreNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from Drive'**
+  String get googleDriveRestoreNow;
+
+  /// No description provided for @googleDriveAutoBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic Drive backup'**
+  String get googleDriveAutoBackup;
+
+  /// No description provided for @googleDriveAutoBackupOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get googleDriveAutoBackupOff;
+
+  /// No description provided for @googleDriveAutoBackupDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get googleDriveAutoBackupDaily;
+
+  /// No description provided for @googleDriveAutoBackupWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get googleDriveAutoBackupWeekly;
+
+  /// No description provided for @googleDriveBackingUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading to Google Drive…'**
+  String get googleDriveBackingUp;
+
+  /// No description provided for @googleDriveBackupSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup saved to Google Drive'**
+  String get googleDriveBackupSuccess;
+
+  /// No description provided for @googleDriveBackupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload to Google Drive'**
+  String get googleDriveBackupFailed;
+
+  /// No description provided for @googleDriveRestoring.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading from Google Drive…'**
+  String get googleDriveRestoring;
+
+  /// No description provided for @googleDriveRestoreSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup restored from Google Drive'**
+  String get googleDriveRestoreSuccess;
+
+  /// No description provided for @googleDriveRestoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to restore from Google Drive'**
+  String get googleDriveRestoreFailed;
+
+  /// No description provided for @googleDriveSignInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive sign-in failed'**
+  String get googleDriveSignInFailed;
+
+  /// No description provided for @googleDriveNoBackups.
+  ///
+  /// In en, this message translates to:
+  /// **'No backups found on Google Drive'**
+  String get googleDriveNoBackups;
+
+  /// No description provided for @googleDriveSelectBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a backup to restore'**
+  String get googleDriveSelectBackup;
+
+  /// No description provided for @aboutZeus.
+  ///
+  /// In en, this message translates to:
+  /// **'About Zeus'**
+  String get aboutZeus;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

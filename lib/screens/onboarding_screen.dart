@@ -239,8 +239,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               _in(
                 0,
                 Center(
-                  child: Image.asset('assets/img/runner.png',
-                      height: 196, opacity: const AlwaysStoppedAnimation(0.9)),
+                  child: Image.asset('assets/img/logo.png',
+                      height: 160),
                 ),
               ),
               const SizedBox(height: 26),
@@ -257,7 +257,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 2,
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: Text('GymMane',
+                  child: Text('Zeus',
                       style: AppTheme.f(44, weight: FontWeight.w800, color: gc.text, height: 1)),
                 ),
               ),

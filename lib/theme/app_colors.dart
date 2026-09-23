@@ -108,6 +108,59 @@ class GymColors extends ThemeExtension<GymColors> {
     danger: Color(0xFFC0392B),
   );
 
+  static const List<Color> kAccentPresets = [
+    Color(0xFFD9A184), // Signature Terracotta (Zeus Default)
+    Color(0xFFFF3B30), // Crimson Red
+    Color(0xFFEF4444), // Scarlet
+    Color(0xFFFF6B6B), // Coral
+    Color(0xFFFF375F), // Hot Rose
+    Color(0xFFFF2D92), // Neon Pink
+    Color(0xFFFF9500), // Tangerine
+    Color(0xFFFF6D00), // Sunset Orange
+    Color(0xFFFF8C42), // Papaya
+    Color(0xFFE67E22), // Ochre
+    Color(0xFFFFCC00), // Gold
+    Color(0xFFFFD60A), // Amber Sun
+    Color(0xFFF59E0B), // Warm Amber
+    Color(0xFFA8E063), // Lime
+    Color(0xFF7ED321), // Volt Green
+    Color(0xFF30D158), // Electric Mint
+    Color(0xFF22C55E), // Vivid Green
+    Color(0xFF10B981), // Emerald
+    Color(0xFF1ABC9C), // Jade
+    Color(0xFF4ECDC4), // Aqua Marine
+    Color(0xFF26C6DA), // Cyan
+    Color(0xFF00BCD4), // Deep Cyan
+    Color(0xFF5AC8FA), // Sky Blue
+    Color(0xFF0A84FF), // Cobalt
+    Color(0xFF007AFF), // Pure Blue
+    Color(0xFF3B82F6), // Royal Blue
+    Color(0xFF5856D6), // Indigo
+    Color(0xFF7C3AED), // Electric Violet
+    Color(0xFF8B5CF6), // Purple
+    Color(0xFFBF5AF2), // Magenta Orchid
+    Color(0xFFB98F72), // Warm Brass
+    Color(0xFF8E8E93), // Slate Steel
+  ];
+
+  static Color adaptAccent(Color accent, bool isDark) {
+    final luminance = accent.computeLuminance();
+    if (isDark && luminance < 0.08) return const Color(0xFFF2F2F2);
+    if (!isDark && luminance > 0.75) return const Color(0xFF1C1C1E);
+    return accent;
+  }
+
+  static GymColors withAccent(Color? customAccent, {required bool isDark}) {
+    final base = isDark ? dark : light;
+    if (customAccent == null) return base;
+    final adapted = adaptAccent(customAccent, isDark);
+    final softAlpha = isDark ? 0.20 : 0.16;
+    return base.copyWith(
+      accent: adapted,
+      accentSoft: adapted.withValues(alpha: softAlpha),
+    );
+  }
+
   @override
   GymColors copyWith({
     Color? pageBg,

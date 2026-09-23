@@ -1294,7 +1294,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get importHint =>
-      'Choose a .zip (or older .json) backup exported from GymMane. This replaces your current data, media included.';
+      'Choose a .zip (or older .json) backup exported from Zeus. This replaces your current data, media included.';
 
   @override
   String get import => 'Import';
@@ -1346,7 +1346,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get aboutGymmane => 'About GymMane';
+  String get aboutGymmane => 'About Zeus';
 
   @override
   String get yourProfile => 'YOUR PROFILE';
@@ -1698,11 +1698,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exercisesInsideWhy => 'Every one with an animation and step-by-step instructions.';
 
   @override
-  String get calculatorsInside => '6 calculators';
+  String get calculatorsInside => '7 calculators';
 
   @override
   String get calculatorsInsideWhy =>
-      '1RM, plates, BMI, calories, body fat and warm-up — all with published formulas.';
+      '1RM, BMR, plates, BMI, calories, body fat and warm-up — all with published formulas.';
 
   @override
   String get mathInside => 'Honest maths';
@@ -2119,7 +2119,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiIntro =>
-      'GymMane never talks to an AI. You take your exercise list out, you paste it into whatever assistant you already use, and you bring its answer back in. Nothing leaves the phone on its own.';
+      'Zeus never talks to an AI. You take your exercise list out, you paste it into whatever assistant you already use, and you bring its answer back in. Nothing leaves the phone on its own.';
 
   @override
   String get aiStep1 =>
@@ -2159,7 +2159,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get awardFirstStepName => 'First step';
 
   @override
-  String get awardFirstStepLine => 'Welcome to GymMane. This one is on the house.';
+  String get awardFirstStepLine => 'Welcome to Zeus. This one is on the house.';
 
   @override
   String get awardFirstWorkoutName => 'First workout';
@@ -2757,14 +2757,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String shareMessage(String name) {
-    return '$name — open the file with GymMane to add it.';
+    return '$name — open the file with Zeus to add it.';
   }
 
   @override
   String get importRoutines => 'Import routines';
 
   @override
-  String get importPasteHint => 'Paste a routine here: one shared from GymMane, an AI answer, JSON or CSV.';
+  String get importPasteHint => 'Paste a routine here: one shared from Zeus, an AI answer, JSON or CSV.';
 
   @override
   String get pasteAction => 'Paste';
@@ -2796,10 +2796,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get nothingToImport => 'Nothing here GymMane can import';
+  String get nothingToImport => 'Nothing here Zeus can import';
 
   @override
-  String get aiStepCopy => 'Copy the request. It carries your exercise list and the format GymMane reads.';
+  String get aiStepCopy => 'Copy the request. It carries your exercise list and the format Zeus reads.';
 
   @override
   String get aiStepAsk => 'Paste it into any AI and say what you want: days per week, goal, how many weeks.';
@@ -2940,7 +2940,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareIntroBody =>
-      'Send it to your partner, a friend or your family. They get a small file that opens in GymMane and adds it in one tap, with its sets and weights.';
+      'Send it to your partner, a friend or your family. They get a small file that opens in Zeus and adds it in one tap, with its sets and weights.';
 
   @override
   String get removedFromRoutine => 'Removed from the routine';
@@ -2989,4 +2989,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gamificationSetting => 'Medals and levels';
+
+  @override
+  String get googleDriveBackup => 'Google Drive backup';
+
+  @override
+  String get googleDriveDescription => 'Keep your workouts and media backed up to your Google Drive';
+
+  @override
+  String get googleDriveConnect => 'Connect Google Drive';
+
+  @override
+  String get googleDriveDisconnect => 'Disconnect Google Drive';
+
+  @override
+  String get googleDriveConnected => 'Connected';
+
+  @override
+  String get googleDriveNotConnected => 'Not connected';
+
+  @override
+  String get googleDriveBackupNow => 'Back up to Drive now';
+
+  @override
+  String get googleDriveRestoreNow => 'Restore from Drive';
+
+  @override
+  String get googleDriveAutoBackup => 'Automatic Drive backup';
+
+  @override
+  String get googleDriveAutoBackupOff => 'Off';
+
+  @override
+  String get googleDriveAutoBackupDaily => 'Daily';
+
+  @override
+  String get googleDriveAutoBackupWeekly => 'Weekly';
+
+  @override
+  String get googleDriveBackingUp => 'Uploading to Google Drive…';
+
+  @override
+  String get googleDriveBackupSuccess => 'Backup saved to Google Drive';
+
+  @override
+  String get googleDriveBackupFailed => 'Failed to upload to Google Drive';
+
+  @override
+  String get googleDriveRestoring => 'Downloading from Google Drive…';
+
+  @override
+  String get googleDriveRestoreSuccess => 'Backup restored from Google Drive';
+
+  @override
+  String get googleDriveRestoreFailed => 'Failed to restore from Google Drive';
+
+  @override
+  String get googleDriveSignInFailed => 'Google Drive sign-in failed';
+
+  @override
+  String get googleDriveNoBackups => 'No backups found on Google Drive';
+
+  @override
+  String get googleDriveSelectBackup => 'Select a backup to restore';
+
+  @override
+  String get aboutZeus => 'About Zeus';
 }

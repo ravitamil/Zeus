@@ -12,6 +12,7 @@ enum ImportFormat {
   lyfta,
   fitbod,
   fitnotes,
+  zeus,
   gymmane,
   openGym,
   generic,
@@ -150,6 +151,14 @@ const _formats = <ImportFormat, _Fmt>{
     weightPlain: ['weight'],
     muscle: ['category'],
   ),
+  ImportFormat.zeus: _Fmt(
+    date: ['date'],
+    exercise: ['exercise'],
+    reps: ['reps'],
+    weightKg: ['weight_kg'],
+    weightLb: [],
+    muscle: ['muscle'],
+  ),
   ImportFormat.gymmane: _Fmt(
     date: ['date'],
     exercise: ['exercise'],
@@ -204,7 +213,7 @@ ImportFormat detectFormat(String csv) {
     return ImportFormat.fitbod;
   }
   if (cols.contains('weight_kg') && (cols.contains('est_1rm_kg') || cols.contains('volume_kg'))) {
-    return ImportFormat.gymmane;
+    return ImportFormat.zeus;
   }
   if (cols.contains('exercise') && cols.contains('category') && _pick(cols, _anyWeight) != null) {
     return ImportFormat.fitnotes;

@@ -11,7 +11,7 @@ import '../state/fit_state.dart';
 import 'alarm_store.dart';
 import 'media_store.dart';
 
-const String kBackupJsonEntry = 'gymmane.json';
+const String kBackupJsonEntry = 'zeus.json';
 const String _imagesDir = 'media/images';
 const String _videosDir = 'media/videos';
 const String _notesDir = 'media/notes';
@@ -187,7 +187,7 @@ ArchiveFile? _findJson(Archive a) {
   ArchiveFile? fallback;
   for (final f in a.files) {
     if (!f.isFile || !f.name.toLowerCase().endsWith('.json')) continue;
-    if (f.name == kBackupJsonEntry) return f;
+    if (f.name == kBackupJsonEntry || f.name == 'gymmane.json') return f;
     fallback ??= f;
   }
   return fallback;

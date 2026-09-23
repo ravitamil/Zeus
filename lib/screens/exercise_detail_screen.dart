@@ -44,8 +44,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
     final gc = context.gc;
     final ex = fit.activeExercise;
     final fav = fit.favorites[ex.id] ?? false;
-    final secondary =
-        ex.secondary.map(muscleLabel).join(', ').isEmpty ? t.none : ex.secondary.map(muscleLabel).join(', ');
     final steps = fit.activeExerciseSteps(ex);
     final pr = fit.exercisePr(ex.id);
     final oneRm = fit.oneRmSeries(ex.id);
@@ -139,14 +137,32 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
                   Text(exerciseName(ex),
                       style: AppTheme.f(26, weight: FontWeight.w800, color: gc.text, height: 1.1)),
                   const SizedBox(height: 18),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Wrap(
+                    spacing: 16,
+                    runSpacing: 14,
+                    crossAxisAlignment: WrapCrossAlignment.start,
                     children: [
-                      _meta(gc, t.primaryLabel, muscleLabel(ex.primary)),
-                      const SizedBox(width: 20),
-                      _meta(gc, t.secondaryLabel, secondary),
-                      const SizedBox(width: 20),
-                      _meta(gc, t.equipmentLabel, t.equipment(ex.equipment)),
+                      _metaBlock(
+                        gc,
+                        t.primaryLabel,
+                        ex.primary
+                            .split(',')
+                            .map((p) => muscleLabel(p.trim()))
+                            .where((m) => m.isNotEmpty)
+                            .toList(),
+                        accent: gc.accent,
+                      ),
+                      if (ex.secondary.isNotEmpty)
+                        _metaBlock(
+                          gc,
+                          t.secondaryLabel,
+                          ex.secondary.map(muscleLabel).where((m) => m.isNotEmpty).toList(),
+                        ),
+                      _metaBlock(
+                        gc,
+                        t.equipmentLabel,
+                        [t.equipment(ex.equipment)],
+                      ),
                     ],
                   ),
                   const SizedBox(height: 18),
@@ -267,6 +283,13 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
                       _step(gc, i + 1, steps[i]),
                       if (i < steps.length - 1) const SizedBox(height: 14),
                     ],
+                  ],
+                  if (ex.tips.isNotEmpty) ...[
+                    const SizedBox(height: 24),
+                    _section(gc, 'Pro Tips'),
+                    const SizedBox(height: 12),
+                    for (final tip in ex.tips)
+                      _tipCard(gc, tip),
                   ],
                   if (fit.alternativesHere(ex, 3).isNotEmpty) ...[
                     const SizedBox(height: 24),
@@ -485,19 +508,32 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
     );
   }
 
-  Widget _meta(GymColors gc, String label, String value) {
-    return Flexible(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _cardLabel(gc, label),
-          const SizedBox(height: 5),
-          Text(value,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTheme.f(14.5, weight: FontWeight.w600, color: gc.text)),
-        ],
-      ),
+  Widget _metaBlock(GymColors gc, String label, List<String> values, {Color? accent}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _cardLabel(gc, label),
+        const SizedBox(height: 6),
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: values.map((val) => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              color: accent != null ? accent.withValues(alpha: 0.12) : gc.bgRaised,
+              borderRadius: BorderRadius.circular(9),
+              border: Border.all(
+                color: (accent ?? gc.border).withValues(alpha: 0.5),
+              ),
+            ),
+            child: Text(
+              val,
+              style: AppTheme.f(13.5, weight: FontWeight.w600, color: accent ?? gc.text),
+            ),
+          )).toList(),
+        ),
+      ],
     );
   }
 
@@ -888,6 +924,71 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
           ),
           child: Icon(icon, size: 16, color: gc.text),
         ),
+      ),
+    );
+  }
+
+  Widget _tipCard(GymColors gc, String tip) {
+    String category = 'Tip';
+    String body = tip;
+    if (tip.contains(':')) {
+      final idx = tip.indexOf(':');
+      final possibleCat = tip.substring(0, idx).trim();
+      if (possibleCat.length < 20 && !possibleCat.contains(' ')) {
+        category = possibleCat;
+        body = tip.substring(idx + 1).trim();
+      }
+    }
+    IconData icon;
+    Color accentColor;
+    switch (category.toLowerCase()) {
+      case 'setup':
+        icon = PhosphorIconsRegular.wrench;
+        accentColor = gc.accent;
+        break;
+      case 'control':
+        icon = PhosphorIconsRegular.shieldCheck;
+        accentColor = gc.ember;
+        break;
+      case 'range':
+        icon = PhosphorIconsRegular.arrowsOutCardinal;
+        accentColor = gc.sage;
+        break;
+      case 'breathing':
+        icon = PhosphorIconsRegular.wind;
+        accentColor = gc.info;
+        break;
+      default:
+        icon = PhosphorIconsRegular.lightbulb;
+        accentColor = gc.accent;
+    }
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: gc.bgRaised,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: gc.border.withValues(alpha: 0.5)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 16, color: accentColor),
+              const SizedBox(width: 8),
+              Text(
+                category.toUpperCase(),
+                style: AppTheme.f(12, weight: FontWeight.w700, color: accentColor, letterSpacing: 1.1),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            body,
+            style: AppTheme.f(13.5, weight: FontWeight.w400, color: gc.textSecondary, height: 1.45),
+          ),
+        ],
       ),
     );
   }

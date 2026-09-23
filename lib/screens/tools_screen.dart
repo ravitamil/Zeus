@@ -11,6 +11,7 @@ import '../widgets/ui_kit.dart';
 
 IconData _toolIcon(String id) => switch (id) {
       'rm' => PhosphorIconsRegular.barbell,
+      'bmr' => PhosphorIconsRegular.heartbeat,
       'bmi' => PhosphorIconsRegular.scales,
       'cal' => PhosphorIconsRegular.fire,
       'bf' => PhosphorIconsRegular.percent,

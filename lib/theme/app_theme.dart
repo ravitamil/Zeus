@@ -9,8 +9,16 @@ class AppTheme {
   static const String sans = 'Nunito';
   static const String round = 'Nunito';
 
-  static ThemeData get dark => _build(Brightness.dark, GymColors.dark);
-  static ThemeData get light => _build(Brightness.light, GymColors.light);
+  static ThemeData get dark => darkTheme();
+  static ThemeData get light => lightTheme();
+
+  static ThemeData darkTheme([Color? accent]) =>
+      _build(Brightness.dark, GymColors.withAccent(accent, isDark: true));
+  static ThemeData lightTheme([Color? accent]) =>
+      _build(Brightness.light, GymColors.withAccent(accent, isDark: false));
+
+  static ThemeData darkWith([Color? accent]) => darkTheme(accent);
+  static ThemeData lightWith([Color? accent]) => lightTheme(accent);
 
   static ThemeData _build(Brightness brightness, GymColors gc) {
     final base = ThemeData(brightness: brightness, useMaterial3: true, fontFamily: sans);

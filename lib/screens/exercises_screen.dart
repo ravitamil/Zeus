@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../catalog/exercise_catalog.dart';
+import '../catalog/exercise_categories.dart';
 import '../l10n/l10n.dart';
 import '../models/exercise.dart';
 import '../services/media_store.dart';
@@ -22,8 +24,27 @@ class ExercisesScreen extends StatefulWidget {
   State<ExercisesScreen> createState() => _ExercisesScreenState();
 }
 
+enum _ExViewMode { all, muscles, equipment }
+
 class _ExercisesScreenState extends State<ExercisesScreen> {
   late final TextEditingController _c = TextEditingController(text: fit.exSearch);
+  _ExViewMode _viewMode = _ExViewMode.all;
+  final Map<String, int> _countsCache = {};
+
+  int _getCategoryCount(CategoryItem cat) {
+    return _countsCache.putIfAbsent(
+        cat.id, () => fit.allExercises.where(cat.matches).length);
+  }
+
+  void _switchView(_ExViewMode mode) {
+    if (_viewMode == mode) return;
+    HapticFeedback.selectionClick();
+    setState(() {
+      _viewMode = mode;
+      _c.clear();
+      fit.setExSearch('');
+    });
+  }
 
   @override
   void dispose() {
@@ -36,6 +57,48 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
     final gc = context.gc;
     final list = fit.exercisesFiltered;
 
+    final Widget content;
+    switch (_viewMode) {
+      case _ExViewMode.all:
+        content = Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 110),
+            itemCount: list.isEmpty ? 1 : list.length,
+            itemBuilder: (context, i) {
+              if (list.isEmpty) return _empty(gc);
+              final ex = list[i];
+              final first = i == 0 || list[i - 1].primary != ex.primary;
+              final last = i == list.length - 1 || list[i + 1].primary != ex.primary;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (first) ...[
+                    SizedBox(height: i == 0 ? 2 : 22),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 8),
+                      child: Text(muscleLabel(ex.primary).toUpperCase(),
+                          style: AppTheme.f(10.5,
+                              weight: FontWeight.w700,
+                              color: gc.textTertiary,
+                              letterSpacing: 1.3)),
+                    ),
+                  ],
+                  _row(gc, ex, first: first, last: last),
+                ],
+              );
+            },
+          ),
+        );
+      case _ExViewMode.muscles:
+        content = Expanded(
+          child: _categoryGrid(context, gc, kMuscleCategories),
+        );
+      case _ExViewMode.equipment:
+        content = Expanded(
+          child: _categoryGrid(context, gc, kEquipmentCategories),
+        );
+    }
+
     return SafeArea(
       bottom: false,
       child: Column(
@@ -45,35 +108,12 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
             child: _header(context, gc, list.length),
           ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 110),
-              itemCount: list.isEmpty ? 1 : list.length,
-              itemBuilder: (context, i) {
-                if (list.isEmpty) return _empty(gc);
-                final ex = list[i];
-                final first = i == 0 || list[i - 1].primary != ex.primary;
-                final last = i == list.length - 1 || list[i + 1].primary != ex.primary;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (first) ...[
-                      SizedBox(height: i == 0 ? 2 : 22),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 0, 0, 8),
-                        child: Text(muscleLabel(ex.primary).toUpperCase(),
-                            style: AppTheme.f(10.5,
-                                weight: FontWeight.w700,
-                                color: gc.textTertiary,
-                                letterSpacing: 1.3)),
-                      ),
-                    ],
-                    _row(gc, ex, first: first, last: last),
-                  ],
-                );
-              },
+          if (fit.exCategoryFilter != null && _viewMode == _ExViewMode.all)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              child: _activeCategoryBanner(gc, fit.exCategoryFilter!, list.length),
             ),
-          ),
+          content,
         ],
       ),
     );
@@ -83,6 +123,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
       (fit.activePlaceId.isEmpty ? 0 : 1) +
       (fit.exMuscleFilter == null ? 0 : 1) +
       (fit.exEquipmentFilter == null ? 0 : 1) +
+      (fit.exCategoryFilter == null ? 0 : 1) +
       (fit.exDifficultyFilter == null ? 0 : 1);
 
   void _clearAll() {
@@ -116,10 +157,263 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
           ],
         ),
         const SizedBox(height: 14),
-        SearchField(controller: _c, hint: t.searchExercises, onChanged: fit.setExSearch),
-        const SizedBox(height: 10),
-        _quickChips(context, gc),
+        _viewSelector(gc),
+        const SizedBox(height: 12),
+        SearchField(
+          controller: _c,
+          hint: switch (_viewMode) {
+            _ExViewMode.all => t.searchExercises,
+            _ExViewMode.muscles => 'Search muscle groups...',
+            _ExViewMode.equipment => 'Search equipment...',
+          },
+          onChanged: (v) {
+            if (_viewMode == _ExViewMode.all) {
+              fit.setExSearch(v);
+            } else {
+              setState(() {});
+            }
+          },
+        ),
+        if (_viewMode == _ExViewMode.all) ...[
+          const SizedBox(height: 10),
+          _quickChips(context, gc),
+        ],
       ],
+    );
+  }
+
+  Widget _viewSelector(GymColors gc) {
+    final tabs = [
+      (_ExViewMode.all, 'All'),
+      (_ExViewMode.muscles, 'Muscle Groups'),
+      (_ExViewMode.equipment, 'Equipment'),
+    ];
+
+    return Container(
+      height: 42,
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: gc.bgRaised,
+        borderRadius: BorderRadius.circular(100),
+        border: Border.all(color: gc.border.withValues(alpha: 0.5)),
+      ),
+      child: Row(
+        children: [
+          for (final (mode, label) in tabs)
+            Expanded(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => _switchView(mode),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  decoration: BoxDecoration(
+                    color: _viewMode == mode ? gc.ember : Colors.transparent,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    style: AppTheme.f(
+                      12,
+                      weight: _viewMode == mode ? FontWeight.w700 : FontWeight.w600,
+                      color: _viewMode == mode ? gc.onEmber : gc.textSecondary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _activeCategoryBanner(GymColors gc, CategoryItem cat, int count) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+      decoration: BoxDecoration(
+        color: gc.bgRaised,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: gc.border),
+      ),
+      child: Row(
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => _switchView(cat.isMuscle ? _ExViewMode.muscles : _ExViewMode.equipment),
+            child: Container(
+              width: 40,
+              height: 40,
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: gc.bgRaised2,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Image.asset(cat.iconAsset, fit: BoxFit.contain),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => _switchView(cat.isMuscle ? _ExViewMode.muscles : _ExViewMode.equipment),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          cat.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTheme.f(14.5, weight: FontWeight.w700, color: gc.text),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Icon(PhosphorIconsRegular.caretRight, size: 12, color: gc.textSecondary),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${cat.isMuscle ? t.muscleFilter : t.equipmentLabel} · ${t.libraryCount(count)}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTheme.f(11.5, weight: FontWeight.w500, color: gc.textSecondary),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              HapticFeedback.selectionClick();
+              fit.setCategoryFilter(null);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: gc.bgRaised2,
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(t.clearFilters,
+                      style: AppTheme.f(11, weight: FontWeight.w600, color: gc.accent)),
+                  const SizedBox(width: 4),
+                  Icon(PhosphorIconsRegular.x, size: 12, color: gc.accent),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _categoryGrid(BuildContext context, GymColors gc, List<CategoryItem> items) {
+    final query = _c.text.trim().toLowerCase();
+    final filtered = query.isEmpty
+        ? items
+        : items.where((cat) => cat.name.toLowerCase().contains(query)).toList();
+
+    if (filtered.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SvgPathIcon(Ic.search, size: 36, color: gc.textTertiary),
+              const SizedBox(height: 12),
+              Text(t.noExercisesFound,
+                  style: AppTheme.f(15, weight: FontWeight.w700, color: gc.text)),
+              const SizedBox(height: 6),
+              Text(t.noExercisesHint,
+                  textAlign: TextAlign.center,
+                  style: AppTheme.f(12.5, weight: FontWeight.w500, color: gc.textSecondary)),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final crossAxisCount = constraints.maxWidth > 650 ? 4 : 3;
+        return GridView.builder(
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 110),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            childAspectRatio: 0.84,
+          ),
+          itemCount: filtered.length,
+          itemBuilder: (context, i) {
+            final cat = filtered[i];
+            final selected = fit.exCategoryFilter?.id == cat.id;
+            final count = _getCategoryCount(cat);
+
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                HapticFeedback.selectionClick();
+                fit.setCategoryFilter(cat);
+                setState(() => _viewMode = _ExViewMode.all);
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                decoration: BoxDecoration(
+                  color: selected ? gc.emberSoft : gc.bgRaised,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: selected ? gc.accent : gc.border.withValues(alpha: 0.6),
+                    width: selected ? 1.5 : 1.0,
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Center(
+                          child: Image.asset(
+                            cat.iconAsset,
+                            fit: BoxFit.contain,
+                            gaplessPlayback: true,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      cat.name,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTheme.f(12,
+                          weight: FontWeight.w700, color: gc.text, height: 1.15),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      t.libraryCount(count),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTheme.f(10,
+                          weight: FontWeight.w500, color: gc.textSecondary),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -146,6 +440,26 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
           bg: fit.exFavouritesOnly ? gc.ember : gc.bgRaised2,
           fg: fit.exFavouritesOnly ? gc.onEmber : gc.textSecondary,
           onTap: fit.toggleFavouritesFilter,
+          hPad: 14,
+          vPad: 7,
+          fontSize: 12.5,
+        ),
+        const SizedBox(width: 8),
+        Pill(
+          label: 'Muscles · 13',
+          bg: gc.bgRaised2,
+          fg: gc.textSecondary,
+          onTap: () => _switchView(_ExViewMode.muscles),
+          hPad: 14,
+          vPad: 7,
+          fontSize: 12.5,
+        ),
+        const SizedBox(width: 8),
+        Pill(
+          label: 'Equipment · 23',
+          bg: gc.bgRaised2,
+          fg: gc.textSecondary,
+          onTap: () => _switchView(_ExViewMode.equipment),
           hPad: 14,
           vPad: 7,
           fontSize: 12.5,
@@ -601,6 +915,24 @@ void showExerciseFilters(BuildContext context, {VoidCallback? onClear}) {
               Text(titleCase(t.filters),
                   textAlign: TextAlign.center,
                   style: AppTheme.f(19, weight: FontWeight.w800, color: gc.text)),
+              if (fit.exCategoryFilter != null) ...[
+                const SizedBox(height: 14),
+                _filterLabel(gc, fit.exCategoryFilter!.isMuscle ? 'Category (${t.muscleFilter})' : 'Category (${t.equipmentLabel})'),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Pill(
+                      label: '${fit.exCategoryFilter!.name}  ✕',
+                      bg: gc.ember,
+                      fg: gc.onEmber,
+                      onTap: () => setSheet(() => fit.setCategoryFilter(null)),
+                      hPad: 14,
+                      vPad: 8,
+                      fontSize: 13,
+                    ),
+                  ],
+                ),
+              ],
               const SizedBox(height: 18),
               _filterLabel(gc, t.placeFilterLabel),
               const SizedBox(height: 8),

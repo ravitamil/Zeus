@@ -53,7 +53,7 @@ class AboutScreen extends StatelessWidget {
             _group(gc, [
               (PhosphorIconsRegular.barbell, t.exercisesInside(kExercises.length),
                   t.exercisesInsideWhy),
-              (PhosphorIconsRegular.calculator, t.calculatorsInside, t.calculatorsInsideWhy),
+              (PhosphorIconsRegular.calculator, t.calculatorsFolderDetail, t.calculatorsInsideWhy),
               (PhosphorIconsRegular.chartLineUp, t.mathInside, t.mathInsideWhy),
             ]),
             const SizedBox(height: 22),
@@ -101,13 +101,10 @@ class AboutScreen extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 6,
+            right: 14,
             top: 14,
             bottom: 14,
-            child: Opacity(
-              opacity: 0.6,
-              child: Image.asset('assets/img/runner.png', fit: BoxFit.fitHeight),
-            ),
+            child: Image.asset('assets/img/logo.png', fit: BoxFit.fitHeight),
           ),
           Padding(
             padding: const EdgeInsets.all(22),
@@ -115,7 +112,7 @@ class AboutScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('GymMane',
+                Text('Zeus',
                     style: AppTheme.f(33, weight: FontWeight.w800, color: gc.text, letterSpacing: -0.5)),
                 const SizedBox(height: 10),
                 Container(

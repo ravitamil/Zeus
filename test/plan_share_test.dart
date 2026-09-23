@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gymmane/services/plan_share.dart';
-import 'package:gymmane/state/fit_state.dart';
+import 'package:zeus/services/plan_share.dart';
+import 'package:zeus/state/fit_state.dart';
 
 void main() {
   group('lectura del JSON', () {
