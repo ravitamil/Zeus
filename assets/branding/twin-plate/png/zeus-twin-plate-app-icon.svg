@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256"><title>Zeus The Twin Plate</title><rect width="256" height="256" rx="57.6" fill="#0C0B0A"/><g transform="translate(7.04 7.04) scale(0.945)" fill="#F59E0B">
+  
+  <g fill="#F59E0B">
+    <!-- Top Plate Block (widened gap) -->
+    <path d="
+      M 48 44
+      L 208 44
+      L 208 92
+      L 152 92
+      L 126 118
+      L 166 118
+      L 138 146
+      L 94 146
+      L 142 98
+      L 96 98
+      L 48 98
+      Z
+    "/>
+    <!-- Bottom Plate Block (widened gap) -->
+    <path d="
+      M 208 212
+      L 48 212
+      L 48 164
+      L 104 164
+      L 130 138
+      L 90 138
+      L 118 110
+      L 162 110
+      L 114 158
+      L 160 158
+      L 208 158
+      Z
+    "/>
+  </g>
+</g></svg>

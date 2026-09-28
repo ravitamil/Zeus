@@ -87,3 +87,7 @@ google-services.json
 Thumbs.db
 desktop.ini
 
+# Icon backup
+assets/icon/backup/
+
+

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <title>Zeus Twin Plate Master Black</title>
+  <g fill="#000000">
+    <!-- Top Plate Block -->
+    <path d="
+      M 48 44
+      L 208 44
+      L 208 92
+      L 152 92
+      L 124 120
+      L 162 120
+      L 138 144
+      L 94 144
+      L 142 96
+      L 96 96
+      L 48 96
+      Z
+    "/>
+    <!-- Bottom Plate Block -->
+    <path d="
+      M 208 212
+      L 48 212
+      L 48 164
+      L 104 164
+      L 132 136
+      L 94 136
+      L 118 112
+      L 162 112
+      L 114 160
+      L 160 160
+      L 208 160
+      Z
+    "/>
+  </g>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Zeus Iron Plate App Icon</title>
+  <rect width="512" height="512" rx="114" fill="#0C0B0A"/>
+  <g transform="translate(85, 85) scale(1.336)" fill="#F59E0B">
+    <!-- Outer Heavy Rim -->
+    <path fill-rule="evenodd" d="
+      M 128 20
+      A 108 108 0 1 0 128 236
+      A 108 108 0 1 0 128 20
+      Z
+      M 128 42
+      A 86 86 0 1 1 128 214
+      A 86 86 0 1 1 128 42
+      Z
+    "/>
+    <!-- Center Core with Carved Lightning Bolt in Negative Space -->
+    <path fill-rule="evenodd" d="
+      M 128 54
+      A 74 74 0 1 0 128 202
+      A 74 74 0 1 0 128 54
+      Z
+      M 136 66
+      L 98 132
+      L 124 132
+      L 104 190
+      L 164 122
+      L 134 122
+      L 156 66
+      Z
+    "/>
+  </g>
+</svg>

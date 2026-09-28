@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <title>Zeus Iron Plate Micro Cut</title>
+  <g fill="#000000">
+    <!-- Outer Heavy Rim -->
+    <path fill-rule="evenodd" d="
+      M 128 20
+      A 108 108 0 1 0 128 236
+      A 108 108 0 1 0 128 20
+      Z
+      M 128 46
+      A 82 82 0 1 1 128 210
+      A 82 82 0 1 1 128 46
+      Z
+    "/>
+    <!-- Center Core with Carved Lightning Bolt -->
+    <path fill-rule="evenodd" d="
+      M 128 54
+      A 74 74 0 1 0 128 202
+      A 74 74 0 1 0 128 54
+      Z
+      M 136 62
+      L 94 134
+      L 126 134
+      L 102 194
+      L 168 120
+      L 132 120
+      L 158 62
+      Z
+    "/>
+  </g>
+</svg>
