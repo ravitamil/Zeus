@@ -251,7 +251,7 @@ class _VideoTileState extends State<_VideoTile> {
       final w = size.width > 0 ? size.width : 16.0;
       final h = size.height > 0 ? size.height : 9.0;
       child = FittedBox(
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
         clipBehavior: Clip.hardEdge,
         child: SizedBox(
           width: w,
