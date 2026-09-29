@@ -695,6 +695,7 @@ void showCreateExerciseSheet(BuildContext context,
   showAppSheet<void>(
     context: context,
     isScrollControlled: true,
+    useSafeArea: true,
     backgroundColor: gc.bgRaised,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
     builder: (sheetCtx) => Padding(
@@ -711,14 +712,18 @@ void showCreateExerciseSheet(BuildContext context,
           }
 
           return SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(titleCase(editing == null ? t.newExercise : t.editExercise),
-                      style: AppTheme.f(19, weight: FontWeight.w800, color: gc.text)),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(sheetCtx).height * 0.88),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SheetHandle(),
+                    const SizedBox(height: 16),
+                    Text(titleCase(editing == null ? t.newExercise : t.editExercise),
+                        style: AppTheme.f(19, weight: FontWeight.w800, color: gc.text)),
                   const SizedBox(height: 16),
                   TextField(
                     controller: nameCtrl,
@@ -952,11 +957,12 @@ void showCreateExerciseSheet(BuildContext context,
                 ],
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     ),
-  );
+  ),
+);
 }
 
 

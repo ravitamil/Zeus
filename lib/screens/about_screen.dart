@@ -11,10 +11,22 @@ import '../widgets/entrance.dart';
 import '../widgets/ui_kit.dart';
 
 const _kVersion = '1.3.0';
-const _kAuthor = 'InlitX';
-const _kAuthorUrl = 'https://github.com/InlitX';
-const _kRepoUrl = 'https://github.com/InlitX/GymMane';
-const _kKofiUrl = 'https://ko-fi.com/inlitx';
+
+// Zeus Project
+const _kZeusMaintainer = 'ravitamil';
+const _kZeusMaintainerUrl = 'https://github.com/ravitamil';
+const _kZeusRepo = 'ravitamil/Zeus';
+const _kZeusRepoUrl = 'https://github.com/ravitamil/Zeus';
+const _kZeusKofi = 'ko-fi.com/ravitamil';
+const _kZeusKofiUrl = 'https://ko-fi.com/ravitamil';
+
+// Upstream Project (GymMane by InlitX)
+const _kUpstreamAuthor = 'InlitX';
+const _kUpstreamAuthorUrl = 'https://github.com/InlitX';
+const _kUpstreamRepo = 'InlitX/GymMane';
+const _kUpstreamRepoUrl = 'https://github.com/InlitX/GymMane';
+const _kUpstreamKofi = 'ko-fi.com/inlitx';
+const _kUpstreamKofiUrl = 'https://ko-fi.com/inlitx';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -180,11 +192,29 @@ class AboutScreen extends StatelessWidget {
   }
 
   Widget _credits(GymColors gc) {
-    final rows = <(IconData, String, String, String, Color?)>[
-      (PhosphorIconsFill.heart, t.madeWithLoveBy, _kAuthor, _kAuthorUrl, gc.accent),
-      (PhosphorIconsRegular.githubLogo, t.sourceCode, 'InlitX/GymMane', _kRepoUrl, null),
-      (PhosphorIconsRegular.coffee, t.buyCoffee, 'ko-fi.com/inlitx', _kKofiUrl, null),
-    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _sectionLabel(gc, 'Zeus Project'),
+        const SizedBox(height: 8),
+        _creditGroup(gc, [
+          (PhosphorIconsFill.heart, t.madeWithLoveBy, _kZeusMaintainer, _kZeusMaintainerUrl, gc.accent),
+          (PhosphorIconsRegular.githubLogo, t.sourceCode, _kZeusRepo, _kZeusRepoUrl, null),
+          (PhosphorIconsRegular.coffee, t.buyCoffee, _kZeusKofi, _kZeusKofiUrl, null),
+        ]),
+        const SizedBox(height: 18),
+        _sectionLabel(gc, 'Upstream Project'),
+        const SizedBox(height: 8),
+        _creditGroup(gc, [
+          (PhosphorIconsRegular.gitFork, 'ORIGINAL CREATOR', _kUpstreamAuthor, _kUpstreamAuthorUrl, null),
+          (PhosphorIconsRegular.githubLogo, 'UPSTREAM SOURCE', _kUpstreamRepo, _kUpstreamRepoUrl, null),
+          (PhosphorIconsRegular.coffee, 'SUPPORT UPSTREAM', _kUpstreamKofi, _kUpstreamKofiUrl, null),
+        ]),
+      ],
+    );
+  }
+
+  Widget _creditGroup(GymColors gc, List<(IconData, String, String, String, Color?)> rows) {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(

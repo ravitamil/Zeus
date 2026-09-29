@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
-  <!-- Centered symbol in Android adaptive safe zone (scale 2.62, 440px) -->
-  <g transform="translate(292, 292) scale(1.71875)">
+  <!-- Centered symbol in Android adaptive safe zone (scale 3.25, 546px) -->
+  <g transform="translate(96, 96) scale(3.25)">
     <path fill="#F59E0B" fill-rule="evenodd" d="M 60 44
     L 212 44
     L 212 84
