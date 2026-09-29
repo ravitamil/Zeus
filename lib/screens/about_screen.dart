@@ -17,8 +17,6 @@ const _kZeusMaintainer = 'ravitamil';
 const _kZeusMaintainerUrl = 'https://github.com/ravitamil';
 const _kZeusRepo = 'ravitamil/Zeus';
 const _kZeusRepoUrl = 'https://github.com/ravitamil/Zeus';
-const _kZeusKofi = 'ko-fi.com/ravitamil';
-const _kZeusKofiUrl = 'https://ko-fi.com/ravitamil';
 
 // Upstream Project (GymMane by InlitX)
 const _kUpstreamAuthor = 'InlitX';
@@ -200,7 +198,6 @@ class AboutScreen extends StatelessWidget {
         _creditGroup(gc, [
           (PhosphorIconsFill.heart, t.madeWithLoveBy, _kZeusMaintainer, _kZeusMaintainerUrl, gc.accent),
           (PhosphorIconsRegular.githubLogo, t.sourceCode, _kZeusRepo, _kZeusRepoUrl, null),
-          (PhosphorIconsRegular.coffee, t.buyCoffee, _kZeusKofi, _kZeusKofiUrl, null),
         ]),
         const SizedBox(height: 18),
         _sectionLabel(gc, 'Upstream Project'),
