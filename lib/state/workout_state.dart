@@ -145,9 +145,13 @@ mixin WorkoutState on FitCore, SettingsState, LibraryState, PlacesState, StatsSt
     final pool = getFilteredExercises(muscles).where((e) => suggests(e.id)).toList();
     if (pool.length <= _pickTarget) return pool;
 
+    final historyIds = <String>{
+      for (final s in sessions)
+        for (final e in s.exercises) e.id,
+    };
     int rank(Exercise e) {
       if (favorites[e.id] == true) return 0;
-      if (exerciseHistory(e.id).isNotEmpty) return 1;
+      if (historyIds.contains(e.id)) return 1;
       return 2;
     }
 

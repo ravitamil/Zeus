@@ -61,15 +61,30 @@ class _TrainScreenState extends State<TrainScreen> {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, review ? 112 : 12),
-                    child: review ? _review(context, gc) : _select(context, gc),
-                  ),
+                  child: review ? _review(context, gc) : _select(context, gc),
                 ),
-                if (review) ...[
-                  const Positioned(left: 0, right: 0, bottom: 0, child: EdgeBlur(top: false, height: 112, sigma: 11, shade: 0.35)),
-                  Positioned(left: 0, right: 0, bottom: 0, child: _startBar(context, gc)),
-                ],
+                if (review)
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(20, 8, 20, 14 + MediaQuery.paddingOf(context).bottom),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            gc.bg.withValues(alpha: 0.0),
+                            gc.bg.withValues(alpha: 0.85),
+                            gc.bg,
+                          ],
+                          stops: const [0.0, 0.45, 1.0],
+                        ),
+                      ),
+                      child: _startBar(context, gc),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -80,78 +95,80 @@ class _TrainScreenState extends State<TrainScreen> {
 
   Widget _startBar(BuildContext context, GymColors gc) {
     final n = fit.sessionPicks.length;
-    return Padding(
-      padding: EdgeInsets.fromLTRB(20, 8, 20, 14 + MediaQuery.of(context).padding.bottom),
-      child: PrimaryButton(
-        label: n == 0 ? t.pickAnExercise : t.startCount(n),
-        bg: n == 0 ? gc.bgRaised2 : gc.ember,
-        fg: n == 0 ? gc.textTertiary : gc.onEmber,
-        onTap: fit.startSession,
-      ),
+    return PrimaryButton(
+      label: n == 0 ? t.pickAnExercise : t.startCount(n),
+      bg: n == 0 ? gc.bgRaised2 : gc.ember,
+      fg: n == 0 ? gc.textTertiary : gc.onEmber,
+      onTap: fit.startSession,
     );
   }
 
   Widget _select(BuildContext context, GymColors gc) {
     final hasSel = fit.selectedMuscles.isNotEmpty;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(t.step1.toUpperCase(),
-            style: AppTheme.f(10.5,
-                weight: FontWeight.w700, color: gc.textTertiary, letterSpacing: 1.5)),
-        const SizedBox(height: 4),
-        Text(t.chooseFocus, style: AppTheme.f(28, weight: FontWeight.w800, color: gc.text)),
-        const SizedBox(height: 18),
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: gc.bgRaised,
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: BodyMap(
-            selected: fit.selectedMuscles.toSet(),
-            onToggle: fit.toggleMuscle,
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(t.tapMuscles,
-            textAlign: TextAlign.center, style: AppTheme.f(12, weight: FontWeight.w500, color: gc.textTertiary)),
-        const SizedBox(height: 14),
-        Container(
-          constraints: const BoxConstraints(minHeight: 38),
-          alignment: Alignment.centerLeft,
-          child: hasSel
-              ? Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [for (final id in fit.selectedMuscles) _chip(gc, id)],
-                )
-              : Text(t.noMusclesYet,
-                  style: AppTheme.f(13, weight: FontWeight.w500, color: gc.textTertiary)),
-        ),
-        const SizedBox(height: 18),
-        PrimaryButton(
-          label: t.continueBtn,
-          bg: hasSel ? gc.ember : gc.bgRaised2,
-          fg: hasSel ? gc.onEmber : gc.textTertiary,
-          onTap: fit.trainContinue,
-        ),
-        const SizedBox(height: 26),
-        Text(t.orStartWith.toUpperCase(),
-            style: AppTheme.f(10.5, weight: FontWeight.w700, color: gc.textTertiary, letterSpacing: 1.5)),
-        const SizedBox(height: 10),
-        IntrinsicHeight(
-          child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Expanded(
-              child: _kindCard(gc, 'warmup', PhosphorIconsRegular.fire, t.warmupFocus, t.warmupFocusHint),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(t.step1.toUpperCase(),
+              style: AppTheme.f(10.5,
+                  weight: FontWeight.w700, color: gc.textTertiary, letterSpacing: 1.5)),
+          const SizedBox(height: 4),
+          Text(t.chooseFocus, style: AppTheme.f(28, weight: FontWeight.w800, color: gc.text)),
+          const SizedBox(height: 18),
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: gc.bgRaised,
+              borderRadius: BorderRadius.circular(24),
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: _kindCard(gc, 'cardio', PhosphorIconsRegular.heartbeat, t.cardioFocus, t.cardioFocusHint),
+            child: RepaintBoundary(
+              child: BodyMap(
+                selected: fit.selectedMuscles.toSet(),
+                onToggle: fit.toggleMuscle,
+              ),
             ),
-          ]),
-        ),
-      ],
+          ),
+          const SizedBox(height: 6),
+          Text(t.tapMuscles,
+              textAlign: TextAlign.center, style: AppTheme.f(12, weight: FontWeight.w500, color: gc.textTertiary)),
+          const SizedBox(height: 14),
+          Container(
+            constraints: const BoxConstraints(minHeight: 38),
+            alignment: Alignment.centerLeft,
+            child: hasSel
+                ? Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [for (final id in fit.selectedMuscles) _chip(gc, id)],
+                  )
+                : Text(t.noMusclesYet,
+                    style: AppTheme.f(13, weight: FontWeight.w500, color: gc.textTertiary)),
+          ),
+          const SizedBox(height: 18),
+          PrimaryButton(
+            label: t.continueBtn,
+            bg: hasSel ? gc.ember : gc.bgRaised2,
+            fg: hasSel ? gc.onEmber : gc.textTertiary,
+            onTap: fit.trainContinue,
+          ),
+          const SizedBox(height: 26),
+          Text(t.orStartWith.toUpperCase(),
+              style: AppTheme.f(10.5, weight: FontWeight.w700, color: gc.textTertiary, letterSpacing: 1.5)),
+          const SizedBox(height: 10),
+          IntrinsicHeight(
+            child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              Expanded(
+                child: _kindCard(gc, 'warmup', PhosphorIconsRegular.fire, t.warmupFocus, t.warmupFocusHint),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _kindCard(gc, 'cardio', PhosphorIconsRegular.heartbeat, t.cardioFocus, t.cardioFocusHint),
+              ),
+            ]),
+          ),
+        ],
+      ),
     );
   }
 
@@ -202,64 +219,99 @@ class _TrainScreenState extends State<TrainScreen> {
     final exercises = gear == null ? all : all.where((e) => e.equipment == gear).toList();
     final seeded = searching ? const <Exercise>[] : exercises.where((e) => fit.pickSeed.contains(e.id)).toList();
     final others = searching ? exercises : exercises.where((e) => !fit.pickSeed.contains(e.id)).toList();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          children: [
-            GestureDetector(
-              onTap: fit.trainBack,
-              child: SvgPathIcon(Ic.chevronLeft, size: 20, color: gc.textSecondary),
-            ),
-            const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(t.step2.toUpperCase(),
-                    style: AppTheme.f(10.5,
-                        weight: FontWeight.w700, color: gc.textTertiary, letterSpacing: 1.5)),
-                Text(t.buildSession, style: AppTheme.f(22, weight: FontWeight.w800, color: gc.text)),
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: fit.trainBack,
+                      child: SvgPathIcon(Ic.chevronLeft, size: 20, color: gc.textSecondary),
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(t.step2.toUpperCase(),
+                            style: AppTheme.f(10.5,
+                                weight: FontWeight.w700, color: gc.textTertiary, letterSpacing: 1.5)),
+                        Text(t.buildSession, style: AppTheme.f(22, weight: FontWeight.w800, color: gc.text)),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                _searchRow(context, gc),
+                const SizedBox(height: 12),
+                if (gearHere.length > 1) ...[
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: [
+                      _gearChip(gc, t.allExercisesShort, gear == null, null),
+                      for (final e in gearHere) _gearChip(gc, t.equipment(e), gear == e, e),
+                    ]),
+                  ),
+                  const SizedBox(height: 14),
+                ],
+                if (!searching && all.isNotEmpty) ...[
+                  Text(t.pickedHint(all.length),
+                      style: AppTheme.f(12, weight: FontWeight.w500, color: gc.textTertiary)),
+                  const SizedBox(height: 12),
+                ],
               ],
             ),
-          ],
-        ),
-        const SizedBox(height: 14),
-        _searchRow(context, gc),
-        const SizedBox(height: 12),
-        if (gearHere.length > 1) ...[
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(children: [
-              _gearChip(gc, t.allExercisesShort, gear == null, null),
-              for (final e in gearHere) _gearChip(gc, t.equipment(e), gear == e, e),
-            ]),
           ),
-          const SizedBox(height: 14),
-        ],
-        if (!searching && all.isNotEmpty) ...[
-          Text(t.pickedHint(all.length),
-              style: AppTheme.f(12, weight: FontWeight.w500, color: gc.textTertiary)),
-          const SizedBox(height: 12),
-        ],
+        ),
         if (exercises.isEmpty)
-          _emptyReview(context, gc, searching)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: _emptyReview(context, gc, searching),
+            ),
+          )
         else ...[
           if (seeded.isNotEmpty) ...[
-            _sectionLabel(gc, t.suggestedPicks),
-            for (final ex in seeded) ...[
-              _pickRow(context, gc, ex),
-              const SizedBox(height: 10),
-            ],
-            if (others.isNotEmpty) ...[
-              const SizedBox(height: 10),
-              _sectionLabel(gc, t.moreOptions),
-            ],
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(22, 4, 20, 10),
+                child: _sectionLabel(gc, t.suggestedPicks),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              sliver: SliverList.separated(
+                itemCount: seeded.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 10),
+                itemBuilder: (context, i) => _pickRow(context, gc, seeded[i]),
+              ),
+            ),
+            if (others.isNotEmpty)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(22, 14, 20, 10),
+                  child: _sectionLabel(gc, t.moreOptions),
+                ),
+              ),
           ],
-          for (final ex in others) ...[
-            _pickRow(context, gc, ex),
-            const SizedBox(height: 10),
-          ],
+          if (others.isNotEmpty)
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(20, seeded.isEmpty ? 4 : 0, 20, 0),
+              sliver: SliverList.separated(
+                itemCount: others.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 10),
+                itemBuilder: (context, i) => _pickRow(context, gc, others[i]),
+              ),
+            ),
         ],
+        SliverToBoxAdapter(
+          child: SizedBox(height: 112 + MediaQuery.paddingOf(context).bottom),
+        ),
       ],
     );
   }
