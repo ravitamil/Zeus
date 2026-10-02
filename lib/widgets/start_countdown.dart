@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -61,7 +62,9 @@ class _StartCountdownState extends State<StartCountdown> with TickerProviderStat
     _leaving = true;
     _tick?.cancel();
     HapticFeedback.heavyImpact();
-    await _veil.reverse();
+    try {
+      await _veil.reverse();
+    } catch (_) {}
     fit.endCountdown();
   }
 
@@ -85,19 +88,20 @@ class _StartCountdownState extends State<StartCountdown> with TickerProviderStat
         child: AnimatedBuilder(
         animation: Listenable.merge([_beat, _veil]),
         builder: (context, _) {
-          final veil = Curves.easeOut.transform(_veil.value);
-          final b = _beat.value;
+          final veil = Curves.easeOut.transform(_veil.value.clamp(0.0, 1.0));
+          final b = _beat.value.clamp(0.0, 1.0);
           final pop = Curves.easeOutBack.transform((b / 0.45).clamp(0.0, 1.0));
-          final fade = b < 0.7 ? 1.0 : 1 - Curves.easeIn.transform((b - 0.7) / 0.3);
+          final fade = b < 0.7 ? 1.0 : 1 - Curves.easeIn.transform(((b - 0.7) / 0.3).clamp(0.0, 1.0));
+          final blurSigma = math.max(0.0, 22.0 * veil);
           return Stack(
             fit: StackFit.expand,
             children: [
               BackdropFilter(
-                filter: ui.ImageFilter.blur(sigmaX: 22 * veil, sigmaY: 22 * veil),
-                child: ColoredBox(color: gc.bg.withValues(alpha: 0.72 * veil)),
+                filter: ui.ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+                child: ColoredBox(color: gc.bg.withValues(alpha: (0.72 * veil).clamp(0.0, 1.0))),
               ),
               Opacity(
-                opacity: veil,
+                opacity: veil.clamp(0.0, 1.0),
                 child: SafeArea(
                   child: Column(
                     children: [
