@@ -9,7 +9,6 @@ import '../models/workout.dart';
 import '../state/fit_state.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
-import '../widgets/dialogs.dart';
 import '../widgets/exercise_media.dart';
 import '../widgets/exercise_preview.dart';
 import '../widgets/ruler_picker.dart';
@@ -34,44 +33,21 @@ class _RoutineEditScreenState extends State<RoutineEditScreen> {
   late final String _id = fit.activeRoutineId!;
   late final TextEditingController _name =
       TextEditingController(text: fit.activeRoutine?.name ?? '');
-  final TextEditingController _search = TextEditingController();
-  String _q = '';
 
   @override
   void dispose() {
     _name.dispose();
-    _search.dispose();
     super.dispose();
   }
 
-  List<Exercise> get _filtered => fit.exercisesMatching(_q);
-
-  void _clearSearch() {
-    _search.clear();
-    setState(() => _q = '');
+  void _openExercisePicker() {
+    showAppSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _RoutineExercisePickerSheet(routineId: _id),
+    );
   }
-
-  void _createExercise() => showCreateExerciseSheet(
-        context,
-        initialName: _q,
-        onCreated: (id) {
-          fit.toggleRoutineExercise(_id, id);
-          _clearSearch();
-        },
-      );
-
-  Widget _createLink(GymColors gc) => Center(
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: _createExercise,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Text(t.createNamed(_q.trim()),
-                textAlign: TextAlign.center,
-                style: AppTheme.f(13, weight: FontWeight.w600, color: gc.accent)),
-          ),
-        ),
-      );
 
   @override
   Widget build(BuildContext context) {
@@ -80,56 +56,51 @@ class _RoutineEditScreenState extends State<RoutineEditScreen> {
     if (routine == null) {
       return const SizedBox.shrink();
     }
-    final list = _filtered;
     final start = routine.exerciseIds.isNotEmpty;
-    final create = _q.trim().isNotEmpty && list.isNotEmpty;
     return SafeArea(
       bottom: false,
       child: Stack(
         children: [
           Positioned.fill(
-            child: ListView.builder(
-              padding: EdgeInsets.fromLTRB(20, 12, 20, start ? 104 : 20),
-              itemCount: (list.isEmpty ? 1 : list.length) + (create ? 2 : 1),
-              itemBuilder: (context, i) {
-                if (i == 0) return _header(gc, routine.exerciseIds.length);
-                if (list.isEmpty) return _noMatches(gc);
-                if (i > list.length) return _createLink(gc);
-                return _pickRow(gc, list[i - 1]);
-              },
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 104),
+              child: _header(gc, routine.exerciseIds.length),
             ),
           ),
-          if (start) ...[
-            const Positioned(left: 0, right: 0, bottom: 0, child: EdgeBlur(top: false, height: 112, sigma: 11, shade: 0.35)),
-            Positioned(
-              left: 20,
-              right: 20,
-              bottom: 16,
-              child: Row(children: [
-                Expanded(
-                  flex: 2,
-                  child: Pressable(
-                    onTap: fit.closeRoutineEdit,
-                    child: Container(
-                      height: 56,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(color: gc.bgRaised2, borderRadius: BorderRadius.circular(100)),
-                      child: Text(t.save, style: AppTheme.f(15.5, weight: FontWeight.w700, color: gc.text)),
+          const Positioned(left: 0, right: 0, bottom: 0, child: EdgeBlur(top: false, height: 112, sigma: 11, shade: 0.35)),
+          Positioned(
+            left: 20,
+            right: 20,
+            bottom: 16,
+            child: start
+                ? Row(children: [
+                    Expanded(
+                      flex: 2,
+                      child: Pressable(
+                        onTap: fit.closeRoutineEdit,
+                        child: Container(
+                          height: 56,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(color: gc.bgRaised2, borderRadius: BorderRadius.circular(100)),
+                          child: Text(t.save, style: AppTheme.f(15.5, weight: FontWeight.w700, color: gc.text)),
+                        ),
+                      ),
                     ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      flex: 3,
+                      child: PrimaryButton(
+                        label: t.startWorkout,
+                        icon: Ic.play,
+                        onTap: () => fit.startRoutine(routine),
+                      ),
+                    ),
+                  ])
+                : PrimaryButton(
+                    label: t.save,
+                    onTap: fit.closeRoutineEdit,
                   ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  flex: 3,
-                  child: PrimaryButton(
-                    label: t.startWorkout,
-                    icon: Ic.play,
-                    onTap: () => fit.startRoutine(routine),
-                  ),
-                ),
-              ]),
-            ),
-          ],
+          ),
         ],
       ),
     );
@@ -264,12 +235,30 @@ class _RoutineEditScreenState extends State<RoutineEditScreen> {
         const SizedBox(height: 24),
         Text(t.exercisesWithCount(count), style: AppTheme.f(12, weight: FontWeight.w600, color: gc.textSecondary, letterSpacing: 1.5)),
         const SizedBox(height: 10),
-        if (routine.exerciseIds.isEmpty)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 6),
-            child: Text(t.addFromList, style: AppTheme.f(13, weight: FontWeight.w500, color: gc.textTertiary)),
-          )
-        else ...[
+        if (routine.exerciseIds.isEmpty) ...[
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
+            decoration: BoxDecoration(
+              color: gc.bgRaised,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              children: [
+                Icon(PhosphorIconsRegular.barbell, size: 32, color: gc.textTertiary),
+                const SizedBox(height: 10),
+                Text(t.addFromList,
+                    textAlign: TextAlign.center,
+                    style: AppTheme.f(13, weight: FontWeight.w500, color: gc.textTertiary)),
+                const SizedBox(height: 16),
+                GhostButton(
+                  label: t.addExercise,
+                  icon: PhosphorIconsRegular.plus,
+                  onTap: _openExercisePicker,
+                ),
+              ],
+            ),
+          ),
+        ] else ...[
           Text(t.setsPlannedHint, style: AppTheme.f(11, weight: FontWeight.w500, color: gc.textTertiary)),
           const SizedBox(height: 6),
           if (routine.exerciseIds.length > 1) ...[
@@ -290,82 +279,14 @@ class _RoutineEditScreenState extends State<RoutineEditScreen> {
                 _chosenRow(gc, routine, fit.routineExercises(routine)[i], i),
             ],
           ),
-        ],
-        const SizedBox(height: 20),
-        SearchField(
-          controller: _search,
-          hint: t.addExercises,
-          onChanged: (v) => setState(() => _q = v),
-        ),
-        const SizedBox(height: 10),
-        _filterChips(gc),
-        const SizedBox(height: 12),
-      ],
-    );
-  }
-
-  Widget _filterChips(GymColors gc) {
-    Widget chip(String label, bool active, VoidCallback onTap) => Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: Pill(
-            label: label,
-            bg: active ? gc.ember : gc.bgRaised2,
-            fg: active ? gc.onEmber : gc.textSecondary,
-            onTap: onTap,
-            hPad: 12,
-            vPad: 6,
-            fontSize: 12,
-          ),
-        );
-    final picked = (fit.exMuscleFilter == null ? 0 : 1) +
-        (fit.exEquipmentFilter == null ? 0 : 1) +
-        (fit.exDifficultyFilter == null ? 0 : 1);
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      clipBehavior: Clip.none,
-      child: Row(children: [
-        chip(picked > 0 ? '${t.filters} · $picked' : t.filters, picked > 0,
-            () => showExerciseFilters(context, onClear: _clearSearch)),
-        chip(t.favouritesOnly, fit.exFavouritesOnly, fit.toggleFavouritesFilter),
-        chip(t.noGearOnly, fit.exNoGearOnly, fit.toggleNoGearFilter),
-        if (fit.customExercises.isNotEmpty || fit.exMineOnly)
-          chip(t.mineOnly, fit.exMineOnly, fit.toggleMineFilter),
-        for (final id in kFilterMuscles)
-          chip(muscleLabel(id), fit.exMuscleFilter == id, () => fit.setMuscleFilter(id)),
-      ]),
-    );
-  }
-
-  Widget _noMatches(GymColors gc) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 28),
-      child: Column(
-        children: [
-          Text(t.noExercisesFound, style: AppTheme.f(14, weight: FontWeight.w600, color: gc.text)),
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Pill(
-                label: t.clearFilters,
-                bg: gc.bgRaised2,
-                fg: gc.accent,
-                onTap: () {
-                  _clearSearch();
-                  fit.clearExFilters();
-                },
-              ),
-              const SizedBox(width: 10),
-              Pill(
-                label: t.newExercise,
-                bg: gc.bgRaised2,
-                fg: gc.textSecondary,
-                onTap: _createExercise,
-              ),
-            ],
+          GhostButton(
+            label: t.addExercise,
+            icon: PhosphorIconsRegular.plus,
+            onTap: _openExercisePicker,
           ),
         ],
-      ),
+      ],
     );
   }
 
@@ -658,52 +579,6 @@ class _RoutineEditScreenState extends State<RoutineEditScreen> {
     );
   }
 
-  Widget _pickRow(GymColors gc, Exercise ex) {
-    final inRoutine = fit.routineHas(_id, ex.id);
-    return GestureDetector(
-      onTap: () => fit.toggleRoutineExercise(_id, ex.id),
-      onLongPress: () => showExercisePreview(context, ex),
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: gc.bgRaised,
-          border: Border.all(color: inRoutine ? gc.ember : gc.border),
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Row(children: [
-          GestureDetector(
-            onTap: () => showExercisePreview(context, ex),
-            child: SizedBox(width: 44, child: ExerciseMedia(ex: ex, height: 44, radius: 10)),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(exerciseName(ex), style: AppTheme.f(14, weight: FontWeight.w600, color: gc.text)),
-                const SizedBox(height: 2),
-                Text('${muscleLabel(ex.primary)} · ${t.equipment(ex.equipment)}', style: AppTheme.f(12, weight: FontWeight.w500, color: gc.textSecondary)),
-              ],
-            ),
-          ),
-          Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              color: inRoutine ? gc.ember : Colors.transparent,
-              shape: BoxShape.circle,
-              border: Border.all(color: inRoutine ? gc.ember : gc.border, width: 2),
-            ),
-            child: inRoutine
-                ? SvgPathIcon(Ic.checkBold, size: 14, color: gc.onEmber)
-                : Icon(PhosphorIconsRegular.plus, size: 15, color: gc.textSecondary),
-          ),
-        ]),
-      ),
-    );
-  }
 
   void _openPlan(Exercise ex) {
     showAppSheet<void>(
@@ -954,101 +829,28 @@ class _RoutineEditScreenState extends State<RoutineEditScreen> {
     );
   }
 
-  void _pickGroup(Routine routine) {
-    final gc = context.gc;
-    showAppSheet<void>(
+  Future<void> _pickGroup(Routine routine) async {
+    final selectedGroup = await showAppSheet<String?>(
       context: context,
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (sheet) => Container(
-        padding: sheetPad(sheet),
-        decoration: BoxDecoration(
-          color: gc.bgRaised,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SheetHandle(),
-            const SizedBox(height: 16),
-            SheetTitle(t.routineGroup),
-            const SizedBox(height: 14),
-            OptionGroup([
-              OptionItem(
-                t.noGroup,
-                selected: routine.group.isEmpty,
-                onTap: () {
-                  fit.setRoutineGroup(_id, '');
-                  Navigator.pop(sheet);
-                },
-              ),
-              for (final group in fit.routineGroups)
-                OptionItem(
-                  group,
-                  selected: routine.group == group,
-                  onTap: () {
-                    fit.setRoutineGroup(_id, group);
-                    Navigator.pop(sheet);
-                  },
-                ),
-            ]),
-            const SizedBox(height: 12),
-            GhostButton(
-              label: t.newGroup,
-              icon: PhosphorIconsRegular.plus,
-              onTap: () {
-                Navigator.pop(sheet);
-                _newGroup();
-              },
-            ),
-          ],
-        ),
+      builder: (_) => _RoutineGroupSheet(
+        currentGroup: fit.activeRoutine?.group ?? routine.group,
+        groups: fit.routineGroups,
       ),
     );
+
+    if (!mounted || selectedGroup == null) return;
+    fit.setRoutineGroup(_id, selectedGroup);
   }
 
-  Future<void> _newGroup() async {
+  Future<void> _confirmDelete() async {
     final gc = context.gc;
-    final controller = TextEditingController();
-    final name = await showAppDialog<String>(
-      context: context,
-      builder: (dctx) => appDialog(
-        gc,
-        title: Text(t.newGroup, style: AppTheme.f(19, weight: FontWeight.w800, color: gc.text)),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          textCapitalization: TextCapitalization.words,
-          style: AppTheme.f(15, weight: FontWeight.w500, color: gc.text),
-          cursorColor: gc.accent,
-          decoration: InputDecoration(
-            hintText: t.groupNameHint,
-            hintStyle: AppTheme.f(15, weight: FontWeight.w500, color: gc.textTertiary),
-            filled: true,
-            fillColor: gc.bgRaised2,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18), borderSide: BorderSide.none),
-          ),
-          onSubmitted: (v) => Navigator.of(dctx).pop(v),
-        ),
-        actions: [
-          dialogAction(t.cancel, gc.textSecondary, () => Navigator.of(dctx).pop(), strong: false),
-          dialogAction(t.save, gc.accent, () => Navigator.of(dctx).pop(controller.text)),
-        ],
-      ),
-    );
-    controller.dispose();
-    if (name != null && name.trim().isNotEmpty) fit.setRoutineGroup(_id, name);
-  }
-
-  void _confirmDelete() {
-    final gc = context.gc;
-    showAppSheet<void>(
+    final shouldDelete = await showAppSheet<bool>(
       context: context,
       backgroundColor: gc.bgRaised,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (_) => SafeArea(
+      builder: (sheet) => SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
           child: Column(
@@ -1060,15 +862,11 @@ class _RoutineEditScreenState extends State<RoutineEditScreen> {
               PrimaryButton(
                 label: t.deleteCaps,
                 bg: gc.accent,
-                onTap: () {
-                  Navigator.pop(context);
-                  fit.deleteRoutine(_id);
-                  fit.closeRoutineEdit();
-                },
+                onTap: () => Navigator.pop(sheet, true),
               ),
               const SizedBox(height: 10),
               GestureDetector(
-                onTap: () => Navigator.pop(context),
+                onTap: () => Navigator.pop(sheet, false),
                 child: Container(
                   height: 48,
                   alignment: Alignment.center,
@@ -1081,6 +879,10 @@ class _RoutineEditScreenState extends State<RoutineEditScreen> {
         ),
       ),
     );
+
+    if (!mounted || shouldDelete != true) return;
+    fit.deleteRoutine(_id);
+    fit.closeRoutineEdit();
   }
 }
 
@@ -1121,3 +923,412 @@ class _ShareArt extends StatelessWidget {
     );
   }
 }
+
+class _RoutineGroupSheet extends StatefulWidget {
+  const _RoutineGroupSheet({
+    required this.currentGroup,
+    required this.groups,
+  });
+
+  final String currentGroup;
+  final List<String> groups;
+
+  @override
+  State<_RoutineGroupSheet> createState() => _RoutineGroupSheetState();
+}
+
+class _RoutineGroupSheetState extends State<_RoutineGroupSheet> {
+  late final TextEditingController _controller = TextEditingController();
+  late final FocusNode _focusNode = FocusNode();
+  bool _adding = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _submit(String raw) {
+    final name = raw.trim();
+    _focusNode.unfocus();
+    if (name.isNotEmpty) {
+      Navigator.pop(context, name);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    final insets = MediaQuery.viewInsetsOf(context);
+    final safe = MediaQuery.paddingOf(context);
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(20, 12, 20, 20 + insets.bottom + safe.bottom),
+      decoration: BoxDecoration(
+        color: gc.bgRaised,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SheetHandle(),
+            const SizedBox(height: 16),
+            SheetTitle(t.routineGroup),
+            const SizedBox(height: 14),
+            OptionGroup([
+              OptionItem(
+                t.noGroup,
+                selected: widget.currentGroup.isEmpty,
+                onTap: () => Navigator.pop(context, ''),
+              ),
+              for (final group in widget.groups)
+                OptionItem(
+                  group,
+                  selected: widget.currentGroup == group,
+                  onTap: () => Navigator.pop(context, group),
+                ),
+            ]),
+            const SizedBox(height: 14),
+            if (_adding) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      autofocus: true,
+                      textCapitalization: TextCapitalization.words,
+                      style: AppTheme.f(15, weight: FontWeight.w600, color: gc.text),
+                      cursorColor: gc.accent,
+                      decoration: InputDecoration(
+                        hintText: t.groupNameHint,
+                        hintStyle: AppTheme.f(14, color: gc.textTertiary),
+                        filled: true,
+                        fillColor: gc.bgRaised2,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      onSubmitted: _submit,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Pressable(
+                    onTap: () => _submit(_controller.text),
+                    child: Container(
+                      height: 48,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: gc.accent,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        t.save,
+                        style: AppTheme.f(14, weight: FontWeight.w700, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ] else ...[
+              GhostButton(
+                label: t.newGroup,
+                icon: PhosphorIconsRegular.plus,
+                onTap: () => setState(() => _adding = true),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RoutineExercisePickerSheet extends StatefulWidget {
+  const _RoutineExercisePickerSheet({required this.routineId});
+  final String routineId;
+
+  @override
+  State<_RoutineExercisePickerSheet> createState() => _RoutineExercisePickerSheetState();
+}
+
+class _RoutineExercisePickerSheetState extends State<_RoutineExercisePickerSheet> {
+  final TextEditingController _search = TextEditingController();
+  String _q = '';
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  void _clearSearch() {
+    _search.clear();
+    setState(() => _q = '');
+  }
+
+  void _createExercise() => showCreateExerciseSheet(
+        context,
+        initialName: _q,
+        onCreated: (id) {
+          fit.toggleRoutineExercise(widget.routineId, id);
+          _clearSearch();
+        },
+      );
+
+  Widget _createLink(GymColors gc) => Center(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: _createExercise,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Text(t.createNamed(_q.trim()),
+                textAlign: TextAlign.center,
+                style: AppTheme.f(13, weight: FontWeight.w600, color: gc.accent)),
+          ),
+        ),
+      );
+
+  Widget _filterChips(GymColors gc) {
+    Widget chip(String label, bool active, VoidCallback onTap) => Padding(
+          padding: const EdgeInsets.only(right: 8),
+          child: Pill(
+            label: label,
+            bg: active ? gc.ember : gc.bgRaised2,
+            fg: active ? gc.onEmber : gc.textSecondary,
+            onTap: onTap,
+            hPad: 12,
+            vPad: 6,
+            fontSize: 12,
+          ),
+        );
+    final picked = (fit.exMuscleFilter == null ? 0 : 1) +
+        (fit.exEquipmentFilter == null ? 0 : 1) +
+        (fit.exDifficultyFilter == null ? 0 : 1);
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      clipBehavior: Clip.none,
+      child: Row(children: [
+        chip(picked > 0 ? '${t.filters} · $picked' : t.filters, picked > 0,
+            () => showExerciseFilters(context, onClear: _clearSearch)),
+        chip(t.favouritesOnly, fit.exFavouritesOnly, fit.toggleFavouritesFilter),
+        chip(t.noGearOnly, fit.exNoGearOnly, fit.toggleNoGearFilter),
+        if (fit.customExercises.isNotEmpty || fit.exMineOnly)
+          chip(t.mineOnly, fit.exMineOnly, fit.toggleMineFilter),
+        for (final id in kFilterMuscles)
+          chip(muscleLabel(id), fit.exMuscleFilter == id, () => fit.setMuscleFilter(id)),
+      ]),
+    );
+  }
+
+  Widget _noMatches(GymColors gc) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 28),
+      child: Column(
+        children: [
+          Text(t.noExercisesFound, style: AppTheme.f(14, weight: FontWeight.w600, color: gc.text)),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Pill(
+                label: t.clearFilters,
+                bg: gc.bgRaised2,
+                fg: gc.accent,
+                onTap: () {
+                  _clearSearch();
+                  fit.clearExFilters();
+                },
+              ),
+              const SizedBox(width: 10),
+              Pill(
+                label: t.newExercise,
+                bg: gc.bgRaised2,
+                fg: gc.textSecondary,
+                onTap: _createExercise,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _pickRow(GymColors gc, Exercise ex) {
+    final inRoutine = fit.routineHas(widget.routineId, ex.id);
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.lightImpact();
+        fit.toggleRoutineExercise(widget.routineId, ex.id);
+      },
+      onLongPress: () => showExercisePreview(context, ex),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: gc.bgRaised2,
+          border: Border.all(color: inRoutine ? gc.ember : gc.border),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(children: [
+          GestureDetector(
+            onTap: () => showExercisePreview(context, ex),
+            child: SizedBox(width: 44, child: ExerciseMedia(ex: ex, height: 44, radius: 10)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(exerciseName(ex), style: AppTheme.f(14, weight: FontWeight.w600, color: gc.text)),
+                const SizedBox(height: 2),
+                Text('${muscleLabel(ex.primary)} · ${t.equipment(ex.equipment)}',
+                    style: AppTheme.f(12, weight: FontWeight.w500, color: gc.textSecondary)),
+              ],
+            ),
+          ),
+          Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              color: inRoutine ? gc.ember : Colors.transparent,
+              shape: BoxShape.circle,
+              border: Border.all(color: inRoutine ? gc.ember : gc.border, width: 2),
+            ),
+            child: inRoutine
+                ? SvgPathIcon(Ic.checkBold, size: 14, color: gc.onEmber)
+                : Icon(PhosphorIconsRegular.plus, size: 15, color: gc.textSecondary),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    return AnimatedBuilder(
+      animation: fit,
+      builder: (context, _) {
+        final routine = fit.routines.where((r) => r.id == widget.routineId).firstOrNull;
+        if (routine == null) return const SizedBox.shrink();
+        final list = fit.exercisesMatching(_q);
+        final inRoutineCount = routine.exerciseIds.length;
+        final insets = MediaQuery.viewInsetsOf(context);
+        final create = _q.trim().isNotEmpty && list.isNotEmpty;
+
+        return Padding(
+          padding: EdgeInsets.only(bottom: insets.bottom),
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+            ),
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+            decoration: BoxDecoration(
+              color: gc.bgRaised,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            ),
+            child: SafeArea(
+              top: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SheetHandle(),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              t.addExercises,
+                              style: AppTheme.f(18, weight: FontWeight.w800, color: gc.text),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              t.exerciseCount(inRoutineCount),
+                              style: AppTheme.f(12, weight: FontWeight.w600, color: gc.textTertiary),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Pressable(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          height: 36,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: gc.emberSoft,
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: Text(
+                            t.done,
+                            style: AppTheme.f(12.5, weight: FontWeight.w700, color: gc.ember),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  SearchField(
+                    controller: _search,
+                    hint: t.searchExercises,
+                    color: gc.bgRaised2,
+                    onChanged: (v) => setState(() => _q = v),
+                  ),
+                  const SizedBox(height: 10),
+                  _filterChips(gc),
+                  const SizedBox(height: 12),
+                  Flexible(
+                    child: list.isEmpty
+                        ? SingleChildScrollView(child: _noMatches(gc))
+                        : ListView.builder(
+                            itemCount: list.length + (create ? 1 : 0),
+                            shrinkWrap: true,
+                            itemBuilder: (context, i) {
+                              if (i < list.length) {
+                                return _pickRow(gc, list[i]);
+                              }
+                              return _createLink(gc);
+                            },
+                          ),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GhostButton(
+                          label: t.newExercise,
+                          icon: PhosphorIconsRegular.plus,
+                          onTap: _createExercise,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: PrimaryButton(
+                          label: t.done,
+                          onTap: () => Navigator.pop(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
