@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Centered symbol in Android adaptive safe zone (scale 3.25, 546px) -->
+  <g transform="translate(96, 96) scale(3.25)">
+    <path fill="#F59E0B" fill-rule="evenodd" d="M 60 44
+    L 212 44
+    L 212 84
+    L 168 128
+    L 192 128
+    L 148 172
+    L 212 172
+    L 212 196
+    L 196 212
+    L 44 212
+    L 44 172
+    L 88 128
+    L 64 128
+    L 108 84
+    L 44 84
+    L 44 60
+    Z"/>
+  </g>
+</svg>

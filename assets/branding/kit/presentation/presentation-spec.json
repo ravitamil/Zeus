@@ -1,0 +1,70 @@
+{
+  "brand": "Zeus",
+  "tagline": "Lift. Log it. Grow.",
+  "brief": "A free, privacy-first, offline gym and strength training log for Android. Built for lifters who demand fast, ad-free set logging, barbell plate math, and exercise video guidance with zero surveillance.",
+  "adjectives": [
+    "powerful",
+    "focused",
+    "resilient",
+    "minimalist"
+  ],
+  "criteria": "Recognisable at 16 px in the Android status bar and app launcher, high contrast on dark obsidian gym UI (#0C0B0A), works in single-color gold/white/black, evokes raw strength and thunder.",
+  "industry": "consumer-app",
+  "mockups": [
+    "app-icon",
+    "readme",
+    "website",
+    "tshirt",
+    "badge",
+    "sticker"
+  ],
+  "brand_color": "#F59E0B",
+  "tile_color": "#0C0B0A",
+  "greyscale": false,
+  "designer": "Antigravity Identity Studio",
+  "round": 1,
+  "concepts": [
+    {
+      "name": "The Kinetic Bolt",
+      "symbol": "f:/prj/Zeus/assets/branding/kit/svg/zeus-symbol-master.svg",
+      "lockup": "f:/prj/Zeus/assets/branding/kit/svg/zeus-lockup-horizontal-gold.svg",
+      "symbol_on_tile": "f:/prj/Zeus/assets/branding/kit/svg/zeus-symbol-gold.svg",
+      "tile_color": "#0C0B0A",
+      "idea": "A chiseled heavy-gauge Z with integrated lightning strike, 180° rotational symmetry, and raw barbell presence.",
+      "rationale": [
+        "Pure geometric letterform reads instantly as an Android launcher icon at 16 px",
+        "Thunderbolt kick captures the mythical power of Zeus without cheesy lightning clichés",
+        "Forged iron bar weight (40px) matches heavy Olympic plate proportions",
+        "100/100 production-readiness score with exact 45° snap angles"
+      ]
+    },
+    {
+      "name": "The Iron Plate",
+      "symbol": "f:/prj/Zeus/assets/branding/concepts/concept-b-symbol.svg",
+      "lockup": "f:/prj/Zeus/assets/branding/concepts/concept-b-lockup.svg",
+      "idea": "Olympic 45lb/20kg barbell plate with a crisp lightning bolt carved in negative space.",
+      "rationale": [
+        "Instant gym category recognition with Olympic plate geometry",
+        "Negative space bolt rewards a second look and holds up in one-colour",
+        "Pure circle footprint ideal for circular app avatars"
+      ]
+    },
+    {
+      "name": "The Twin Plate",
+      "symbol": "f:/prj/Zeus/assets/branding/concepts/concept-c-symbol.svg",
+      "lockup": "f:/prj/Zeus/assets/branding/concepts/concept-c-lockup.svg",
+      "idea": "Two brutalist interlocking plate blocks forging a Z and bolt along the diagonal fissure.",
+      "rationale": [
+        "Brutalist architectural strength with dual stacked iron masses",
+        "High contrast negative space fissure creates a natural lightning strike",
+        "Modular form extends easily into gym apparel patterns"
+      ]
+    }
+  ],
+  "recommendation": "The Kinetic Bolt — maximum ownership, immediate letter recognition, and flawless scalability across Android mobile widgets, status bars, and app icons.",
+  "next_steps": [
+    "Kit complete: full color palette, mono/reversed variants, and web icons exported",
+    "Android launcher adaptive icons (ic_1024.png and ic_fg_1024.png) rendered",
+    "Brand guidelines and usage documentation published"
+  ]
+}

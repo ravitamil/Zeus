@@ -20,6 +20,7 @@ class ExerciseMedia extends StatelessWidget {
     this.radius = 20,
     this.live = false,
     this.bordered = true,
+    this.boxFit = BoxFit.cover,
   });
 
   final Exercise ex;
@@ -27,6 +28,7 @@ class ExerciseMedia extends StatelessWidget {
   final double radius;
   final bool live;
   final bool bordered;
+  final BoxFit boxFit;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +43,7 @@ class ExerciseMedia extends StatelessWidget {
             height: height,
             radius: radius,
             bordered: bordered,
+            fit: boxFit,
           );
         }
         final thumb = _videoThumbnailAsset(ex.videoPath);
@@ -49,12 +52,13 @@ class ExerciseMedia extends StatelessWidget {
             height: height,
             radius: radius,
             bordered: bordered,
+            color: Colors.white,
             child: Stack(
               fit: StackFit.expand,
               children: [
                 Image.asset(
                   thumb,
-                  fit: BoxFit.cover,
+                  fit: boxFit,
                   gaplessPlayback: true,
                   errorBuilder: (_, _, _) => _VideoPoster(height: height),
                 ),
@@ -96,6 +100,7 @@ class ExerciseMedia extends StatelessWidget {
         height: height,
         radius: radius,
         bordered: bordered,
+        fit: boxFit,
       );
     }
     return _MediaFrame(
@@ -139,11 +144,13 @@ class _MediaFrame extends StatelessWidget {
       {required this.child,
       required this.height,
       required this.radius,
-      this.bordered = true});
+      this.bordered = true,
+      this.color});
   final Widget child;
   final double height;
   final double radius;
   final bool bordered;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +158,7 @@ class _MediaFrame extends StatelessWidget {
     return Container(
       height: height,
       decoration: BoxDecoration(
-        color: gc.bgRaised2,
+        color: color ?? gc.bgRaised2,
         borderRadius: BorderRadius.circular(radius),
         border: bordered ? Border.all(color: gc.border) : null,
       ),
@@ -182,11 +189,13 @@ class _VideoTile extends StatefulWidget {
     required this.height,
     required this.radius,
     this.bordered = true,
+    this.fit = BoxFit.cover,
   });
   final String path;
   final double height;
   final double radius;
   final bool bordered;
+  final BoxFit fit;
 
   @override
   State<_VideoTile> createState() => _VideoTileState();
@@ -251,7 +260,7 @@ class _VideoTileState extends State<_VideoTile> {
       final w = size.width > 0 ? size.width : 16.0;
       final h = size.height > 0 ? size.height : 9.0;
       child = FittedBox(
-        fit: BoxFit.cover,
+        fit: widget.fit,
         clipBehavior: Clip.hardEdge,
         child: SizedBox(
           width: w,
@@ -267,10 +276,12 @@ class _VideoTileState extends State<_VideoTile> {
         const Center(child: CupertinoActivityIndicator()),
       ]);
     }
+    final isAssetVideo = widget.path.startsWith('assets/videos/');
     return _MediaFrame(
       height: widget.height,
       radius: widget.radius,
       bordered: widget.bordered,
+      color: isAssetVideo ? Colors.white : null,
       child: child,
     );
   }

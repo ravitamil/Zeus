@@ -14,7 +14,7 @@ Future<T?> showAppSheet<T>({
   ShapeBorder? shape,
   bool isDismissible = true,
   bool enableDrag = true,
-  bool useSafeArea = false,
+  bool useSafeArea = true,
 }) {
   final nav = Navigator.of(context);
   return nav.push(_GlassSheetRoute<T>(

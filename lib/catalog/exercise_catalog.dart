@@ -65,6 +65,43 @@ const List<String> kFilterEquipment = [
   'Bodyweight', 'Dumbbell', 'Barbell', 'Machine', 'Cable', 'Band', 'Kettlebell', 'Rings', 'Weighted'
 ];
 
+const Set<String> kNeedsKit = {
+  '9WTm7dq', 'lBDjFxJ', 'T2mxWqc', 'X6C6i5Y', '72BC5Za', 'GaSzzuh', 'mExgrF9', 'neutral-grip-pull-up',
+  'active-hang', 'negative-pull-up', 'commando-pull-up', 'l-sit-pull-up', 'towel-pull-up', 'XgWyAiA',
+  'LQFOrMn', 'uWpxD4v', 'PXTIwgu', 'l-sit-hold', '50BETrz', 'guT8YnS', '7xeukSt', 'uTBt1HV', 'dead-hang-hold',
+  'TFqbd8t', 'XVDdcoj', '3xK09Sk', 'v2DfH14', 'tig3PXb', 'xbkPfaw', 'prone-t-raise', 'reverse-snow-angel',
+  'decline-push-up', 'seal-jack', 'feet-elevated-pike-push-up', 'handstand-push-up', '2gPfomN', 'Hy9D21L',
+  'NAkmgdx', 'dragon-flag', 'mweqJin', 'VO2qeJg', 'xdYPUtE', '9E25EOx', 'assisted-pistol-squat', 'shrimp-squat',
+  'single-leg-box-squat', 'sJFIDIp', 'gscGLOU', 'RrLske5', '9RT8oQW', 'u27Kcdz', '6sYyrRX', 'clamshell',
+  'hip-airplane', 'bJYHBIN', 'iPm26QU', 'u5ESqzH', '0jp9Rlz', 'LNE3wfo', 'GwYwElT', 'C5jncD2',
+  'lying-hamstring-walkout', 'hamstring-stretch', 'outdoor-run', 'outdoor-walk', 'outdoor-hike',
+};
+
+const List<String> kWarmupIds = [
+  'jumping-jack', 'high-knees', 'cat-cow-stretch', 'worlds-greatest-stretch', 'leg-swings-stretch', 'inchworm',
+  'QChZi3x', 'scapular-push-up', 'hip-airplane', 'glute-bridge', 'bird-dog', 'dead-bug', 'fire-hydrant',
+  'clamshell', 'kneeling-hip-flexor-stretch', 'RtyAsy1', '5BZHW9s', '6YUfHPL', 'jump-rope', 'band-pull-apart',
+];
+
+const Set<String> kCardioExtras = {
+  'jump-rope', 'battle-ropes', 'burpee', 'half-burpee', 'mountain-climber', 'high-knees', 'jumping-jack',
+  'skater-hop', 'squat-thrust', 'sprawl', 'lateral-shuffle', 'plank-jack',
+};
+
+bool isNoKit(Exercise ex) {
+  if (ex.equipment != 'Bodyweight') return false;
+  if (kNeedsKit.contains(ex.id)) return false;
+  final n = ex.name.toLowerCase();
+  if (n.contains('pull-up') ||
+      n.contains('chin-up') ||
+      n.contains('inverted row') ||
+      n.contains('hang') ||
+      n.contains('dip')) {
+    return false;
+  }
+  return true;
+}
+
 const Map<String, String> kExerciseModes = {
   'running': 'cardio',
   'walking': 'cardio',
@@ -74,6 +111,7 @@ const Map<String, String> kExerciseModes = {
   'elliptical': 'cardio',
   'rowing': 'cardio',
   'stair-climber': 'cardio',
+  'skierg': 'cardio',
   'jump-rope': 'time',
   'battle-ropes': 'time',
   'VBAWRPG': 'time',

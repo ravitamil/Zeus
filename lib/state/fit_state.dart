@@ -93,6 +93,7 @@ class FitState extends FitCore
         ..clear()
         ..addAll(((data['weeklyPlan'] as Map?) ?? {})
             .map((k, v) => MapEntry(int.parse(k as String), v as String)));
+      _loadPlanExtras(data);
       customExercises
         ..clear()
         ..addAll(((data['custom'] as List?) ?? [])
@@ -158,12 +159,25 @@ class FitState extends FitCore
     noSuggest
       ..clear()
       ..addAll(((data['noSuggest'] as List?) ?? const []).cast<String>());
+    archived
+      ..clear()
+      ..addAll(((data['archived'] as List?) ?? const []).cast<String>());
+    videoMarks
+      ..clear()
+      ..addAll(((data['marks'] as Map?) ?? const {}).map((k, v) => MapEntry(
+            k as String,
+            (v as Map).map((i, ms) => MapEntry(int.parse(i as String), (ms as num).toInt())),
+          )));
     modeOverride
       ..clear()
       ..addAll(((data['exMode'] as Map?) ?? const {}).map((k, v) => MapEntry(k as String, v as String))
         ..removeWhere((_, v) => !const ['weight', 'cardio', 'time'].contains(v)));
     bgDim = (data['bgDim'] as num?)?.toDouble() ?? 0.55;
     showFocus = data['showFocus'] as bool? ?? true;
+    showRecommended = data['showRecs'] as bool? ?? true;
+    multiPlan = data['multiPlan'] as bool? ?? false;
+    final weekStart = data['weekStart'];
+    weekStartDay = SettingsState.weekStarts.contains(weekStart) ? weekStart as int : DateTime.monday;
     autoAdvance = data['autoAdvance'] as bool? ?? true;
     keepScreenOn = data['keepAwake'] as bool? ?? true;
     startCountdown = data['countdown'] as bool? ?? true;
@@ -181,6 +195,16 @@ class FitState extends FitCore
       ..addAll(((data['warmup'] as List?) ?? const []).cast<String>());
     driveAutoBackup = data['driveAuto'] as String? ?? 'off';
     driveLastBackup = (data['driveLast'] as num?)?.toInt();
+  }
+
+  void _loadPlanExtras(Map<String, dynamic> data) {
+    planExtras
+      ..clear()
+      ..addAll(((data['planExtras'] as Map?) ?? const {}).map((k, v) => MapEntry(
+            int.parse(k as String),
+            (v as List).cast<String>().where((id) => id != weeklyPlan[int.parse(k)]).toList(),
+          )))
+      ..removeWhere((_, v) => v.isEmpty);
   }
 
   void _restoreLiveSession(Map<String, dynamic> data) {
@@ -322,6 +346,8 @@ class FitState extends FitCore
         'heatTone': heatTone,
         'bgDim': bgDim,
         'showFocus': showFocus,
+        'showRecs': showRecommended,
+        'weekStart': weekStartDay,
         'autoAdvance': autoAdvance,
         'keepAwake': keepScreenOn,
         'countdown': startCountdown,
@@ -331,6 +357,8 @@ class FitState extends FitCore
         'demo': demoSize,
         'alarmStyle': alarmStyle,
         'noSuggest': noSuggest.toList(),
+        'archived': archived.toList(),
+        'marks': videoMarks.map((k, v) => MapEntry(k, v.map((i, ms) => MapEntry('$i', ms)))),
         'exMode': modeOverride,
         'trainAt': trainReminderMin,
         'trainSmart': smartReminder,
@@ -345,6 +373,8 @@ class FitState extends FitCore
         'checkins': checkins.toList(),
         'routines': routines.map((r) => r.toJson()).toList(),
         'weeklyPlan': weeklyPlan.map((k, v) => MapEntry(k.toString(), v)),
+        'planExtras': planExtras.map((k, v) => MapEntry(k.toString(), v)),
+        'multiPlan': multiPlan,
         'custom': customExercises.map((e) => e.toJson()).toList(),
         'media': exerciseMedia,
         'exRest': exerciseRest,
@@ -395,6 +425,8 @@ class FitState extends FitCore
     checkins.clear();
     routines.clear();
     weeklyPlan.clear();
+    planExtras.clear();
+    multiPlan = false;
     customExercises.clear();
     exerciseMedia.clear();
     repsOnly.clear();
@@ -403,6 +435,8 @@ class FitState extends FitCore
     progressStep.clear();
     autoWarmup.clear();
     noSuggest.clear();
+    archived.clear();
+    videoMarks.clear();
     modeOverride.clear();
     demoSize = 'large';
     MediaStore.clearAll();
@@ -411,6 +445,8 @@ class FitState extends FitCore
     selectedMuscles.clear();
     profile = Profile();
     showFocus = true;
+    showRecommended = true;
+    weekStartDay = DateTime.monday;
     autoAdvance = true;
     startCountdown = true;
     gamification = true;
@@ -475,6 +511,7 @@ class FitState extends FitCore
       ..clear()
       ..addAll(((map['weeklyPlan'] as Map?) ?? {})
           .map((k, v) => MapEntry(int.parse(k as String), v as String)));
+    _loadPlanExtras(map);
     customExercises
       ..clear()
       ..addAll(((map['custom'] as List?) ?? [])
@@ -624,9 +661,19 @@ class FitState extends FitCore
       ']}';
 
   String planRequestText() {
-    final here = allExercises.where(fitsHere).toList();
+    final here = allExercises.where((e) => fitsHere(e) && !isArchived(e.id)).toList();
+    final month = DateTime.now().subtract(const Duration(days: 30));
+    final recent = sessions.where((s) => s.date.isAfter(month)).length;
+    final records = personalRecords.take(5).toList();
     final lines = <String>[
       'Zeus · ${activePlace?.name ?? t.placeAll}',
+      t.planAboutMe,
+      '- ${t.planBody(profile.sex == 'female' ? t.female : t.male, profile.age, heightLabel(profile.heightCm), weightLabel(profile.weightKg))}',
+      '- ${t.planDays(weeklyTarget)}',
+      if (sessions.isEmpty) '- ${t.planNoHistory}' else '- ${t.planHistory(recent)}',
+      if (records.isNotEmpty) '- ${t.planBestLifts}: ${records.map((r) => '${r.name} ${recordLabel(r)}').join('; ')}',
+      t.planAskFirst,
+      '',
       t.planIntro,
       t.planFormat,
       planTemplate,
@@ -774,7 +821,7 @@ class FitState extends FitCore
             'name': routineTitle(r),
             if (r.group.isNotEmpty) 'group': r.group,
             if (withSchedule)
-              'days': [for (var d = 1; d <= 7; d++) if (weeklyPlan[d] == r.id) d],
+              'days': [for (var d = 1; d <= 7; d++) if (plannedOn(d, r.id)) d],
             'exercises': [
               for (final id in r.exerciseIds)
                 if (exerciseById(id) case final ex?)
@@ -813,7 +860,7 @@ class FitState extends FitCore
   String planSummaryText(List<Routine> list) {
     final out = <String>[];
     for (final r in list) {
-      final days = [for (var d = 1; d <= 7; d++) if (weeklyPlan[d] == r.id) t.weekdayShort(d)];
+      final days = [for (var d = 1; d <= 7; d++) if (plannedOn(d, r.id)) t.weekdayShort(d)];
       out.add(days.isEmpty ? routineTitle(r) : '${routineTitle(r)} · ${days.join(', ')}');
       for (final id in r.exerciseIds) {
         final ex = exerciseById(id);
