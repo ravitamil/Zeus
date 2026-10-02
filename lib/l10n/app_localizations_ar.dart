@@ -2978,7 +2978,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addWeekWidget => 'إضافة أداة الأسبوع';
 
   @override
-  String get gamificationSetting => 'الميداليات والمستويات';
+  String get gamificationSetting => 'الميداليات (التلعيب)';
+
+  @override
+  String get gamificationHint => 'الميداليات ومستويات الرياضي والاحتفالات';
 
   @override
   String repCount(int n) {

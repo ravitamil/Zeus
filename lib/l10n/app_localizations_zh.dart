@@ -2856,7 +2856,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get addWeekWidget => '添加本周小组件';
 
   @override
-  String get gamificationSetting => '勋章和等级';
+  String get gamificationSetting => '勋章（游戏化）';
+
+  @override
+  String get gamificationHint => '勋章、运动员等级与里程碑庆祝';
 
   @override
   String repCount(int n) {
@@ -5947,7 +5950,10 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get addWeekWidget => '新增本週小工具';
 
   @override
-  String get gamificationSetting => '獎牌和等級';
+  String get gamificationSetting => '獎牌（遊戲化）';
+
+  @override
+  String get gamificationHint => '獎牌、運動員等級與里程碑慶祝';
 
   @override
   String repCount(int n) {

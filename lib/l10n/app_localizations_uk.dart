@@ -2990,7 +2990,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get addWeekWidget => 'Додати віджет тижня';
 
   @override
-  String get gamificationSetting => 'Медалі та рівні';
+  String get gamificationSetting => 'Медалі (гейміфікація)';
+
+  @override
+  String get gamificationHint => 'Медалі, рівні атлета та святкування';
 
   @override
   String repCount(int n) {

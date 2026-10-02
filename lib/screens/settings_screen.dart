@@ -300,12 +300,38 @@ class SettingsScreen extends StatelessWidget {
                 child: _prefRow(gc, PhosphorIconsRegular.sparkle, t.homeRecommended,
                     TinySwitch(on: fit.showRecommended)),
               ),
+            ]),
+            const SizedBox(height: 18),
+            _group(gc, t.awardsTitle, [
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: fit.toggleGamification,
-                child: _prefRow(gc, PhosphorIconsRegular.medal, t.gamificationSetting,
-                    TinySwitch(on: fit.gamification)),
+                child: _prefRow(
+                  gc,
+                  PhosphorIconsRegular.medal,
+                  t.gamificationSetting,
+                  TinySwitch(on: fit.gamification),
+                  subtitle: t.gamificationHint,
+                ),
               ),
+              if (fit.gamification)
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: fit.goAwards,
+                  child: _prefRow(
+                    gc,
+                    PhosphorIconsRegular.trophy,
+                    t.awardsTitle,
+                    Row(mainAxisSize: MainAxisSize.min, children: [
+                      Text(
+                        '${fit.awardCount} / ${AwardId.values.length}',
+                        style: AppTheme.f(13, weight: FontWeight.w600, color: gc.textSecondary),
+                      ),
+                      const SizedBox(width: 6),
+                      Icon(PhosphorIconsRegular.caretRight, size: 15, color: gc.textTertiary),
+                    ]),
+                  ),
+                ),
             ]),
             const SizedBox(height: 18),
             if (Platform.isAndroid || Platform.isIOS) ...[
@@ -368,16 +394,34 @@ class SettingsScreen extends StatelessWidget {
       Text(t.toUpperCase(),
           style: AppTheme.f(10.5, weight: FontWeight.w700, color: gc.textTertiary, letterSpacing: 1.3));
 
-  Widget _prefRow(GymColors gc, IconData icon, String label, Widget control) {
-    return SizedBox(
-      height: 52,
-      child: Row(
-        children: [
-          _rowIcon(gc, icon),
-          Expanded(child: Text(label, style: AppTheme.f(14.5, weight: FontWeight.w500, color: gc.text))),
-          const SizedBox(width: 12),
-          control,
-        ],
+  Widget _prefRow(GymColors gc, IconData icon, String label, Widget control, {String? subtitle}) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 52),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: subtitle == null ? 0 : 8),
+        child: Row(
+          children: [
+            _rowIcon(gc, icon),
+            Expanded(
+              child: subtitle == null
+                  ? Text(label, style: AppTheme.f(14.5, weight: FontWeight.w500, color: gc.text))
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(label, style: AppTheme.f(14.5, weight: FontWeight.w500, color: gc.text)),
+                        const SizedBox(height: 2),
+                        Text(
+                          subtitle,
+                          style: AppTheme.f(11.5, weight: FontWeight.w400, color: gc.textTertiary),
+                        ),
+                      ],
+                    ),
+            ),
+            const SizedBox(width: 12),
+            control,
+          ],
+        ),
       ),
     );
   }

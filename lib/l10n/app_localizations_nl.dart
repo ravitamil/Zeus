@@ -2990,7 +2990,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get addWeekWidget => 'Weekwidget toevoegen';
 
   @override
-  String get gamificationSetting => 'Medailles en niveaus';
+  String get gamificationSetting => 'Medailles (gamificatie)';
+
+  @override
+  String get gamificationHint => 'Medailles, atleetniveaus en vieringen';
 
   @override
   String repCount(int n) {

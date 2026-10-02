@@ -2895,7 +2895,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get addWeekWidget => '今週のウィジェットを追加';
 
   @override
-  String get gamificationSetting => 'メダルとレベル';
+  String get gamificationSetting => 'メダル（ゲーミフィケーション）';
+
+  @override
+  String get gamificationHint => 'メダル、アスリートレベル、達成のお祝い';
 
   @override
   String repCount(int n) {

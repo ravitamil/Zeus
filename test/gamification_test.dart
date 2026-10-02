@@ -104,4 +104,39 @@ void main() {
 
     await tester.pumpWidget(const SizedBox());
   });
+
+  testWidgets('settings screen displays medals gamification toggle and controls it', (tester) async {
+    setAppLanguage('en');
+    fit.resetRoute('preferences');
+
+    Future<void> show() async {
+      await tester.pumpWidget(const GymManeApp());
+      for (var i = 0; i < 20; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    await show();
+
+    final toggleFinder = find.text(t.gamificationSetting);
+    await tester.ensureVisible(toggleFinder);
+    await tester.pumpAndSettle();
+
+    expect(toggleFinder, findsOneWidget);
+    expect(find.text(t.gamificationHint), findsOneWidget);
+    expect(fit.gamification, isTrue);
+
+    // Tap the row to disable gamification
+    await tester.tap(toggleFinder);
+    await show();
+    expect(fit.gamification, isFalse);
+
+    // Tap again to enable
+    await tester.ensureVisible(toggleFinder);
+    await tester.tap(toggleFinder);
+    await show();
+    expect(fit.gamification, isTrue);
+
+    await tester.pumpWidget(const SizedBox());
+  });
 }
