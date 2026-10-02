@@ -7,12 +7,16 @@ import 'svg_icon.dart';
 
 const double kBodyAspect = bodyViewH / bodyViewW;
 
+final Map<String, Rect> _svgPathBounds = {};
+
+Rect _pathBounds(String d) => _svgPathBounds.putIfAbsent(d, () => svgPath(d).getBounds());
+
 String? muscleAt(Offset p) {
   for (final id in muscleFills.keys) {
     final hits = muscleHits[id];
     final probes = (hits != null && hits.isNotEmpty) ? hits : muscleFills[id]!;
     for (final d in probes) {
-      if (svgPath(d).contains(p)) return id;
+      if (_pathBounds(d).contains(p) && svgPath(d).contains(p)) return id;
     }
   }
   return null;

@@ -639,8 +639,19 @@ mixin StatsState on FitCore, ToolsState, LibraryState, TimelineState {
   }
 
   List<LoggedSet> lastSetsFor(String id) {
-    final h = exerciseHistory(id);
-    return h.isEmpty ? const [] : h.first.ex.sets;
+    LoggedSession? latestSession;
+    LoggedExercise? latestEx;
+    for (final s in sessions) {
+      for (final e in s.exercises) {
+        if (e.id == id) {
+          if (latestSession == null || s.date.isAfter(latestSession.date)) {
+            latestSession = s;
+            latestEx = e;
+          }
+        }
+      }
+    }
+    return latestEx?.sets ?? const [];
   }
 
   String? lastSummaryFor(String id) {
