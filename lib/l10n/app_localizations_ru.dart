@@ -3071,7 +3071,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get addWeekWidget => 'Добавить виджет недели';
 
   @override
-  String get gamificationSetting => 'Медали и уровни';
+  String get gamificationSetting => 'Медали (геймификация)';
+
+  @override
+  String get gamificationHint => 'Медали, уровни атлета и празднования';
 
   @override
   String repCount(int n) {

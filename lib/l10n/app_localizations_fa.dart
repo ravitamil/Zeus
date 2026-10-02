@@ -2972,7 +2972,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get addWeekWidget => 'افزودن ویجت هفته';
 
   @override
-  String get gamificationSetting => 'مدال‌ها و سطوح';
+  String get gamificationSetting => 'مدال‌ها (گیمیفیکیشن)';
+
+  @override
+  String get gamificationHint => 'مدال‌ها، سطوح ورزشکار و جشن‌ها';
 
   @override
   String repCount(int n) {

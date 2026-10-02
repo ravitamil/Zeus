@@ -2992,7 +2992,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addWeekWidget => 'Hafta widget\'ı ekle';
 
   @override
-  String get gamificationSetting => 'Madalyalar ve seviyeler';
+  String get gamificationSetting => 'Madalyalar (oyunlaştırma)';
+
+  @override
+  String get gamificationHint => 'Madalyalar, sporcu seviyeleri ve kutlamalar';
 
   @override
   String repCount(int n) {

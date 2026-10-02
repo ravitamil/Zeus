@@ -1562,7 +1562,8 @@
   "rirTitle": "مانده (RIR)",
   "rirHint": "۰ یعنی دیگر نمی‌توانی، ۲ یعنی دو تکرار مانده.",
   "addWeekWidget": "افزودن ویجت هفته",
-  "gamificationSetting": "مدال‌ها و سطوح",
+  "gamificationSetting": "مدال‌ها (گیمیفیکیشن)",
+  "gamificationHint": "مدال‌ها، سطوح ورزشکار و جشن‌ها",
   "repCount": "{n, plural, =1{۱ تکرار} other{{n} تکرار}}",
   "@repCount": {
     "placeholders": {

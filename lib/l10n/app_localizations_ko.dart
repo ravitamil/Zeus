@@ -2910,7 +2910,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get addWeekWidget => '이번 주 위젯 추가';
 
   @override
-  String get gamificationSetting => '메달과 레벨';
+  String get gamificationSetting => '메달 (게이미피케이션)';
+
+  @override
+  String get gamificationHint => '메달, 운동선수 레벨 및 축하 행사';
 
   @override
   String repCount(int n) {

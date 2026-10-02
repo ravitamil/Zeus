@@ -5353,8 +5353,14 @@ abstract class AppLocalizations {
   /// No description provided for @gamificationSetting.
   ///
   /// In en, this message translates to:
-  /// **'Medals and levels'**
+  /// **'Medals (gamification)'**
   String get gamificationSetting;
+
+  /// No description provided for @gamificationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Medals, athlete levels, and milestone celebrations'**
+  String get gamificationHint;
 
   /// No description provided for @repCount.
   ///

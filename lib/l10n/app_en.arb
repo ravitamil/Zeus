@@ -1565,7 +1565,8 @@
   "rirTitle": "RESERVE (RIR)",
   "rirHint": "0 is nothing left in the tank, 2 is two reps to spare.",
   "addWeekWidget": "Add week widget",
-  "gamificationSetting": "Medals and levels",
+  "gamificationSetting": "Medals (gamification)",
+  "gamificationHint": "Medals, athlete levels, and milestone celebrations",
 
   "repCount": "{n, plural, =1{{n} rep} other{{n} reps}}",
   "@repCount": {"placeholders": {"n": {"type": "int"}}},
