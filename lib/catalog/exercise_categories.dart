@@ -406,3 +406,17 @@ CategoryItem? categoryById(String id) {
   }
   return null;
 }
+
+String bodyMeasureAsset(String key) => switch (key) {
+      'neck' => 'assets/icons/categories/muscles/neck.png',
+      'shoulders' => 'assets/icons/categories/muscles/shoulders.png',
+      'chest' => 'assets/icons/categories/muscles/chest.png',
+      'arm' => 'assets/icons/categories/muscles/biceps.png',
+      'forearm' => 'assets/icons/categories/muscles/forearms.png',
+      'waist' => 'assets/icons/categories/muscles/abs.png',
+      'hips' => 'assets/icons/categories/muscles/hips.png',
+      'thigh' => 'assets/icons/categories/muscles/quadriceps_femoris.png',
+      'calf' => 'assets/icons/categories/muscles/calves.png',
+      'bodyfat' => 'assets/icons/categories/equipment/bodyweight.png',
+      _ => 'assets/icons/categories/equipment/bodyweight.png',
+    };

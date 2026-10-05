@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
+import '../catalog/exercise_categories.dart';
 import '../l10n/l10n.dart';
 import '../models/measure.dart';
 import '../state/fit_state.dart';
@@ -23,23 +24,105 @@ class MeasuresScreen extends StatelessWidget {
 
     return SafeArea(
       bottom: false,
-      child: SingleChildScrollView(
-        clipBehavior: Clip.none,
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ScreenHeader(
-              title: t.measures,
-              subtitle: t.measureCount(fit.measures.length),
-              onBack: fit.backFromMeasures,
-            ),
-            const SizedBox(height: 14),
-            Text(t.measuresHint, style: AppTheme.s(13, color: gc.textSecondary, height: 1.5)),
-            const SizedBox(height: 20),
-            for (final key in kMeasureKeys) _MeasureRow(measureKey: key),
-          ],
+      child: AnimatedBuilder(
+        animation: fit,
+        builder: (context, _) => SingleChildScrollView(
+          clipBehavior: Clip.none,
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ScreenHeader(
+                title: t.measures,
+                subtitle: t.measureCount(fit.measures.length),
+                onBack: fit.backFromMeasures,
+              ),
+              const SizedBox(height: 14),
+              Text(t.measuresHint, style: AppTheme.s(13, color: gc.textSecondary, height: 1.5)),
+              if (fit.hasMeasures) ...[
+                const SizedBox(height: 16),
+                _PeriodSelector(
+                  selected: fit.measurePeriod,
+                  onChanged: fit.setMeasurePeriod,
+                ),
+              ],
+              const SizedBox(height: 20),
+              for (final key in kMeasureKeys) _MeasureRow(measureKey: key),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _PeriodSelector extends StatelessWidget {
+  const _PeriodSelector({
+    required this.selected,
+    required this.onChanged,
+  });
+
+  final String selected;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final gc = context.gc;
+    const options = [
+      ('30D', '30d'),
+      ('90D', '90d'),
+      ('1 Year', '1y'),
+      ('All Time', 'all'),
+      ('Last', 'last'),
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: gc.bgRaised,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: gc.border.withValues(alpha: 0.6), width: 0.8),
+      ),
+      child: Row(
+        children: [
+          for (final (label, key) in options)
+            Expanded(
+              child: GestureDetector(
+                onTap: () => onChanged(key),
+                behavior: HitTestBehavior.opaque,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: selected == key ? gc.bgRaised2 : Colors.transparent,
+                    borderRadius: BorderRadius.circular(11),
+                    border: selected == key
+                        ? Border.all(color: gc.border.withValues(alpha: 0.8), width: 0.8)
+                        : null,
+                    boxShadow: selected == key
+                        ? [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.25),
+                              blurRadius: 4,
+                              offset: const Offset(0, 1),
+                            )
+                          ]
+                        : null,
+                  ),
+                  child: Center(
+                    child: Text(
+                      label,
+                      style: AppTheme.f(
+                        11.5,
+                        weight: selected == key ? FontWeight.w700 : FontWeight.w500,
+                        color: selected == key ? gc.text : gc.textTertiary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -54,8 +137,10 @@ class _MeasureRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final gc = context.gc;
     final latest = fit.latestMeasure(measureKey);
-    final change = fit.measureChange(measureKey);
+    final change = fit.measurePeriodicChange(measureKey);
     final series = fit.measureSeries(measureKey);
+    final isDecreaseGood = fit.isMeasureDecreaseGood(measureKey);
+    final isGood = change != null && (isDecreaseGood ? change < 0 : change > 0);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -64,17 +149,29 @@ class _MeasureRow extends StatelessWidget {
         onTap: () => showMeasureSheet(context, measureKey),
         child: SoftCard(
           radius: 18,
-          padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
           child: Row(
             children: [
+              Container(
+                width: 44,
+                height: 44,
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: gc.bgRaised2,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: gc.border.withValues(alpha: 0.7), width: 0.8),
+                ),
+                child: Image.asset(bodyMeasureAsset(measureKey), fit: BoxFit.contain),
+              ),
+              const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(t.measureName(measureKey),
                         style: AppTheme.s(12,
-                            weight: FontWeight.w600, color: gc.textSecondary, letterSpacing: 1)),
-                    const SizedBox(height: 6),
+                            weight: FontWeight.w600, color: gc.textSecondary, letterSpacing: 0.8)),
+                    const SizedBox(height: 4),
                     if (latest == null)
                       Text(t.measureNoneYet, style: AppTheme.s(14, color: gc.textTertiary))
                     else
@@ -82,7 +179,7 @@ class _MeasureRow extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(fit.measureValue(measureKey, latest.value),
-                              style: AppTheme.d(26, weight: FontWeight.w700, color: gc.text)),
+                              style: AppTheme.d(24, weight: FontWeight.w700, color: gc.text)),
                           const SizedBox(width: 4),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 3),
@@ -94,11 +191,18 @@ class _MeasureRow extends StatelessWidget {
                             const SizedBox(width: 10),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 3),
-                              child: Text(
-                                '${change > 0 ? '+' : ''}${fmt(change)}',
-                                style: AppTheme.s(12.5,
-                                    weight: FontWeight.w600,
-                                    color: change > 0 ? gc.sage : gc.accent),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: (isGood ? gc.sage : gc.accent).withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  '${change > 0 ? '+' : ''}${fmt(change)}',
+                                  style: AppTheme.s(11.5,
+                                      weight: FontWeight.w700,
+                                      color: isGood ? gc.sage : gc.accent),
+                                ),
                               ),
                             ),
                           ],
@@ -109,10 +213,10 @@ class _MeasureRow extends StatelessWidget {
               ),
               if (series.length > 1)
                 SizedBox(
-                  width: 108,
+                  width: 90,
                   child: Sparkline(
                     values: [for (final v in series) fit.toDisplayMeasure(measureKey, v)],
-                    height: 38,
+                    height: 36,
                     color: gc.accent,
                     scale: fmt,
                   ),
@@ -206,73 +310,185 @@ class _MeasureSheetState extends State<_MeasureSheet> {
       clipBehavior: Clip.antiAlias,
       child: SafeArea(
         top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SheetHandle(color: gc.border, margin: const EdgeInsets.symmetric(vertical: 12)),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(children: [
-                    Expanded(
-                      child: Text(t.measureName(_key),
-                          style: AppTheme.f(17, weight: FontWeight.w800, color: gc.text)),
-                    ),
-                    Semantics(
-                      button: true,
-                      label: t.measureName(_key),
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: _type,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Icon(PhosphorIconsRegular.keyboard, size: 20, color: gc.textSecondary),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SheetHandle(color: gc.border, margin: const EdgeInsets.symmetric(vertical: 12)),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(children: [
+                      Container(
+                        width: 38,
+                        height: 38,
+                        margin: const EdgeInsets.only(right: 12),
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: gc.bgRaised2,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: gc.border.withValues(alpha: 0.7), width: 0.8),
+                        ),
+                        child: Image.asset(bodyMeasureAsset(_key), fit: BoxFit.contain),
+                      ),
+                      Expanded(
+                        child: Text(t.measureName(_key),
+                            style: AppTheme.f(17, weight: FontWeight.w800, color: gc.text)),
+                      ),
+                      Semantics(
+                        button: true,
+                        label: t.measureName(_key),
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: _type,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Icon(PhosphorIconsRegular.keyboard, size: 20, color: gc.textSecondary),
+                          ),
                         ),
                       ),
+                    ]),
+                    const SizedBox(height: 6),
+                    Center(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          RollingText(_show(_value),
+                              style: AppTheme.f(54, weight: FontWeight.w800, color: gc.text, height: 1.1)),
+                          const SizedBox(width: 6),
+                          Text(fit.measureUnit(_key),
+                              style: AppTheme.f(18, weight: FontWeight.w700, color: gc.textSecondary)),
+                        ],
+                      ),
                     ),
-                  ]),
-                  const SizedBox(height: 6),
-                  Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: [
-                        RollingText(_show(_value),
-                            style: AppTheme.f(54, weight: FontWeight.w800, color: gc.text, height: 1.1)),
-                        const SizedBox(width: 6),
-                        Text(fit.measureUnit(_key),
-                            style: AppTheme.f(18, weight: FontWeight.w700, color: gc.textSecondary)),
-                      ],
+                    const SizedBox(height: 14),
+                    RulerPicker(
+                      value: _value.clamp(lo, hi),
+                      min: lo,
+                      max: hi,
+                      step: _step,
+                      majorEvery: _major,
+                      label: (v) => '${v.round()}',
+                      onChanged: (v) => setState(() => _value = v),
                     ),
-                  ),
-                  const SizedBox(height: 14),
-                  RulerPicker(
-                    value: _value.clamp(lo, hi),
-                    min: lo,
-                    max: hi,
-                    step: _step,
-                    majorEvery: _major,
-                    label: (v) => '${v.round()}',
-                    onChanged: (v) => setState(() => _value = v),
-                  ),
-                  const SizedBox(height: 18),
-                  PrimaryButton(label: t.save, onTap: _save, height: 54),
-                  if (history.isNotEmpty) ...[
-                    const SizedBox(height: 22),
-                    Text(t.measureHistory,
-                        style: AppTheme.d(12,
-                            weight: FontWeight.w600, color: gc.textSecondary, letterSpacing: 2)),
-                    const SizedBox(height: 10),
-                    for (final m in history.take(6)) _historyRow(gc, m),
+                    const SizedBox(height: 18),
+                    PrimaryButton(label: t.save, onTap: _save, height: 54),
+                    _periodicSummary(gc, history),
+                    if (history.isNotEmpty) ...[
+                      const SizedBox(height: 22),
+                      Text(t.measureHistory,
+                          style: AppTheme.d(12,
+                              weight: FontWeight.w600, color: gc.textSecondary, letterSpacing: 2)),
+                      const SizedBox(height: 10),
+                      for (final m in history.take(6)) _historyRow(gc, m),
+                    ],
                   ],
-                ],
+                ),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _periodicSummary(GymColors gc, List<BodyMeasure> history) {
+    if (history.length < 2) return const SizedBox.shrink();
+
+    final baseline = fit.baselineMeasure(_key);
+    final c30 = fit.measurePeriodicChange(_key, '30d');
+    final c90 = fit.measurePeriodicChange(_key, '90d');
+    final cAll = fit.measurePeriodicChange(_key, 'all');
+    final isDecreaseGood = fit.isMeasureDecreaseGood(_key);
+
+    Widget tile(String label, double? change) {
+      if (change == null) return const SizedBox.shrink();
+      final isGood = isDecreaseGood ? change < 0 : change > 0;
+      final color = isGood ? gc.sage : (change == 0 ? gc.textSecondary : gc.accent);
+
+      return Expanded(
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+          decoration: BoxDecoration(
+            color: gc.bgRaised2,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: gc.border.withValues(alpha: 0.6), width: 0.8),
+          ),
+          child: Column(
+            children: [
+              Text(
+                label,
+                style: AppTheme.s(10, weight: FontWeight.w700, color: gc.textTertiary, letterSpacing: 0.5),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '${change > 0 ? '+' : ''}${fmt(change)}',
+                style: AppTheme.f(13, weight: FontWeight.w800, color: color),
+              ),
+              const SizedBox(height: 1),
+              Text(
+                fit.measureUnit(_key),
+                style: AppTheme.s(9.5, weight: FontWeight.w600, color: gc.textSecondary),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: gc.bgRaised,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: gc.border.withValues(alpha: 0.6), width: 0.8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(PhosphorIconsRegular.chartLineUp, size: 16, color: gc.accent),
+              const SizedBox(width: 8),
+              Text(
+                'PERIODIC PROGRESS',
+                style: AppTheme.d(11,
+                    weight: FontWeight.w700, color: gc.textSecondary, letterSpacing: 1.4),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              tile('30 DAYS', c30),
+              const SizedBox(width: 8),
+              tile('90 DAYS', c90),
+              const SizedBox(width: 8),
+              tile('ALL TIME', cAll),
+            ],
+          ),
+          if (baseline != null) ...[
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Baseline: ${fit.measureLabel(_key, baseline.value)} (${t.shortDateYear(baseline.date)})',
+                  style: AppTheme.s(11, color: gc.textTertiary),
+                ),
+                Text(
+                  '${history.length} logged',
+                  style: AppTheme.s(11, weight: FontWeight.w600, color: gc.textSecondary),
+                ),
+              ],
             ),
           ],
-        ),
+        ],
       ),
     );
   }

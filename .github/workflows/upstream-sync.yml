@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  workflows: write
 
 jobs:
   sync:
@@ -41,6 +42,7 @@ jobs:
         if: steps.check_upstream.outputs.behind_count != '0'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH_NAME="upstream-sync-$(date +'%Y%m%d')"
           git checkout -b "$BRANCH_NAME" upstream/main

@@ -50,11 +50,76 @@ mixin MeasuresState on FitCore {
     return h.isEmpty ? null : h.first;
   }
 
-  double? measureChange(String key) {
+  String measurePeriod = '30d';
+
+  void setMeasurePeriod(String period) {
+    if (measurePeriod == period) return;
+    measurePeriod = period;
+    notifyListeners();
+  }
+
+  bool isMeasureDecreaseGood(String key) => key == 'waist' || key == 'bodyfat';
+
+  BodyMeasure? baselineMeasure(String key) {
+    final h = measureHistory(key);
+    return h.isEmpty ? null : h.last;
+  }
+
+  BodyMeasure? _closestHistoryEntry(List<BodyMeasure> h, int targetDays) {
+    if (h.length < 2) return null;
+    final latestDate = h.first.date;
+    BodyMeasure? best;
+    int bestDiff = 999999;
+    for (int i = 1; i < h.length; i++) {
+      final m = h[i];
+      final daysAgo = latestDate.difference(m.date).inDays;
+      final diff = (daysAgo - targetDays).abs();
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        best = m;
+      }
+    }
+    return best;
+  }
+
+  BodyMeasure? measureForPeriod(String key, String period) {
     final h = measureHistory(key);
     if (h.length < 2) return null;
-    return _round1(toDisplayMeasure(key, h.first.value) - toDisplayMeasure(key, h[1].value));
+    switch (period) {
+      case 'last':
+        return h[1];
+      case 'all':
+        return h.last;
+      case '30d':
+        return _closestHistoryEntry(h, 30);
+      case '90d':
+        return _closestHistoryEntry(h, 90);
+      case '1y':
+        return _closestHistoryEntry(h, 365);
+      default:
+        return h[1];
+    }
   }
+
+  double? measurePeriodicChange(String key, [String? period]) {
+    final p = period ?? measurePeriod;
+    final h = measureHistory(key);
+    if (h.length < 2) return null;
+    final prior = measureForPeriod(key, p);
+    if (prior == null || identical(prior, h.first)) return null;
+    return _round1(toDisplayMeasure(key, h.first.value) - toDisplayMeasure(key, prior.value));
+  }
+
+  int? measurePeriodDays(String key, [String? period]) {
+    final p = period ?? measurePeriod;
+    final h = measureHistory(key);
+    if (h.length < 2) return null;
+    final prior = measureForPeriod(key, p);
+    if (prior == null) return null;
+    return h.first.date.difference(prior.date).inDays.abs();
+  }
+
+  double? measureChange(String key) => measurePeriodicChange(key, 'last');
 
   List<double> measureSeries(String key) =>
       measureHistory(key).reversed.map((m) => toDisplayMeasure(key, m.value)).toList();

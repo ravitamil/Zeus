@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
+import '../catalog/exercise_categories.dart';
 import '../l10n/l10n.dart';
 import '../models/progress_shot.dart';
 import '../models/workout.dart';
@@ -662,20 +663,55 @@ class ProgressScreen extends StatelessWidget {
 
   Widget _measureChip(GymColors gc, String key) {
     final latest = fit.latestMeasure(key)!;
+    final change = fit.measurePeriodicChange(key, '30d') ?? fit.measureChange(key);
+    final isDecreaseGood = fit.isMeasureDecreaseGood(key);
+    final isGood = change != null && (isDecreaseGood ? change < 0 : change > 0);
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+      padding: const EdgeInsets.fromLTRB(10, 8, 12, 8),
       decoration: BoxDecoration(
         color: gc.bgRaised2,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: gc.border.withValues(alpha: 0.6), width: 0.8),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(t.measureName(key),
-              style: AppTheme.s(10.5, weight: FontWeight.w600, color: gc.textTertiary)),
-          const SizedBox(height: 3),
-          Text(fit.measureLabel(key, latest.value),
-              style: AppTheme.d(15, weight: FontWeight.w700, color: gc.text)),
+          Container(
+            width: 32,
+            height: 32,
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              color: gc.bgRaised,
+              borderRadius: BorderRadius.circular(9),
+              border: Border.all(color: gc.border.withValues(alpha: 0.5), width: 0.6),
+            ),
+            child: Image.asset(bodyMeasureAsset(key), fit: BoxFit.contain),
+          ),
+          const SizedBox(width: 9),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(t.measureName(key),
+                  style: AppTheme.s(10.5, weight: FontWeight.w600, color: gc.textTertiary)),
+              const SizedBox(height: 2),
+              Row(
+                children: [
+                  Text(fit.measureLabel(key, latest.value),
+                      style: AppTheme.d(14.5, weight: FontWeight.w700, color: gc.text)),
+                  if (change != null && change != 0) ...[
+                    const SizedBox(width: 5),
+                    Text(
+                      '${change > 0 ? '+' : ''}${fmt(change)}',
+                      style: AppTheme.s(11,
+                          weight: FontWeight.w700,
+                          color: isGood ? gc.sage : gc.accent),
+                    ),
+                  ],
+                ],
+              ),
+            ],
+          ),
         ],
       ),
     );

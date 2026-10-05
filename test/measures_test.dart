@@ -34,6 +34,22 @@ void main() {
     expect(fit.measureChange('calf'), isNull);
   });
 
+  test('periodic changes calculate across 30d, 90d, and all-time', () {
+    final now = DateTime.now();
+    fit.addMeasure('waist', 90, date: now.subtract(const Duration(days: 92)));
+    fit.addMeasure('waist', 88, date: now.subtract(const Duration(days: 31)));
+    fit.addMeasure('waist', 86, date: now.subtract(const Duration(days: 1)));
+    fit.addMeasure('waist', 85.5, date: now);
+
+    expect(fit.baselineMeasure('waist')!.value, closeTo(90, 0.001));
+    expect(fit.measurePeriodicChange('waist', 'last'), closeTo(-0.5, 0.001));
+    expect(fit.measurePeriodicChange('waist', '30d'), closeTo(-2.5, 0.001));
+    expect(fit.measurePeriodicChange('waist', '90d'), closeTo(-4.5, 0.001));
+    expect(fit.measurePeriodicChange('waist', 'all'), closeTo(-4.5, 0.001));
+    expect(fit.isMeasureDecreaseGood('waist'), isTrue);
+    expect(fit.isMeasureDecreaseGood('chest'), isFalse);
+  });
+
   test('inches go in and come back out as inches, stored as cm', () {
     fit.setUnits('lb');
     fit.addMeasure('waist', 32);
