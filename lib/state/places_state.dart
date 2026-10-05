@@ -183,7 +183,9 @@ mixin PlacesState on FitCore, LibraryState {
     final gear = gearHere;
     final toggles = (exNoGearOnly, exMineOnly);
     if (identical(source, _placeFilterSource) && toggles == _placeFilterToggles &&
-        setEquals(gear, _placeFilterGear)) return _placeFilterResult!;
+        setEquals(gear, _placeFilterGear)) {
+      return _placeFilterResult!;
+    }
     final customIds = customExercises.map((ex) => ex.id).toSet();
     _placeFilterSource = source;
     _placeFilterToggles = toggles;

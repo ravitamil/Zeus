@@ -49,8 +49,6 @@ Future<void> main() async {
   fit.loadFromStore();
   fit.syncPhotoReminder();
   fit.syncTrainReminder();
-  await GoogleDriveService.instance.init();
-  unawaited(fit.checkAndRunAutoBackup());
 
   final watch = await DeviceKind.isWatch();
   _onWatch = watch;
@@ -59,13 +57,22 @@ Future<void> main() async {
 
   if (watch) {
     runApp(const WearApp());
+    WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_initializeDrive()));
     return;
   }
 
   fit.onWidgetsShouldUpdate = HomeWidgetBridge.update;
   runApp(const GymManeApp());
 
-  WidgetsBinding.instance.addPostFrameCallback((_) => HomeWidgetBridge.update());
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    HomeWidgetBridge.update();
+    unawaited(_initializeDrive());
+  });
+}
+
+Future<void> _initializeDrive() async {
+  await GoogleDriveService.instance.init();
+  await fit.checkAndRunAutoBackup();
 }
 
 bool _onWatch = false;
