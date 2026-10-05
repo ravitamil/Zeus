@@ -125,6 +125,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       subtitle: '${t.catalogName(ex.id, ex.name)} · $next',
       icon: PhosphorIconsFill.timer,
       accent: context.gc.sage,
+      sound: false,
     );
   }
 
@@ -225,7 +226,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                   backgroundColor: Colors.transparent,
                   body: Padding(
                     padding: EdgeInsets.only(
-                        bottom: MediaQuery.viewPaddingOf(context).bottom + (parked ? _pillSpace : 0)),
+                        bottom: (MediaQuery.viewInsetsOf(context).bottom > 0 ? 0 : MediaQuery.viewPaddingOf(context).bottom) +
+                            (parked ? _pillSpace : 0)),
                     child: NotificationListener<ScrollNotification>(
                       onNotification: _onScroll,
                       child: _animatedScreen(),
@@ -472,7 +474,11 @@ class _ParkedPill extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              Text(fit.elapsedLabel, style: AppTheme.f(14, weight: FontWeight.w700, color: gc.textSecondary)),
+              ValueListenableBuilder<int>(
+                valueListenable: fit.clock,
+                builder: (_, _, _) =>
+                    Text(fit.elapsedLabel, style: AppTheme.f(14, weight: FontWeight.w700, color: gc.textSecondary)),
+              ),
               const SizedBox(width: 12),
               Container(
                 width: 40,
@@ -617,7 +623,7 @@ class _NavBarState extends State<_NavBar> {
                       _fab(context),
                       _item(context, 2, PhosphorIconsRegular.barbell, PhosphorIconsFill.barbell, t.exercises,
                           fit.goExercises),
-                      _item(context, 3, PhosphorIconsRegular.userCircle, PhosphorIconsFill.userCircle, t.profile,
+                      _item(context, 3, PhosphorIconsRegular.userCircle, PhosphorIconsFill.userCircle, t.profile.toUpperCase(),
                           fit.goSettings),
                     ],
                   ),

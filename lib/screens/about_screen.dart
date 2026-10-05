@@ -10,7 +10,7 @@ import '../theme/app_theme.dart';
 import '../widgets/entrance.dart';
 import '../widgets/ui_kit.dart';
 
-const _kVersion = '1.3.0';
+const _kVersion = '1.4.0';
 
 // Zeus Project
 const _kZeusMaintainer = 'ravitamil';
@@ -19,6 +19,7 @@ const _kZeusRepo = 'ravitamil/Zeus';
 const _kZeusRepoUrl = 'https://github.com/ravitamil/Zeus';
 
 // Upstream Project (GymMane by InlitX)
+const _kUpstreamAttribution = 'Based on GymMane by InlitX';
 const _kUpstreamAuthor = 'InlitX';
 const _kUpstreamAuthorUrl = 'https://github.com/InlitX';
 const _kUpstreamRepo = 'InlitX/GymMane';
@@ -36,45 +37,45 @@ class AboutScreen extends StatelessWidget {
       id: 'about',
       once: false,
       child: SafeArea(
-      bottom: false,
-      child: SingleChildScrollView(
-        clipBehavior: Clip.none,
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 36),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: riseAll([
-            ScreenHeader(
-              title: t.about,
-              onBack: fit.backFromAbout,
-              titleSize: 18,
-              titleSpacing: 1,
-            ),
-            const SizedBox(height: 18),
-            _hero(gc),
-            const SizedBox(height: 20),
-            _group(gc, [
-              (PhosphorIconsRegular.gift, t.freeForever, t.freeForeverWhy),
-              (PhosphorIconsRegular.wifiSlash, t.fullyOffline, t.fullyOfflineWhy),
-              (PhosphorIconsRegular.export, t.yoursToTake, t.yoursToTakeWhy),
+        bottom: false,
+        child: SingleChildScrollView(
+          clipBehavior: Clip.none,
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 36),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: riseAll([
+              ScreenHeader(
+                title: t.about,
+                onBack: fit.backFromAbout,
+                titleSize: 18,
+                titleSpacing: 1,
+              ),
+              const SizedBox(height: 18),
+              _hero(gc),
+              const SizedBox(height: 20),
+              _group(gc, [
+                (PhosphorIconsRegular.gift, t.freeForever, t.freeForeverWhy),
+                (PhosphorIconsRegular.wifiSlash, t.fullyOffline, t.fullyOfflineWhy),
+                (PhosphorIconsRegular.export, t.yoursToTake, t.yoursToTakeWhy),
+              ]),
+              const SizedBox(height: 18),
+              _sectionLabel(gc, t.whatsInside),
+              const SizedBox(height: 8),
+              _group(gc, [
+                (PhosphorIconsRegular.barbell, t.exercisesInside(kExercises.length),
+                    t.exercisesInsideWhy),
+                (PhosphorIconsRegular.calculator, t.calculatorsFolderDetail, t.calculatorsInsideWhy),
+                (PhosphorIconsRegular.chartLineUp, t.mathInside, t.mathInsideWhy),
+              ]),
+              const SizedBox(height: 22),
+              Text(t.aboutBlurb,
+                  textAlign: TextAlign.center,
+                  style: AppTheme.f(12.5, weight: FontWeight.w500, color: gc.textTertiary, height: 1.6)),
+              const SizedBox(height: 20),
+              _credits(gc),
             ]),
-            const SizedBox(height: 18),
-            _sectionLabel(gc, t.whatsInside),
-            const SizedBox(height: 8),
-            _group(gc, [
-              (PhosphorIconsRegular.barbell, t.exercisesInside(kExercises.length),
-                  t.exercisesInsideWhy),
-              (PhosphorIconsRegular.calculator, t.calculatorsFolderDetail, t.calculatorsInsideWhy),
-              (PhosphorIconsRegular.chartLineUp, t.mathInside, t.mathInsideWhy),
-            ]),
-            const SizedBox(height: 22),
-            Text(t.aboutBlurb,
-                textAlign: TextAlign.center,
-                style: AppTheme.f(12.5, weight: FontWeight.w500, color: gc.textTertiary, height: 1.6)),
-            const SizedBox(height: 20),
-            _credits(gc),
-          ]),
+          ),
         ),
-      ),
       ),
     );
   }
@@ -203,7 +204,8 @@ class AboutScreen extends StatelessWidget {
         _sectionLabel(gc, 'Upstream Project'),
         const SizedBox(height: 8),
         _creditGroup(gc, [
-          (PhosphorIconsRegular.gitFork, 'ORIGINAL CREATOR', _kUpstreamAuthor, _kUpstreamAuthorUrl, null),
+          (PhosphorIconsRegular.gitFork, 'LEGAL ATTRIBUTION (GPLv3 7b)', _kUpstreamAttribution, _kUpstreamRepoUrl, null),
+          (PhosphorIconsRegular.user, 'ORIGINAL CREATOR', _kUpstreamAuthor, _kUpstreamAuthorUrl, null),
           (PhosphorIconsRegular.githubLogo, 'UPSTREAM SOURCE', _kUpstreamRepo, _kUpstreamRepoUrl, null),
           (PhosphorIconsRegular.coffee, 'SUPPORT UPSTREAM', _kUpstreamKofi, _kUpstreamKofiUrl, null),
         ]),
@@ -231,8 +233,8 @@ class AboutScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
                     border: i < rows.length - 1
-                        ? Border(bottom: BorderSide(color: gc.border.withValues(alpha: 0.6)))
-                        : null,
+                    ? Border(bottom: BorderSide(color: gc.border.withValues(alpha: 0.6)))
+                    : null,
                   ),
                   child: Row(
                     children: [

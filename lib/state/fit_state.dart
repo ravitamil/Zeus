@@ -24,6 +24,7 @@ import '../services/beeper.dart';
 import '../services/exercise_match.dart';
 import '../services/local_store.dart';
 import '../services/media_store.dart';
+import '../services/merged_ids.dart';
 import '../services/progress_reminder.dart';
 import '../services/plan_share.dart';
 import '../services/rest_alarm.dart';
@@ -47,7 +48,7 @@ part 'workout_state.dart';
 class FitState extends FitCore
     with ToolsState, LibraryState, SettingsState, NotesState, PlacesState, MeasuresState, MomentsState, TimelineState, StatsState, AwardsState, RoutinesState, WorkoutState {
   void loadFromStore() {
-    final data = Store.instance.load();
+    final data = withMergedExercises(Store.instance.load());
     _loading = true;
     if (data['language'] == null) _adoptDeviceLanguage();
     if (data.isNotEmpty) {
@@ -152,14 +153,38 @@ class FitState extends FitCore
 
   void _loadToggles(Map<String, dynamic> data) {
     demoSize = data['demo'] as String? ?? 'large';
+    demoLoop = data['demoLoop'] as String? ?? 'always';
     alarmStyle = data['alarmStyle'] as String? ?? 'quiet';
     RestAlarm.instance.style = alarmStyle;
+    Beeper.instance.loud = alarmStyle == 'loud';
     noSuggest
       ..clear()
       ..addAll(((data['noSuggest'] as List?) ?? const []).cast<String>());
     archived
       ..clear()
       ..addAll(((data['archived'] as List?) ?? const []).cast<String>());
+    levelStay
+      ..clear()
+      ..addAll(((data['levelStay'] as List?) ?? const []).cast<String>());
+    levelSeen
+      ..clear()
+      ..addAll(((data['levelSeen'] as Map?) ?? const {}).map((k, v) => MapEntry(k as String, (v as num).toInt())));
+    exerciseGoals
+      ..clear()
+      ..addAll(((data['goals'] as Map?) ?? const {}).map((k, v) {
+        final g = (v as Map).cast<String, dynamic>();
+        final due = (g['d'] as num?)?.toInt();
+        return MapEntry(k as String,
+            (target: (g['t'] as num).toDouble(), due: due == null ? null : DateTime.fromMillisecondsSinceEpoch(due)));
+      }));
+    levelShown
+      ..clear()
+      ..addAll(((data['levelShown'] as Map?) ?? const {})
+          .map((k, v) => MapEntry(k as String, (v as List).map((x) => (x as num).toInt()).toList())));
+    exerciseBar
+      ..clear()
+      ..addAll(((data['barKg'] as Map?) ?? const {})
+          .map((k, v) => MapEntry(k as String, (v as num).toDouble())));
     videoMarks
       ..clear()
       ..addAll(((data['marks'] as Map?) ?? const {}).map((k, v) => MapEntry(
@@ -173,6 +198,10 @@ class FitState extends FitCore
     bgDim = (data['bgDim'] as num?)?.toDouble() ?? 0.55;
     showFocus = data['showFocus'] as bool? ?? true;
     showRecommended = data['showRecs'] as bool? ?? true;
+    levelHints = data['levelHints'] as bool? ?? true;
+    toastSound = data['toastSound'] as bool? ?? true;
+    Beeper.instance.chimeOn = toastSound;
+    heatmapLabels = data['heatLabels'] as bool? ?? true;
     multiPlan = data['multiPlan'] as bool? ?? false;
     final weekStart = data['weekStart'];
     weekStartDay = SettingsState.weekStarts.contains(weekStart) ? weekStart as int : DateTime.monday;
@@ -242,7 +271,7 @@ class FitState extends FitCore
     exerciseRest.clear();
     ((data['exRest'] as Map?) ?? const {}).forEach((k, v) {
       final n = (v as num?)?.toInt();
-      if (k is String && n != null) exerciseRest[k] = n.clamp(15, 600);
+      if (k is String && n != null) exerciseRest[k] = n <= 0 ? 0 : n.clamp(15, 600);
     });
   }
 
@@ -343,6 +372,9 @@ class FitState extends FitCore
         'bgDim': bgDim,
         'showFocus': showFocus,
         'showRecs': showRecommended,
+        'levelHints': levelHints,
+        'toastSound': toastSound,
+        'heatLabels': heatmapLabels,
         'weekStart': weekStartDay,
         'autoAdvance': autoAdvance,
         'keepAwake': keepScreenOn,
@@ -351,9 +383,15 @@ class FitState extends FitCore
         'rpe': logRpe,
         'effort': effortScale,
         'demo': demoSize,
+        'demoLoop': demoLoop,
         'alarmStyle': alarmStyle,
         'noSuggest': noSuggest.toList(),
         'archived': archived.toList(),
+        'levelStay': levelStay.toList(),
+        'levelSeen': Map.of(levelSeen),
+        'levelShown': Map.of(levelShown),
+        'goals': exerciseGoals.map((k, g) => MapEntry(k, {'t': g.target, if (g.due != null) 'd': g.due!.millisecondsSinceEpoch})),
+        'barKg': exerciseBar,
         'marks': videoMarks.map((k, v) => MapEntry(k, v.map((i, ms) => MapEntry('$i', ms)))),
         'exMode': modeOverride,
         'trainAt': trainReminderMin,
@@ -430,9 +468,15 @@ class FitState extends FitCore
     autoWarmup.clear();
     noSuggest.clear();
     archived.clear();
+    levelStay.clear();
+    levelSeen.clear();
+    levelShown.clear();
+    exerciseGoals.clear();
     videoMarks.clear();
+    exerciseBar.clear();
     modeOverride.clear();
     demoSize = 'large';
+    demoLoop = 'always';
     MediaStore.clearAll();
     favorites.clear();
     sessionPicks.clear();
@@ -440,6 +484,10 @@ class FitState extends FitCore
     profile = Profile();
     showFocus = true;
     showRecommended = true;
+    levelHints = true;
+    toastSound = true;
+    Beeper.instance.chimeOn = true;
+    heatmapLabels = true;
     weekStartDay = DateTime.monday;
     autoAdvance = true;
     startCountdown = true;
@@ -474,11 +522,13 @@ class FitState extends FitCore
     return true;
   }
 
-  void applyBackup(Map<String, dynamic> map,
+  void applyBackup(Map<String, dynamic> backup,
       {Map<String, String>? restoredMedia,
       Map<String, String>? restoredNoteMedia,
       Map<String, String>? restoredShots,
       Map<String, String>? restoredMoments}) {
+    final map = withMergedExercises(backup);
+    if (restoredMedia != null) restoredMedia = withMergedExercises(restoredMedia).cast<String, String>();
     _loading = true;
     profile = Profile.fromJson((map['profile'] as Map?)?.cast<String, dynamic>() ?? {});
     themePref = _themeFrom(map, fallback: themePref);
@@ -486,6 +536,7 @@ class FitState extends FitCore
     _applyLanguage(map['language'] as String? ?? language);
     restSeconds = (map['rest'] as num?)?.toInt() ?? restSeconds;
     bgPattern = map['bg'] as String? ?? bgPattern;
+    heatTone = map['heatTone'] as String? ?? heatTone;
     _loadToggles(map);
     onboarded = map['onboarded'] as bool? ?? onboarded;
     favorites
@@ -530,6 +581,8 @@ class FitState extends FitCore
     _seedCalculatorsFromProfile();
     _loading = false;
     _persist();
+    syncTrainReminder();
+    syncPhotoReminder();
     _refreshWidgets();
     notifyListeners();
   }
@@ -701,7 +754,13 @@ class FitState extends FitCore
     final gear = kEquipment.contains(item.equipment) ? item.equipment! : 'Other';
     final level = kDifficulties.contains(item.level) ? item.level! : 'Beginner';
     final id = addCustomExercise(
-        name: item.name, primary: muscle, equipment: gear, difficulty: level, steps: item.steps, mode: item.mode);
+        name: item.name,
+        primary: muscle,
+        equipment: gear,
+        difficulty: level,
+        steps: item.steps,
+        mode: item.mode,
+        secondary: item.secondary);
     return exerciseById(id);
   }
 
@@ -761,7 +820,7 @@ class FitState extends FitCore
           }
           if (item.superset) toggleChain(id, ex.id);
           final rest = item.restSec;
-          if (rest != null && !hasCustomRest(ex.id)) setExerciseRest(ex.id, rest);
+          if (rest != null) setRoutineRest(id, ex.id, rest);
         }
         made++;
         added += picked.length;
@@ -835,10 +894,11 @@ class FitState extends FitCore
                           },
                       ],
                     if (chainsToNext(r, id)) 'superset': true,
-                    if (hasCustomRest(id)) 'rest': restFor(id),
+                    'rest': ?(routineRest(r.id, id) ?? (hasCustomRest(id) ? restFor(id) : null)),
                     if (isCustom(id))
                       'custom': {
                         'muscle': ex.primary,
+                        if (ex.secondary.isNotEmpty) 'secondary': ex.secondary,
                         'equipment': ex.equipment,
                         'level': ex.difficulty,
                         if (ex.steps.isNotEmpty) 'steps': ex.steps,

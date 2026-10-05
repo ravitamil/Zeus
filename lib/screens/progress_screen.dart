@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../catalog/exercise_categories.dart';
@@ -18,6 +19,7 @@ import '../widgets/dialogs.dart';
 import '../widgets/entrance.dart';
 import '../widgets/exercise_media.dart';
 import '../widgets/glass.dart';
+import '../widgets/liquid_notch.dart';
 import '../widgets/muscle_radar.dart';
 import '../widgets/rolling_text.dart';
 import '../widgets/ruler_picker.dart';
@@ -73,10 +75,8 @@ class ProgressScreen extends StatelessWidget {
               const SizedBox(height: 12),
             ],
             _heroRow(context, gc, change, bw),
-            if (fit.sessions.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              _consistency(context, gc),
-            ],
+            const SizedBox(height: 12),
+            _consistency(context, gc),
             const SizedBox(height: 12),
             _totals(gc),
             const SizedBox(height: 12),
@@ -259,7 +259,12 @@ class ProgressScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-          Heatmap(levels: fit.heatmapLevels, onTapDay: (i) => _showDay(context, i)),
+          Heatmap(
+            levels: fit.heatmapWeeks,
+            firstDay: fit.heatmapWeekDate(0),
+            labels: fit.heatmapLabels,
+            onTapDay: (i) => _showDay(context, i),
+          ),
           const SizedBox(height: 14),
           Row(children: [
             Icon(PhosphorIconsFill.fire, size: 14, color: gc.accent),
@@ -739,7 +744,7 @@ class ProgressScreen extends StatelessWidget {
     );
   }
 
-  void _showDay(BuildContext context, int index) => showDaySheet(context, fit.heatmapDate(index));
+  void _showDay(BuildContext context, int index) => showDaySheet(context, fit.heatmapWeekDate(index));
 
   void _logBodyweight(BuildContext context) {
     final start = fit.latestBodyweight?.kg ?? fit.profile.weightKg;
@@ -785,8 +790,13 @@ class _MuscleMapCardState extends State<_MuscleMapCard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(t.muscleMap,
-                  style: AppTheme.f(10, weight: FontWeight.w600, color: gc.textTertiary, letterSpacing: 0.9)),
+              Flexible(
+                child: Text(t.muscleMap,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTheme.f(10, weight: FontWeight.w600, color: gc.textTertiary, letterSpacing: 0.9)),
+              ),
+              const SizedBox(width: 8),
               _modes(),
             ],
           ),
@@ -859,8 +869,13 @@ class _MuscleMapCardState extends State<_MuscleMapCard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(t.muscleMap,
-                  style: AppTheme.f(10, weight: FontWeight.w600, color: gc.textTertiary, letterSpacing: 0.9)),
+              Flexible(
+                child: Text(t.muscleMap,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTheme.f(10, weight: FontWeight.w600, color: gc.textTertiary, letterSpacing: 0.9)),
+              ),
+              const SizedBox(width: 8),
               _modes(),
             ],
           ),
@@ -1388,6 +1403,22 @@ class _DaySheet extends StatelessWidget {
           ),
           Semantics(
             button: true,
+            label: t.copyWorkout,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: fit.workoutText(s)));
+                showNotchToast(context, t.copiedDone, icon: PhosphorIconsRegular.copy, accent: gc.accent);
+              },
+              child: SizedBox(
+                width: 40,
+                height: 36,
+                child: Icon(PhosphorIconsRegular.copy, size: 16, color: gc.textTertiary),
+              ),
+            ),
+          ),
+          Semantics(
+            button: true,
             label: t.deleteWorkout,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
@@ -1486,6 +1517,7 @@ class _DaySheet extends StatelessWidget {
               ),
             ),
           ),
+          if (s.exercises.length > 1)
           Semantics(
             button: true,
             label: '${t.deleteCaps} ${t.catalogName(e.id, e.name)}',
@@ -1571,7 +1603,7 @@ class _LogBodyweightSheetState extends State<_LogBodyweightSheet> {
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              RollingText(_shown.toStringAsFixed(1),
+              RollingText(decimalText(_shown.toStringAsFixed(1)),
                   style: AppTheme.f(52, weight: FontWeight.w800, color: gc.text, height: 1.1)),
               const SizedBox(width: 6),
               Text(fit.units, style: AppTheme.f(18, weight: FontWeight.w700, color: gc.textSecondary)),

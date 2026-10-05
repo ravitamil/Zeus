@@ -20,17 +20,17 @@ const _hevyNames = {
   'Romanian Deadlift (Barbell)': 'Barbell Romanian Deadlift',
   'Bulgarian Split Squat (Dumbbell)': 'Dumbbell Single Leg Split Squat',
   'Chest Fly (Machine)': 'Pec Deck',
-  'Chest Press (Machine)': 'Lever Standing Chest Press',
-  'T Bar Row': 'Lever T Bar Row',
+  'Chest Press (Machine)': 'Machine Chest Press',
+  'T Bar Row': 'T-Bar Row',
   'Hip Abduction (Machine)': 'Hip Abduction Machine',
   'Leg Curl (Machine)': 'Seated Leg Curl',
   'Farmers Walk': 'Kettlebell Farmer Carry',
 };
 
-List<Exercise> _search(String query) => kExercises.where(exerciseSearch(query)).toList();
+List<Exercise> _search(String query) => kBaseExercises.where(exerciseSearch(query)).toList();
 
 void main() {
-  final byName = {for (final e in kExercises) e.name: e};
+  final byName = {for (final e in kBaseExercises) e.name: e};
 
   test('every alias belongs to an exercise in the catalog', () {
     final orphans = kExerciseAliases.keys.where((name) => !byName.containsKey(name));
@@ -58,7 +58,7 @@ void main() {
 
   test('importing a name from another app maps to the same exercise', () {
     for (final entry in _hevyNames.entries) {
-      expect(matchExercise(entry.key, kExercises)?.name, entry.value);
+      expect(matchExercise(entry.key, kBaseExercises)?.name, entry.value);
     }
   });
 
@@ -83,18 +83,18 @@ void main() {
       'Seated Row', 'Hammer Curls', 'Skull Crushers', 'Bulgarian Split Squat',
       'Goblet Squat', 'Russian Twist', 'Mountain Climbers',
     ];
-    final missed = [for (final n in written) if (matchExercise(n, kExercises) == null) n];
+    final missed = [for (final n in written) if (matchExercise(n, kBaseExercises) == null) n];
     expect(missed, isEmpty, reason: 'sin emparejar: ${missed.join(", ")}');
   });
 
   test('the order of the words does not matter for an alias', () {
-    expect(matchExercise('Dumbbell Shoulder Press', kExercises)?.name,
+    expect(matchExercise('Dumbbell Shoulder Press', kBaseExercises)?.name,
         'Dumbbell Standing Overhead Press');
-    expect(matchExercise('Shoulder Press (Dumbbell)', kExercises)?.name,
+    expect(matchExercise('Shoulder Press (Dumbbell)', kBaseExercises)?.name,
         'Dumbbell Standing Overhead Press');
   });
 
   test('an empty search keeps the whole catalog', () {
-    expect(_search('   ').length, kExercises.length);
+    expect(_search('   ').length, kBaseExercises.length);
   });
 }

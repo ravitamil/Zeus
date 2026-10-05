@@ -83,7 +83,7 @@ mixin StatsState on FitCore, ToolsState, LibraryState, TimelineState {
     final shown = toDisplayWeight(kg);
     if (shown < 1000) return (shown.round().toString(), units);
     final k = shown / 1000;
-    return (k >= 10 ? k.round().toString() : k.toStringAsFixed(1), units == 'kg' ? 't' : 'k $units');
+    return (k >= 10 ? k.round().toString() : decimalText(k.toStringAsFixed(1)), units == 'kg' ? 't' : 'k $units');
   }
 
   (String, String) get liftedSpan => liftedSpanOf(totalVolumeKg);
@@ -193,8 +193,47 @@ mixin StatsState on FitCore, ToolsState, LibraryState, TimelineState {
       ..sort((a, b) => b.date.compareTo(a.date));
   }
 
+  void _releaseLevel(LoggedSession s, Iterable<String> ids) {
+    final ms = s.date.millisecondsSinceEpoch;
+    for (final id in ids) {
+      final shown = levelShown[id];
+      if (shown == null || shown.first != ms) continue;
+      if (shown.last == 0) {
+        levelSeen.remove(id);
+      } else {
+        levelSeen[id] = shown.last;
+      }
+      levelShown.remove(id);
+    }
+  }
+
+  String workoutText(LoggedSession s) {
+    String line(LoggedSet x) {
+      if (x.km != null) return '${distanceLabel(x.km!)} · ${durationLabel(x.sec ?? 0)}';
+      if (x.sec != null && x.reps == 0) return durationLabel(x.sec!);
+      return x.weight > 0 ? '${weightLabel(x.weight)} × ${x.reps}' : t.repCount(x.reps);
+    }
+
+    final out = [s.durationSec > 0 ? '${t.longDate(s.date)} · ${s.durationSec ~/ 60} min' : t.longDate(s.date)];
+    var reps = 0;
+    for (final e in s.exercises) {
+      out
+        ..add('')
+        ..add(t.catalogName(e.id, e.name));
+      for (final x in e.sets) {
+        if (x.counts) reps += x.reps;
+        out.add('  ${line(x)}');
+      }
+    }
+    out
+      ..add('')
+      ..add('${t.setCount(s.setCount)} · ${t.repCount(reps)} · ${volumeLabel(s.volume)}');
+    return out.join('\n');
+  }
+
   void deleteSession(LoggedSession s) {
     sessions.remove(s);
+    _releaseLevel(s, s.exercises.map((e) => e.id));
     persistNow();
     _refreshWidgets();
     notifyListeners();
@@ -203,6 +242,7 @@ mixin StatsState on FitCore, ToolsState, LibraryState, TimelineState {
   void deleteLoggedExercise(LoggedSession s, LoggedExercise e) {
     s.exercises.remove(e);
     if (s.exercises.isEmpty) sessions.remove(s);
+    _releaseLevel(s, [e.id]);
     persistNow();
     notifyListeners();
   }
@@ -706,10 +746,56 @@ mixin StatsState on FitCore, ToolsState, LibraryState, TimelineState {
     notifyListeners();
   }
 
+  @override
+  double bestLift(String id) => oneRmSeries(id).fold(0.0, math.max);
+
   List<double> oneRmSeries(String id) {
     final h = exerciseHistory(id).reversed;
     return h.map((r) => _round1(r.ex.bestOneRm)).toList();
   }
+
+  bool goalFits(String id) => modeOf(id).isEmpty;
+
+  PrKind goalKind(String id) {
+    final kind = exerciseRecord(id)?.kind;
+    if (kind == PrKind.weight || kind == PrKind.reps) return kind!;
+    return isRepsOnly(id) ? PrKind.reps : PrKind.weight;
+  }
+
+  double goalBest(String id) {
+    final r = exerciseRecord(id);
+    return r != null && r.kind == goalKind(id) ? r.best : 0;
+  }
+
+  String goalLabel(String id, double value) =>
+      goalKind(id) == PrKind.reps ? t.repCount(value.round()) : weightLabel(value);
+
+  void setExerciseGoal(String id, double target, DateTime? due) {
+    exerciseGoals[id] = (target: target, due: due == null ? null : _dayKey(due));
+    persistNow();
+    notifyListeners();
+  }
+
+  void clearExerciseGoal(String id) {
+    if (exerciseGoals.remove(id) == null) return;
+    persistNow();
+    notifyListeners();
+  }
+
+  List<int> heatmapWeeksFor(int weeks) {
+    final tail = 6 - todayIndex;
+    return [...heatmapLevelsFor(weeks * 7 - tail), for (var i = 0; i < tail; i++) -1];
+  }
+
+  List<int> get heatmapWeeks => heatmapWeeksFor(kHeatmapDays ~/ 7);
+
+  DateTime heatmapWeekDate(int i, {int weeks = kHeatmapDays ~/ 7}) =>
+      shiftDays(_weekStart, i - (weeks - 1) * 7);
+
+  List<double> bestRepsSeries(String id) => [
+        for (final r in exerciseHistory(id).reversed)
+          r.ex.sets.where((s) => s.counts).fold(0, (m, s) => math.max(m, s.reps)).toDouble(),
+      ];
 
   static const _habitWindowDays = 120;
 

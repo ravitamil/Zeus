@@ -8,28 +8,9 @@ import '../models/exercise.dart';
 import '../state/fit_state.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
+import '../widgets/tool_art.dart';
 import '../widgets/ui_kit.dart';
 import 'measures_screen.dart';
-
-IconData _toolIcon(String id) => switch (id) {
-      'rm' => PhosphorIconsRegular.barbell,
-      'bmr' => PhosphorIconsRegular.heartbeat,
-      'bmi' => PhosphorIconsRegular.scales,
-      'cal' => PhosphorIconsRegular.fire,
-      'bf' => PhosphorIconsRegular.percent,
-      'plate' => PhosphorIconsRegular.circlesThree,
-      _ => PhosphorIconsRegular.trendUp,
-    };
-
-Color _toolColor(String id) => switch (id) {
-      'rm' => const Color(0xFF8B5CF6),    // Electric Violet
-      'bmr' => const Color(0xFFFF3366),   // Vibrant Rose
-      'bmi' => const Color(0xFF00B4D8),   // Cyan / Sky Blue
-      'cal' => const Color(0xFFFF6D00),   // Sunset Orange
-      'bf' => const Color(0xFF10B981),    // Emerald Green
-      'plate' => const Color(0xFFF59E0B), // Warm Gold / Amber
-      _ => const Color(0xFFFF6B6B),       // Coral Red (warmup)
-    };
 
 class ToolsScreen extends StatelessWidget {
   const ToolsScreen({super.key});
@@ -256,11 +237,11 @@ class ToolsScreen extends StatelessWidget {
   }
 
   Widget _card(GymColors gc, ToolMeta tool, double scale) {
-    final color = _toolColor(tool.id);
-    return GestureDetector(
+    return Pressable(
       onTap: () => fit.openTool(tool.id),
+      scale: 0.96,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 16),
         decoration: BoxDecoration(
           color: gc.bgRaised,
           borderRadius: BorderRadius.circular(20),
@@ -270,16 +251,7 @@ class ToolsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 38,
-              height: 38,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: color.withValues(alpha: 0.25), width: 1),
-              ),
-              child: Center(child: Icon(_toolIcon(tool.id), size: 19, color: color)),
-            ),
+            ToolArt(tool.id),
             const Spacer(),
             Text(t.toolName(tool.id),
                 maxLines: 1,
@@ -291,8 +263,7 @@ class ToolsScreen extends StatelessWidget {
               child: Text(t.toolDesc(tool.id),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTheme.f(11.5,
-                      weight: FontWeight.w500, color: gc.textSecondary, height: 1.3)),
+                  style: AppTheme.f(11, weight: FontWeight.w500, color: gc.textSecondary, height: 1.35)),
             ),
           ],
         ),

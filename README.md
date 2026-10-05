@@ -18,6 +18,7 @@ Tap the muscles you want to train, log your sets, and track your strength gains.
   <img alt="License GPLv3" src="https://img.shields.io/badge/Code-GPLv3-C2410C?style=flat&logo=gnu&logoColor=white" />
   <img alt="Art CC BY-SA 4.0" src="https://img.shields.io/badge/Art-CC%20BY--SA%204.0-8A6B41?style=flat&logo=creativecommons&logoColor=white" />
   <a href="https://github.com/InlitX/GymMane"><img alt="Upstream GymMane" src="https://img.shields.io/badge/Upstream-InlitX%2FGymMane-blue?style=flat&logo=github" /></a>
+  <a href="https://crowdin.com/project/gymmane"><img alt="Crowdin" src="https://badges.crowdin.net/gymmane/localized.svg" /></a>
 </p>
 
 </div>
@@ -26,9 +27,9 @@ Tap the muscles you want to train, log your sets, and track your strength gains.
 
 > [!NOTE]
 > ### Upstream Attribution & Thanks
-> **Zeus** is an enhanced fork of the open-source [GymMane](https://github.com/InlitX/GymMane) project created and maintained by [InlitX](https://github.com/InlitX), released under the [GNU General Public License v3.0 (GPLv3)](LICENSE).
+> **Zeus** is an enhanced fork of the open-source [GymMane](https://github.com/InlitX/GymMane) project created and maintained by [InlitX](https://github.com/InlitX), released under the [GNU General Public License v3.0 (GPLv3)](LICENSE) with attribution term [ADDITIONAL_TERMS.md](ADDITIONAL_TERMS.md) under section 7(b).
 > 
-> We extend our deepest gratitude to InlitX and the GymMane contributors for their fantastic architecture, clean design, and commitment to privacy. All original copyrights and author notices are preserved in accordance with Section 5 and Section 7 of the GPLv3 license.
+> *Based on GymMane by InlitX.* We extend our deepest gratitude to InlitX and the GymMane contributors for their fantastic architecture, clean design, and commitment to privacy. All original copyrights and author notices are preserved in accordance with Section 5 and Section 7 of the GPLv3 license.
 
 ---
 
@@ -39,26 +40,17 @@ In addition to all the features of GymMane, Zeus introduces:
 - 🎬 **Custom Exercise Video Library & Thumbnails**: Over 2,300 concise demonstration videos (`assets/videos/`) and instant preview thumbnails (`assets/thumbnails/`) for visual form guidance on every lift.
 - 📋 **Curated Exercise Details & Categorization**: Streamlined exercise instructions focusing on what matters — Step-by-Step How-To guides, essential Form Tips, and categorized equipment & muscle breakdowns (`exercise_categories.dart`).
 - 🎨 **Accent Color Customizer**: Ported from Flash — choose from a vibrant palette of accent colors or pick any custom hex value. Your selected accent dynamically themes the entire UI and synchronizes in real time with Android home screen widgets.
-- 🧮 **7 Comprehensive Fitness Calculators**:
-  1. **1RM (One Rep Max)**: Accurate single-rep and multiple-rep Epley calculation with percentage tables.
-  2. **Plates Per Side**: Quick barbell plate math based on your gym kit.
+- 🧮 **9 Comprehensive Fitness Calculators**:
+  1. **1RM (One Rep Max)**: Accurate single-rep and multiple-rep Epley calculation with percentage tables and plate loading breakdown.
+  2. **BMR (Basal Metabolic Rate)**: Dual-formula calculator supporting Mifflin-St Jeor & Katch-McArdle equations with body fat input.
   3. **BMI & Healthy Weight**: Body Mass Index and healthy WHO weight ranges.
-  4. **Calories & Macros**: TDEE calculation with Deficit, Maintenance, and Surplus targets.
-  5. **Body Fat Calculator**: Accurate US Navy circumference formula with Fat vs Lean Mass breakdown.
-  6. **Warm-up Calculator**: Automatic ramping warm-up sets clamped safely to barbell weight.
-  7. **BMR (Basal Metabolic Rate)**: Dual-formula selector supporting both **Mifflin-St Jeor** and **Katch-McArdle** (lean mass based) algorithms.
-- ⚡ **Zeus Branding & Identity**: Custom launcher icons, vector drawables, and refreshed visual theme.
-
----
-
-## Branches
-
-This repository maintains two distinct release tracks:
-
-| Branch | Description | Network / Permissions |
-|---|---|---|
-| **`main`** *(Default)* | The primary, 100% offline, privacy-first release. Zero internet permission, zero external network calls. All exercise videos, calculators, and accent customization bundled locally. | `INTERNET` permission disabled. |
-| **`feature/google-drive`** | Cloud backup & restore track. Adds seamless Google Drive AppData backup, restore, and automated post-workout backup sync for users who prefer cloud backups. | Requires `INTERNET` permission for Google Drive API. |
+  4. **TDEE & Caloric Goal Calculator**: Daily energy expenditure with deficit/surplus macros (cut, maintain, bulk).
+  5. **Body Fat % (US Navy Method)**: Accurate circumference-based estimates for men and women.
+  6. **Plates Per Side**: Quick barbell plate math based on your gym kit and custom bar weights.
+  7. **Warm-Up Sets**: Progressive ramp-up sets to prepare for heavy working weights.
+  8. **RPE Load Calculator**: Calculate target weight based on RPE and reps.
+  9. **DOTS Calculator**: Powerlifting coefficient score comparing relative strength.
+- 🛡️ **GPLv3 Attribution & Dual-Author Credits**: Clean dual-attribution in the About screen preserving original GymMane creator links while highlighting Zeus customizations.
 
 ---
 
@@ -74,7 +66,9 @@ This repository maintains two distinct release tracks:
 - **Rest Timer**: Background timer with sound and vibration alarms
 - **Set Types**: Warm-up, working, drop set, failure sets, and RPE/RIR tracking
 - **Supersets & Chains**: Chain movements with seamless transitions
-- **Routines & AI Plans**: Create, duplicate, and schedule workout routines
+- **Routines & AI Plans**: Create, duplicate, and schedule workout routines (several a day, routine groups), plus ready-made plans
+- **Next Step**: When an exercise gets easy, it offers progressive overload recommendations
+- **Mid-Workout Swap**: Swap an exercise mid-session without losing progress
 - **Live Notification**: Always-visible rest timer notification surviving device reboots
 
 </td>
@@ -85,8 +79,8 @@ This repository maintains two distinct release tracks:
 - **Volume & PR Tracking**: Automatic personal record detection
 - **Activity Heatmap**: GitHub-style workout consistency calendar
 - **Strength Curves**: Estimated 1RM trends and muscle split charts
-- **Body Measurements & Photos**: Photo timeline and 10 metric measurement curves
-- **Gamification**: Levels, streaks, and 20 achievement medals
+- **Body Measurements & Photos**: Photo timeline and periodic metric measurement curves
+- **Gamification**: Levels, streaks, and achievement medals
 - **Workout Stickers**: Generate and share workout stat cards
 
 </td>
@@ -106,10 +100,11 @@ This repository maintains two distinct release tracks:
 
 ### Privacy & Data Portability
 
-- **No Accounts, No Ads, No Tracking**: Your data stays on your device
+- **No Accounts, No Ads, No Tracking**: Your data stays on your device (no internet permission required)
 - **Data Export & Import**: Full ZIP backup (including media) and CSV export
 - **Third-Party Importers**: Import history from Hevy, Strong, Lyfta, FitNotes, openGym
-- **16 Languages**: Full internationalization support
+- **Strava Export**: Export workouts to Strava as `.fit` binary files
+- **Multilingual**: Translated across 17+ languages via Crowdin
 
 </td>
 </tr>
@@ -119,7 +114,13 @@ This repository maintains two distinct release tracks:
 
 ## Upstream Synchronization
 
-Zeus keeps in close lockstep with [InlitX/GymMane](https://github.com/InlitX/GymMane) releases:
+Zeus tracks the upstream `InlitX/GymMane` repository as a remote.
+
+### Remote Configuration
+```bash
+origin   -> https://github.com/ravitamil/Zeus.git
+upstream -> https://github.com/InlitX/GymMane.git
+```
 
 ### Automated Upstream Sync (GitHub Actions)
 The repository includes [`.github/workflows/upstream-sync.yml`](.github/workflows/upstream-sync.yml) which runs weekly and can be triggered on demand via `workflow_dispatch`. It monitors `InlitX/GymMane` for new releases and tags.
@@ -155,8 +156,8 @@ flutter build apk --release
 
 ## Credits & License
 
-- **Code**: Licensed under [GNU General Public License v3.0 (GPLv3)](LICENSE).
+- **Code**: Licensed under [GNU General Public License v3.0 (GPLv3)](LICENSE), with additional term [ADDITIONAL_TERMS.md](ADDITIONAL_TERMS.md) under section 7(b): works based on GymMane must credit it as "Based on GymMane by InlitX".
 - **Upstream Author**: [InlitX](https://github.com/InlitX) ([GymMane](https://github.com/InlitX/GymMane)).
-- **Exercise Illustrations**: [Workout Guide](https://github.com/bryllim/workout-guide) by [Bryl Lim](https://bryllim.com), based on [Everkinetic](https://github.com/everkinetic/data), under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+- **Exercise Illustrations**: [Workout Guide](https://github.com/bryllim/workout-guide) by [Bryl Lim](https://bryllim.com) and from [Everkinetic](https://github.com/everkinetic/data), under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 - **Fonts**: Nunito under SIL Open Font License.
 - Detailed credits in [CREDITS.md](CREDITS.md).
