@@ -7,10 +7,34 @@ import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
 import 'app_shell.dart';
 
-class GymManeApp extends StatelessWidget {
+class GymManeApp extends StatefulWidget {
   const GymManeApp({super.key});
 
   static const maxTextScale = 1.15;
+
+  @override
+  State<GymManeApp> createState() => _GymManeAppState();
+}
+
+class _GymManeAppState extends State<GymManeApp> {
+  var _look = (fit.themeMode, fit.locale);
+
+  @override
+  void initState() {
+    super.initState();
+    fit.addListener(_watch);
+  }
+
+  @override
+  void dispose() {
+    fit.removeListener(_watch);
+    super.dispose();
+  }
+
+  void _watch() {
+    final look = (fit.themeMode, fit.locale);
+    if (look != _look) setState(() => _look = look);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +55,7 @@ class GymManeApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         builder: (context, child) => MediaQuery.withClampedTextScaling(
-          maxScaleFactor: maxTextScale,
+          maxScaleFactor: GymManeApp.maxTextScale,
           child: _ButtonNavScrim(child: child!),
         ),
         home: const AppShell(),

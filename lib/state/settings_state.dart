@@ -32,6 +32,7 @@ mixin SettingsState on FitCore, ToolsState, LibraryState {
   void resetAccentColor() => setAccentColor(null);
 
   String demoSize = 'large';
+  String demoLoop = 'always';
   String alarmStyle = 'quiet';
   int restSeconds = 90;
   String? alarmSound;
@@ -43,6 +44,9 @@ mixin SettingsState on FitCore, ToolsState, LibraryState {
   double bgDim = 0.55;
   bool showFocus = true;
   bool showRecommended = true;
+  bool levelHints = true;
+  bool toastSound = true;
+  bool heatmapLabels = true;
   bool autoAdvance = true;
   bool keepScreenOn = true;
   bool startCountdown = true;
@@ -94,10 +98,18 @@ mixin SettingsState on FitCore, ToolsState, LibraryState {
     notifyListeners();
   }
 
+  void setDemoLoop(String loop) {
+    if (!const ['always', 'short'].contains(loop)) return;
+    demoLoop = loop;
+    _persist();
+    notifyListeners();
+  }
+
   void setAlarmStyle(String style) {
     if (!const ['loud', 'quiet', 'vibrate'].contains(style)) return;
     alarmStyle = style;
     RestAlarm.instance.style = style;
+    Beeper.instance.loud = style == 'loud';
     _persist();
     notifyListeners();
   }
@@ -358,6 +370,25 @@ mixin SettingsState on FitCore, ToolsState, LibraryState {
 
   void toggleRecommended() {
     showRecommended = !showRecommended;
+    _persist();
+    notifyListeners();
+  }
+
+  void toggleHeatmapLabels() {
+    heatmapLabels = !heatmapLabels;
+    _persist();
+    notifyListeners();
+  }
+
+  void toggleToastSound() {
+    toastSound = !toastSound;
+    Beeper.instance.chimeOn = toastSound;
+    _persist();
+    notifyListeners();
+  }
+
+  void toggleLevelHints() {
+    levelHints = !levelHints;
     _persist();
     notifyListeners();
   }

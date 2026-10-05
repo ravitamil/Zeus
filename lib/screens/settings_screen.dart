@@ -35,6 +35,7 @@ import '../widgets/ruler_picker.dart';
 import '../widgets/timer_panel.dart';
 import 'profile_screen.dart';
 import '../widgets/google_drive_sheet.dart';
+import 'strava_sheet.dart';
 import '../widgets/ui_kit.dart';
 
 const _kRepoUrl = 'https://github.com/InlitX/GymMane';
@@ -122,6 +123,12 @@ class SettingsScreen extends StatelessWidget {
               ),
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
+                onTap: fit.toggleHeatmapLabels,
+                child: _prefRow(gc, PhosphorIconsRegular.gridNine, t.heatmapLabelsSetting,
+                    TinySwitch(on: fit.heatmapLabels)),
+              ),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: () => _editBackground(context),
                 child: _prefRow(
                   gc,
@@ -143,7 +150,7 @@ class SettingsScreen extends StatelessWidget {
                 PhosphorIconsRegular.timer,
                 t.restTimer,
                 StepperControl(
-                  value: fit.restSeconds == 0 ? t.restOff : '${fit.restSeconds}s',
+                  value: fit.restSeconds == 0 ? t.restOff : clockLabel(fit.restSeconds),
                   minWidth: 48,
                   btnSize: 28,
                   gap: 10,
@@ -163,6 +170,7 @@ class SettingsScreen extends StatelessWidget {
                     if (v != null) fit.setRestSeconds(v.round());
                   },
                 ),
+                hint: t.restRowHint,
               ),
               _choiceRow(
                 context,
@@ -177,30 +185,37 @@ class SettingsScreen extends StatelessWidget {
                 () => fit.effortMode,
                 fit.setEffortMode,
                 hint: t.effortHint,
+                rowHint: t.effortRowHint,
               ),
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: fit.toggleAutoAdvance,
                 child: _prefRow(gc, PhosphorIconsRegular.skipForward, t.autoAdvance,
-                    TinySwitch(on: fit.autoAdvance)),
+                    TinySwitch(on: fit.autoAdvance), hint: t.autoAdvanceHint),
               ),
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: fit.toggleStartCountdown,
                 child: _prefRow(gc, PhosphorIconsRegular.timer, t.countdownSetting,
-                    TinySwitch(on: fit.startCountdown)),
+                    TinySwitch(on: fit.startCountdown), hint: t.countdownHint),
               ),
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: fit.toggleKeepScreenOn,
                 child: _prefRow(gc, PhosphorIconsRegular.sun, t.keepScreenOn,
-                    TinySwitch(on: fit.keepScreenOn)),
+                    TinySwitch(on: fit.keepScreenOn), hint: t.keepScreenOnHint),
               ),
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: fit.toggleMultiPlan,
                 child: _prefRow(gc, PhosphorIconsRegular.stack, t.multiPlanSetting,
-                    TinySwitch(on: fit.multiPlan)),
+                    TinySwitch(on: fit.multiPlan), hint: t.multiPlanSettingHint),
+              ),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: fit.toggleLevelHints,
+                child: _prefRow(gc, PhosphorIconsRegular.stairs, t.levelHintsSetting,
+                    TinySwitch(on: fit.levelHints), hint: t.levelHintsHint),
               ),
               _choiceRow(
                 context,
@@ -214,7 +229,23 @@ class SettingsScreen extends StatelessWidget {
                 ],
                 () => fit.demoSize,
                 fit.setDemoSize,
+                rowHint: t.demoSizeRowHint,
               ),
+              if (fit.demoSize != 'off')
+                _choiceRow(
+                  context,
+                  gc,
+                  PhosphorIconsRegular.repeat,
+                  t.demoLoopTitle,
+                  [
+                    ('always', t.demoLoopAlways, PhosphorIconsRegular.repeat),
+                    ('short', t.demoLoopShort, PhosphorIconsRegular.timer),
+                  ],
+                  () => fit.demoLoop,
+                  fit.setDemoLoop,
+                  hint: t.demoLoopHint,
+                  rowHint: t.demoLoopRowHint,
+                ),
             ]),
             const SizedBox(height: 18),
             _linkGroup(gc, [
@@ -242,6 +273,7 @@ class SettingsScreen extends StatelessWidget {
                     const SizedBox(width: 6),
                     Icon(PhosphorIconsRegular.caretRight, size: 15, color: gc.textTertiary),
                   ]),
+                  hint: t.trainReminderRowHint,
                 ),
               ),
               GestureDetector(
@@ -265,6 +297,7 @@ class SettingsScreen extends StatelessWidget {
                     const SizedBox(width: 6),
                     Icon(PhosphorIconsRegular.caretRight, size: 15, color: gc.textTertiary),
                   ]),
+                  hint: t.alarmSoundRowHint,
                 ),
               ),
               _choiceRow(
@@ -280,10 +313,18 @@ class SettingsScreen extends StatelessWidget {
                 () => fit.alarmStyle,
                 fit.setAlarmStyle,
                 hint: t.alarmStyleHint,
+                rowHint: t.alarmStyleRowHint,
+              ),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: fit.toggleToastSound,
+                child: _prefRow(gc, PhosphorIconsRegular.bellSimple, t.toastSoundSetting,
+                    TinySwitch(on: fit.toastSound), hint: t.toastSoundHint),
               ),
               if (!fit.alarmAllowed) ...[
                 const SizedBox(height: 14),
                 _alarmWarning(context, gc),
+                const SizedBox(height: 14),
               ],
             ]),
             const SizedBox(height: 18),
@@ -292,13 +333,13 @@ class SettingsScreen extends StatelessWidget {
                 behavior: HitTestBehavior.opaque,
                 onTap: fit.toggleFocusCard,
                 child: _prefRow(gc, PhosphorIconsRegular.target, t.focusCard,
-                    TinySwitch(on: fit.showFocus)),
+                    TinySwitch(on: fit.showFocus), hint: t.focusCardHint),
               ),
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: fit.toggleRecommended,
                 child: _prefRow(gc, PhosphorIconsRegular.sparkle, t.homeRecommended,
-                    TinySwitch(on: fit.showRecommended)),
+                    TinySwitch(on: fit.showRecommended), hint: t.recommendedRowHint),
               ),
             ]),
             const SizedBox(height: 18),
@@ -306,13 +347,8 @@ class SettingsScreen extends StatelessWidget {
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: fit.toggleGamification,
-                child: _prefRow(
-                  gc,
-                  PhosphorIconsRegular.medal,
-                  t.gamificationSetting,
-                  TinySwitch(on: fit.gamification),
-                  subtitle: t.gamificationHint,
-                ),
+                child: _prefRow(gc, PhosphorIconsRegular.medal, t.gamificationSetting,
+                    TinySwitch(on: fit.gamification), hint: t.gamificationHint),
               ),
               if (fit.gamification)
                 GestureDetector(
@@ -354,6 +390,7 @@ class SettingsScreen extends StatelessWidget {
               (PhosphorIconsRegular.fileZip, t.exportBackup, () => _exportBackup(context)),
               (PhosphorIconsRegular.downloadSimple, t.importBackup, () => _importBackup(context)),
               (PhosphorIconsRegular.arrowSquareIn, t.importFromApp, () => _openImportApps(context)),
+              (PhosphorIconsRegular.export, t.stravaRow, () => showStravaSheet(context)),
               (PhosphorIconsRegular.trash, t.resetData, () => _resetAll(context)),
             ], danger: 5),
             const SizedBox(height: 18),
@@ -394,29 +431,37 @@ class SettingsScreen extends StatelessWidget {
       Text(t.toUpperCase(),
           style: AppTheme.f(10.5, weight: FontWeight.w700, color: gc.textTertiary, letterSpacing: 1.3));
 
-  Widget _prefRow(GymColors gc, IconData icon, String label, Widget control, {String? subtitle}) {
+  Widget _prefRow(GymColors gc, IconData icon, String label, Widget control, {String? hint}) {
+    if (hint == null) {
+      return SizedBox(
+        height: 52,
+        child: Row(
+          children: [
+            _rowIcon(gc, icon),
+            Expanded(child: Text(label, style: AppTheme.f(14.5, weight: FontWeight.w500, color: gc.text))),
+            const SizedBox(width: 12),
+            control,
+          ],
+        ),
+      );
+    }
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 52),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: subtitle == null ? 0 : 8),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
           children: [
             _rowIcon(gc, icon),
             Expanded(
-              child: subtitle == null
-                  ? Text(label, style: AppTheme.f(14.5, weight: FontWeight.w500, color: gc.text))
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(label, style: AppTheme.f(14.5, weight: FontWeight.w500, color: gc.text)),
-                        const SizedBox(height: 2),
-                        Text(
-                          subtitle,
-                          style: AppTheme.f(11.5, weight: FontWeight.w400, color: gc.textTertiary),
-                        ),
-                      ],
-                    ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: AppTheme.f(14.5, weight: FontWeight.w500, color: gc.text)),
+                  const SizedBox(height: 3),
+                  Text(hint,
+                      style: AppTheme.f(11.5, weight: FontWeight.w500, color: gc.textSecondary, height: 1.3)),
+                ],
+              ),
             ),
             const SizedBox(width: 12),
             control,
@@ -435,6 +480,7 @@ class SettingsScreen extends StatelessWidget {
     String Function() current,
     void Function(String) onPick, {
     String? hint,
+    String? rowHint,
   }) {
     final now = current();
     final shown = options.firstWhere((o) => o.$1 == now, orElse: () => options.first);
@@ -445,6 +491,7 @@ class SettingsScreen extends StatelessWidget {
         gc,
         icon,
         label,
+        hint: rowHint,
         Row(mainAxisSize: MainAxisSize.min, children: [
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 128),
@@ -878,7 +925,7 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Future<void> _addWidget(BuildContext context, String provider) async {
-    await HomeWidgetBridge.update();
+    await HomeWidgetBridge.updateNow(provider: provider);
     try {
       final supported = await HomeWidget.isRequestPinWidgetSupported() ?? false;
       if (!supported) {
@@ -929,7 +976,31 @@ class SettingsScreen extends StatelessWidget {
             children: [
               const SheetHandle(),
               const SizedBox(height: 16),
-              SheetTitle(t.trainReminder),
+              Stack(
+                alignment: Alignment.center,
+                clipBehavior: Clip.none,
+                children: [
+                  const SizedBox(height: 36, width: double.infinity),
+                  SheetTitle(t.trainReminder),
+                  if (!smart)
+                    Positioned(
+                      left: 0,
+                      child: RoundAction(
+                        label: t.reminderExactTime,
+                        onTap: () async {
+                          final picked = await showTimePicker(
+                            context: sheet,
+                            initialTime: TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60),
+                            initialEntryMode: TimePickerEntryMode.inputOnly,
+                            helpText: t.reminderExactTime,
+                          );
+                          if (picked != null) setSheet(() => minutes = picked.hour * 60 + picked.minute);
+                        },
+                        child: Icon(PhosphorIconsRegular.pencilSimple, size: 16, color: gc.text),
+                      ),
+                    ),
+                ],
+              ),
               const SizedBox(height: 16),
               Center(
                 child: SegToggle([

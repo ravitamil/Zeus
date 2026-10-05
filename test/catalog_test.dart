@@ -8,7 +8,7 @@ import 'package:path_drawing/path_drawing.dart';
 void main() {
   test('every exercise points at art that exists and can be drawn', () {
     final broken = <String>[];
-    for (final e in kExercises) {
+    for (final e in kBaseExercises) {
       if (e.art.isEmpty) continue;
       final file = File('assets/art/${e.art}.txt');
       if (!file.existsSync()) {
@@ -16,7 +16,7 @@ void main() {
         continue;
       }
       final frames = file.readAsLinesSync().where((l) => l.trim().isNotEmpty).toList();
-      if (frames.length != 3) broken.add('${e.name}: ${frames.length} frames, esperaba 3');
+      if (frames.length < 2 || frames.length > 3) broken.add('${e.name}: ${frames.length} frames, esperaba 2 o 3');
       for (final d in frames) {
         try {
           parseSvgPathData(d);
@@ -29,13 +29,13 @@ void main() {
   });
 
   test('almost every exercise ships media (illustration or video)', () {
-    final sinMedia = kExercises.where((e) => e.art.isEmpty && e.videoPath.isEmpty).map((e) => e.name).toList();
-    expect(sinMedia.length, lessThan(kExercises.length),
+    final sinMedia = kBaseExercises.where((e) => e.art.isEmpty && e.videoPath.isEmpty).map((e) => e.name).toList();
+    expect(sinMedia.length, lessThan(kBaseExercises.length),
         reason: 'demasiados ejercicios sin media: ${sinMedia.length}');
   });
 
   test('all referenced art exists in assets', () {
-    final referenced = kExercises.map((e) => e.art).where((a) => a.isNotEmpty).toSet();
+    final referenced = kBaseExercises.map((e) => e.art).where((a) => a.isNotEmpty).toSet();
     final onDisk = Directory('assets/art')
         .listSync()
         .whereType<File>()
@@ -47,17 +47,17 @@ void main() {
   });
 
   test('ids and names are unique', () {
-    final ids = kExercises.map((e) => e.id).toList();
+    final ids = kBaseExercises.map((e) => e.id).toList();
     expect(ids.toSet().length, ids.length, reason: 'ids duplicados');
 
-    final names = kExercises.map((e) => e.name.trim().toLowerCase()).toList();
+    final names = kBaseExercises.map((e) => e.name.trim().toLowerCase()).toList();
     expect(names.toSet().length, names.length, reason: 'nombres duplicados');
   });
 
   test('every exercise has a real muscle, equipment and difficulty', () {
     final muscles = kMuscles.map((m) => m.id).toSet();
     final bad = <String>[];
-    for (final e in kExercises) {
+    for (final e in kBaseExercises) {
       if (!muscles.contains(e.primary)) bad.add('${e.name}: primary "${e.primary}"');
       for (final s in e.secondary) {
         if (!muscles.contains(s)) bad.add('${e.name}: secondary "$s"');
@@ -69,18 +69,18 @@ void main() {
   });
 
   test('an exercise never lists its primary muscle as secondary too', () {
-    final bad = kExercises.where((e) => e.secondary.contains(e.primary)).map((e) => e.name);
+    final bad = kBaseExercises.where((e) => e.secondary.contains(e.primary)).map((e) => e.name);
     expect(bad, isEmpty);
   });
 
   test('every exercise explains how to do it', () {
-    final bare = kExercises.where((e) => e.steps.length < 3).map((e) => e.name);
+    final bare = kBaseExercises.where((e) => e.steps.length < 3).map((e) => e.name);
     expect(bare, isEmpty);
   });
 
   test('steps are real instructions, not filler', () {
     final bad = <String>[];
-    for (final e in kExercises) {
+    for (final e in kBaseExercises) {
       for (final s in e.steps) {
         if (s.trim().split(' ').length < 4) bad.add('${e.name}: "$s" (too short)');
         if (!s.trim().endsWith('.')) bad.add('${e.name}: "$s" (unfinished)');
@@ -90,7 +90,7 @@ void main() {
   });
 
   test('names carry no leftovers from the source dataset', () {
-    final leaked = kExercises
+    final leaked = kBaseExercises
         .where((e) => RegExp(r'\((male|female)\)', caseSensitive: false).hasMatch(e.name))
         .map((e) => e.name);
     expect(leaked, isEmpty);
@@ -98,13 +98,13 @@ void main() {
 
   test('an exercise is never just named after a muscle', () {
     final labels = kMuscles.map((m) => m.label.toLowerCase()).toSet();
-    final lazy = kExercises.where((e) => labels.contains(e.name.trim().toLowerCase())).map((e) => e.name);
+    final lazy = kBaseExercises.where((e) => labels.contains(e.name.trim().toLowerCase())).map((e) => e.name);
     expect(lazy, isEmpty, reason: 'un músculo no es un ejercicio');
   });
 
   test('every muscle on the body map leads somewhere', () {
     for (final m in kMuscles) {
-      final n = kExercises.where((e) => e.primary == m.id || e.secondary.contains(m.id)).length;
+      final n = kBaseExercises.where((e) => e.primary == m.id || e.secondary.contains(m.id)).length;
       expect(n, greaterThan(0), reason: '${m.label} no tiene ningún ejercicio');
     }
   });

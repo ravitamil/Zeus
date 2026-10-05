@@ -21,6 +21,8 @@ class Exercise {
     this.videoPath = '',
     this.tips = const [],
     this.intro = '',
+    this.aliases = const [],
+    this.kind = '',
   });
   final String id;
   final String name;
@@ -34,6 +36,8 @@ class Exercise {
   final String videoPath;
   final List<String> tips;
   final String intro;
+  final List<String> aliases;
+  final String kind;
 
   Exercise copyWith({
     String? name,
@@ -46,6 +50,8 @@ class Exercise {
     String? videoPath,
     List<String>? tips,
     String? intro,
+    List<String>? aliases,
+    String? kind,
   }) =>
       Exercise(
         id: id,
@@ -60,6 +66,8 @@ class Exercise {
         videoPath: videoPath ?? this.videoPath,
         tips: tips ?? this.tips,
         intro: intro ?? this.intro,
+        aliases: aliases ?? this.aliases,
+        kind: kind ?? this.kind,
       );
 
   Map<String, dynamic> toJson() => {
@@ -69,30 +77,39 @@ class Exercise {
         if (secondary.isNotEmpty) 's': secondary,
         'e': equipment,
         'd': difficulty,
-        if (art.isNotEmpty) 'a': art,
+        if (art.isNotEmpty) 'art': art,
         if (steps.isNotEmpty) 'st': steps,
         if (mode.isNotEmpty) 'k': mode,
         if (videoPath.isNotEmpty) 'v': videoPath,
         if (tips.isNotEmpty) 'tp': tips,
         if (intro.isNotEmpty) 'in': intro,
+        if (aliases.isNotEmpty) 'a': aliases,
+        if (kind.isNotEmpty) 'ty': kind,
       };
   factory Exercise.fromJson(Map<String, dynamic> j) => Exercise(
         id: j['id'] as String,
         name: j['n'] as String,
         primary: j['p'] as String,
-        secondary: ((j['s'] as List?) ?? const []).whereType<String>().toList(),
+        secondary: ((j['s'] as List?) ?? const [])
+            .whereType<String>()
+            .where((m) => m != j['p'])
+            .toList(),
         equipment: (j['e'] as String?) ?? 'Other',
         difficulty: (j['d'] as String?) ?? 'Beginner',
-        art: (j['a'] as String?) ?? '',
+        art: (j['art'] as String?) ?? (j['a'] is String ? j['a'] as String : ''),
         steps: ((j['st'] as List?) ?? const []).whereType<String>().toList(),
         mode: kExerciseModeIds.contains(j['k']) ? j['k'] as String : '',
         videoPath: (j['v'] as String?) ?? '',
         tips: ((j['tp'] as List?) ?? const []).whereType<String>().toList(),
         intro: (j['in'] as String?) ?? '',
+        aliases: ((j['a'] as List?) ?? const []).whereType<String>().toList(),
+        kind: kExerciseKinds.contains(j['ty']) ? j['ty'] as String : '',
       );
 }
 
 const List<String> kExerciseModeIds = ['cardio', 'time'];
+
+const List<String> kExerciseKinds = ['strength', 'calisthenics', 'cardio', 'stretch'];
 
 class ToolMeta {
   const ToolMeta(this.id, this.name, this.desc);

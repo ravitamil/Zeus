@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zeus/catalog/exercise_catalog.dart';
 import 'package:zeus/models/workout.dart';
+import 'package:zeus/services/exercise_match.dart';
 import 'package:zeus/services/local_store.dart';
 import 'package:zeus/services/workout_import.dart';
 import 'package:zeus/state/fit_state.dart';
@@ -141,7 +143,7 @@ void main() {
   });
 
   group('#55 nombres de Lyfta', () {
-    String? match(String name) => fit.matchExerciseByName(name)?.name;
+    String? match(String name) => matchExercise(name, kBaseExercises)?.name;
 
     test('no cambia de músculo por una palabra suelta', () {
       expect(match('Dumbbell Seated Curl'), isNot('Seated Leg Curl'));
@@ -150,8 +152,8 @@ void main() {
     });
 
     test('el nombre exacto gana', () {
-      expect(match('Lever Seated Reverse Fly'), 'Lever Seated Reverse Fly');
-      expect(match('Smith Seated Shoulder Press'), 'Smith Seated Shoulder Press');
+      expect(match('Machine Reverse Fly'), 'Machine Reverse Fly');
+      expect(match('Smith Hack Squat'), 'Smith Hack Squat');
     });
 
     test('encuentra el ejercicio aunque el nombre traiga más cosas', () {

@@ -133,9 +133,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tapMuscles => '点击你想训练的肌肉部位 — 正面与背面。';
 
   @override
-  String get noMusclesYet => '尚未选择肌肉 — 点击人体图开始选择。';
-
-  @override
   String get continueBtn => '继续';
 
   @override
@@ -193,14 +190,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nextExercise => '下一个动作';
-
-  @override
-  String get skipExercise => '跳过这个动作？';
-
-  @override
-  String skipExerciseBody(String name) {
-    return '你还没有标记任何一组，所以「$name」不会被记录。';
-  }
 
   @override
   String get dropExerciseAction => '移除动作';
@@ -272,9 +261,6 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get saveAndExit => 'SAVE AND EXIT';
-
-  @override
   String get duration => '时长';
 
   @override
@@ -333,52 +319,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get restOverBody => '准备就绪 — 该开始下一组了！';
 
   @override
-  String get totalVolume30d => '30天总容量';
-
-  @override
-  String get volumeCumulative => '累计训练总容量';
-
-  @override
-  String get volumeChartEmpty => '完成并记录一次训练，曲线将从这里启程';
-
-  @override
-  String get weekRhythm => '每周训练节奏';
-
-  @override
-  String get weekRhythmHint => '真实反映你的周出勤规律。';
-
-  @override
-  String weekRhythmBest(String day) {
-    return '周$day是你的主场';
-  }
-
-  @override
-  String get weekRhythmEmpty => '完成并记录一次训练，本周节奏即可在此呈现。';
-
-  @override
-  String get allTime => '生涯总计';
-
-  @override
   String get allTimeSessions => '总训练次数';
 
   @override
   String get allTimeTime => '总训练时长';
 
   @override
-  String get allTimeVolume => '累计总负荷';
-
-  @override
   String get allTimeSets => '累计总组数';
-
-  @override
-  String allTimeAvg(String time) {
-    return '平均每次训练 $time';
-  }
-
-  @override
-  String hoursShort(int n) {
-    return '${n}h';
-  }
 
   @override
   String get consistency => '出勤与坚持';
@@ -396,12 +343,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get bodyweight => '体重';
-
-  @override
-  String get notLoggedYet => '暂无记录';
-
-  @override
-  String get logShort => '+ 记录';
 
   @override
   String get logBodyweight => '记录体重';
@@ -444,13 +385,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get muscleSplit => '各部位容量占比';
 
   @override
-  String get splitEmpty => '开始训练即可查看各个肌群的训练量分布。';
-
-  @override
   String get personalRecords => '个人纪录';
-
-  @override
-  String get prEmpty => '随着训练组数的记录，你的个人纪录将展示于此。';
 
   @override
   String get strength1rm => '力量表现 · 估算 1RM';
@@ -484,9 +419,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get bodyweightHistory => '历史记录';
 
   @override
-  String get noBodyweightYet => '暂无记录。';
-
-  @override
   String get exercisesCaps => '动作';
 
   @override
@@ -506,6 +438,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get levelFilter => '难度';
+
+  @override
+  String get kindLabel => '类型';
+
+  @override
+  String get kindStrength => '力量';
+
+  @override
+  String get kindCalisthenics => '自重训练';
+
+  @override
+  String get kindCardio => '有氧';
+
+  @override
+  String get kindStretch => '拉伸';
 
   @override
   String get newExercise => '新建动作';
@@ -571,11 +518,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notePlaceholder => '发力感、器械调试、动作细节、心得…';
 
   @override
-  String showAllNotes(int n) {
-    return '查看全部 $n 条笔记';
-  }
-
-  @override
   String notHere(String gear, String place) {
     return '$place 暂无 $gear';
   }
@@ -590,9 +532,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get places => '我的训练场地';
 
   @override
-  String get placesShort => '场地';
-
-  @override
   String get placesHint => '标记各个场地的可用器械，动作库将智能仅展示该场地支持的动作。';
 
   @override
@@ -602,25 +541,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get placeNew => '新建场地';
 
   @override
-  String get placeNameLabel => '场地名称';
-
-  @override
   String get placeNamePlaceholder => '家庭、健身房、公园……';
 
   @override
   String get placeGearLabel => '场地现有器械';
-
-  @override
-  String placeGearCount(int n) {
-    String _temp0 = intl.Intl.pluralLogic(
-      n,
-      locale: localeName,
-      other: '$n 种器械',
-      one: '1 种器械',
-      zero: '未勾选器械',
-    );
-    return '$_temp0';
-  }
 
   @override
   String placeExercises(int n) {
@@ -946,9 +870,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sharePick => '你想分享什么？';
 
   @override
-  String get shareSession => '本次训练结算';
-
-  @override
   String get shareStreak => '训练日历';
 
   @override
@@ -976,12 +897,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get shareVolumeLabel => '总负荷';
 
   @override
-  String get shareSetsLabel => '总组数';
-
-  @override
-  String get shareNothing => '请先完成一次训练，暂无数据可供展示';
-
-  @override
   String get restForExercise => '该动作专属间歇时间';
 
   @override
@@ -1004,9 +919,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get setTypeFailure => '力竭组';
-
-  @override
-  String get setTypeHint => '热身组不会计入正式容量与个人纪录（PR）。';
 
   @override
   String get addWarmup => '添加热身组';
@@ -1083,7 +995,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get newRoutineName => '新计划';
 
   @override
-  String get dragToReorder => '长按并拖动以调整顺序 — 这将决定你的训练顺序。';
+  String get dragToReorder => '拖动带点的手柄调整顺序，这就是你的训练顺序。';
 
   @override
   String reorderHandle(String name) {
@@ -1103,9 +1015,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get drop => '移除';
-
-  @override
-  String get addToWorkout => '添加动作';
 
   @override
   String get resetData => '清空全部数据';
@@ -1139,9 +1048,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get cantOpenLink => '无法打开该链接';
-
-  @override
-  String get preferences => 'PREFERENCES';
 
   @override
   String get theme => '外观主题';
@@ -1233,7 +1139,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get importBackup => '导入备份';
 
   @override
-  String get importHint => '选择从 Zeus 导出的 .json 备份文件。这将会覆盖你当前的数据。';
+  String get importHint => '选择从 GymMane 导出的 .json 备份文件。这将会覆盖你当前的数据。';
 
   @override
   String get import => '导入';
@@ -1275,7 +1181,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get aboutGymmane => '关于 Zeus';
+  String get aboutGymmane => '关于 GymMane';
 
   @override
   String get yourProfile => '个人资料';
@@ -1332,9 +1238,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chooseGallery => '从相册选择';
 
   @override
-  String get backupCopied => '备份数据已复制到剪贴板';
-
-  @override
   String get backupImported => '备份已成功导入';
 
   @override
@@ -1342,9 +1245,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nothingToExport => '暂无可导出的数据 — 请先记录一次训练';
-
-  @override
-  String get athlete => '健身者';
 
   @override
   String calculatorsCount(int n) {
@@ -1390,11 +1290,6 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String perSideCount(int n) {
     return '单侧各 $n 片';
-  }
-
-  @override
-  String rampSet(String pct, int reps) {
-    return '$pct · $reps 次';
   }
 
   @override
@@ -1627,10 +1522,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get exercisesInsideWhy => '全部配有动作动画和分步图文指导。';
 
   @override
-  String get calculatorsInside => '6 款实用计算器';
+  String get calculatorsInside => '8 款实用计算器';
 
   @override
-  String get calculatorsInsideWhy => '涵盖 1RM、杠铃片、BMI、热量、体脂率和热身推算。';
+  String get calculatorsInsideWhy => '涵盖 1RM、杠铃片、BMI、热量、体脂率、热身、RPE 负重和 DOTS 力量水平推算。';
 
   @override
   String get mathInside => '真实可信的数据';
@@ -1639,29 +1534,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mathInsideWhy => '容量、纪录和打卡连胜均由你的真实训练组数如实计算，绝无虚饰。';
 
   @override
-  String get yourNumbers => '你的数据概览';
-
-  @override
-  String get sessionsCaps => '训练总次数';
-
-  @override
-  String get liftedCaps => '总举起重量';
-
-  @override
   String get streakCaps => '连续打卡';
 
   @override
   String daysUnit(int n) {
     String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '天', one: '天');
     return '$_temp0';
-  }
-
-  @override
-  String get restDefaultLabel => '默认组间休息';
-
-  @override
-  String restDefault(int s) {
-    return '默认为 $s 秒 — 可在设置中修改';
   }
 
   @override
@@ -1786,9 +1664,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get unlockWorkout => '解锁';
 
   @override
-  String get lockedCaps => '已锁定';
-
-  @override
   String get holdToUnlock => '长按解锁';
 
   @override
@@ -1851,6 +1726,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get trainReminderHint => '在你安排了计划的日子，按这个时间提醒你。';
 
   @override
+  String get reminderExactTime => '精确时间';
+
+  @override
+  String get toastSoundSetting => '提示音';
+
+  @override
+  String get toastSoundHint => '顶部弹出提示时的轻柔提示音。';
+
+  @override
   String get notifTrainChannel => '训练提醒';
 
   @override
@@ -1863,21 +1747,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notifTrainBody => '你的训练计划在等你。';
 
   @override
-  String get exportCatalog => '导出动作清单';
-
-  @override
-  String get importRoutine => '导入训练计划（JSON）';
-
-  @override
   String get planIntro => '只用这份清单里的动作，帮我做一份训练计划。';
 
   @override
   String get planFormat => '只用 JSON 回答，格式如下：';
-
-  @override
-  String planImported(int n) {
-    return '已向训练计划加入 $n 个动作';
-  }
 
   @override
   String get planNothing => '该文件中的动作都不在你的动作库里';
@@ -2005,9 +1878,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get logRpe => '记录用力程度（RPE）';
 
   @override
-  String get rpeTitle => '用力程度（RPE）';
-
-  @override
   String get rpeHint => '10 表示一次也做不动了，8 表示还能再做两次。';
 
   @override
@@ -2023,19 +1893,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiRoutine => '用 AI 生成计划';
 
   @override
-  String get aiIntro => 'Zeus 不会和任何 AI 通信。你把动作清单导出，粘贴给你惯用的助手，再把它的回答导回来。手机不会自己往外发任何东西。';
-
-  @override
-  String get aiStep1 => '导出你的动作清单。如果选了场地，只会包含你在那里能做的动作。';
-
-  @override
-  String get aiStep2 => '把这个文件交给任意 AI，请它给你一份训练计划。';
-
-  @override
-  String get aiStep3 => '把它的回答存成文件，JSON 或纯文本都可以。';
-
-  @override
-  String get aiStep4 => '在这里导入。名称会和你的动作库对上，计划就建好了。';
+  String get aiIntro => 'GymMane 不会和任何 AI 通信。你把动作清单导出，粘贴给你惯用的助手，再把它的回答导回来。手机不会自己往外发任何东西。';
 
   @override
   String aiMissing(int n) {
@@ -2055,7 +1913,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get awardFirstStepName => '第一步';
 
   @override
-  String get awardFirstStepLine => '欢迎来到 Zeus，这枚是送你的。';
+  String get awardFirstStepLine => '欢迎来到 GymMane，这枚是送你的。';
 
   @override
   String get awardFirstWorkoutName => '第一次训练';
@@ -2115,9 +1973,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get awardsTitle => '勋章';
 
   @override
-  String get awardWon => '已获得';
-
-  @override
   String get yearTitle => '你的一年';
 
   @override
@@ -2142,19 +1997,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get awardSaved => '已保存到相册';
 
   @override
-  String get awardStreakBottom => '连续';
-
-  @override
-  String get awardStreak7Top => '七天';
-
-  @override
   String get awardStreak7Name => '七天';
 
   @override
   String get awardStreak7Line => '整整一周，一天都没落下。';
-
-  @override
-  String get awardStreak30Top => '三十天';
 
   @override
   String get awardStreak30Name => '三十天';
@@ -2163,34 +2009,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get awardStreak30Line => '连续一个月，已经成为习惯。';
 
   @override
-  String get awardWorkouts100Top => '一百次';
-
-  @override
-  String get awardWorkouts100Bottom => '训练';
-
-  @override
   String get awardWorkouts100Name => '一百次训练';
 
   @override
   String get awardWorkouts100Line => '完整记录了一百次训练。';
 
   @override
-  String get awardTonnes100Top => '一百';
-
-  @override
-  String get awardTonnes100Bottom => '吨';
-
-  @override
   String get awardTonnes100Name => '一百吨';
 
   @override
   String get awardTonnes100Line => '你举起的总重量达到 100,000 公斤。';
-
-  @override
-  String get awardSets1000Top => '一千';
-
-  @override
-  String get awardSets1000Bottom => '组';
 
   @override
   String get awardSets1000Name => '一千组';
@@ -2206,9 +2034,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get pickBadge => '徽章';
-
-  @override
-  String get badgeTitle => '你的徽章';
 
   @override
   String get statWorkouts => '训练次数';
@@ -2241,16 +2066,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get snapNow => '拍一张';
 
   @override
-  String get calendarLegend => '训练 · 照片';
-
-  @override
   String get addCover => '添加封面';
 
   @override
   String get addTodayWidget => '今天是否完成';
-
-  @override
-  String get monthTitle => '本月';
 
   @override
   String get photosCard => '你的照片';
@@ -2342,11 +2161,6 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String awardProgressLabel(String value, String goal) {
-    return '$value / $goal';
-  }
-
-  @override
   String badgeName(String id) {
     String _temp0 = intl.Intl.selectLogic(id, {'gold': '金色', 'blue': '蓝色', 'green': '绿色', 'other': '徽章'});
     return '$_temp0';
@@ -2400,7 +2214,14 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get badgeHint => '选一个颜色，再次点击已选的即可取消。仅供自己使用：无需验证，也无需付费。';
+  String photosSelected(int n) {
+    return '已选 $n 张';
+  }
+
+  @override
+  String deletePhotosTitle(int n) {
+    return '删除 $n 张照片？';
+  }
 
   @override
   String get momentsEmptyHint => '拍下健身房、白板、杠铃的配重……任何你想记住的东西。照片只留在手机里，只有你能看到。';
@@ -2498,6 +2319,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get demoOff => '隐藏';
 
   @override
+  String get demoLoopTitle => '演示动画';
+
+  @override
+  String get demoLoopAlways => '循环';
+
+  @override
+  String get demoLoopShort => '10 秒';
+
+  @override
+  String get demoLoopHint => '播放约 10 秒后停在起始姿势。点按演示可再次观看。';
+
+  @override
   String get alarmStyleTitle => '休息结束时';
 
   @override
@@ -2523,12 +2356,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get suggestInWorkoutsHint => '关闭后不会出现在为你挑选的动作里，但仍可手动添加。';
-
-  @override
-  String get dontSuggest => '不再推荐';
-
-  @override
-  String get noLongerSuggested => 'It won\'t be suggested again';
 
   @override
   String get onbPlaceTitle => '你在哪里训练？';
@@ -2606,6 +2433,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get setTypeRestPause => '休息暂停';
 
   @override
+  String get setTypeNormalInfo => '普通组，计入训练量和个人纪录。';
+
+  @override
+  String get setTypeWarmupInfo => '用于热身的轻重量组，不计入训练量和个人纪录。';
+
+  @override
+  String get setTypeDropInfo => '一组结束后立刻降低重量，不休息继续做。';
+
+  @override
+  String get setTypeFailureInfo => '做到无法再以标准动作完成一次为止。记录实际完成的次数。';
+
+  @override
+  String get setTypeRestPauseInfo => '一组后休息 10 到 20 秒，再挤出几次。';
+
+  @override
   String get planFormatNotes =>
       '动作名称请完全按照列表书写。\"sets\"、\"reps\"、\"weight\"（按给定单位）、\"rest\"（秒）和 \"days\" 都是可选的。\"superset\": true 表示与下一个动作组成超级组。多周计划请像第二个示例那样放在 \"weeks\" 里。';
 
@@ -2622,9 +2464,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get clearPlan => '清除计划';
 
   @override
-  String get planChip => '计划';
-
-  @override
   String get shareRoutine => '分享训练计划';
 
   @override
@@ -2635,14 +2474,14 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String shareMessage(String name) {
-    return '$name —— 用 Zeus 打开这个文件即可添加。';
+    return '$name —— 用 GymMane 打开这个文件即可添加。';
   }
 
   @override
   String get importRoutines => '导入训练计划';
 
   @override
-  String get importPasteHint => '在这里粘贴训练计划：Zeus 分享的内容、AI 的回答、JSON 或 CSV 都可以。';
+  String get importPasteHint => '在这里粘贴训练计划：GymMane 分享的内容、AI 的回答、JSON 或 CSV 都可以。';
 
   @override
   String get pasteAction => '粘贴';
@@ -2667,10 +2506,10 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get nothingToImport => '这里没有 Zeus 能导入的内容';
+  String get nothingToImport => '这里没有 GymMane 能导入的内容';
 
   @override
-  String get aiStepCopy => '复制请求。它包含你的动作列表和 Zeus 能读取的格式。';
+  String get aiStepCopy => '复制请求。它包含你的动作列表和 GymMane 能读取的格式。';
 
   @override
   String get aiStepAsk => '把它粘贴到任意 AI 里，说出你的需求：每周几天、目标、几周。';
@@ -2744,9 +2583,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tapToSkip => '点按跳过';
 
   @override
-  String get tapToStop => '点按停止';
-
-  @override
   String get screenLocked => '屏幕已锁定';
 
   @override
@@ -2809,19 +2645,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get shareIntroTitle => '分享这个计划';
 
   @override
-  String get shareIntroBody => '发给你的伴侣、朋友或家人。他们会收到一个小文件，用 Zeus 打开，一点就能加入，组数和重量都在。';
+  String get shareIntroBody => '发给你的伴侣、朋友或家人。他们会收到一个小文件，用 GymMane 打开，一点就能加入，组数和重量都在。';
 
   @override
   String get removedFromRoutine => '已从计划中移除';
 
   @override
-  String get radarTitle => '本月';
+  String get radarTitle => '最近 30 天';
 
   @override
   String get radarHint => '看看哪些部位需要多练';
 
   @override
-  String get radarEmpty => '本月训练后就能看到你的均衡度';
+  String get radarEmpty => '练几天就能看到你的均衡情况';
 
   @override
   String get radarBalanced => '目前很均衡';
@@ -2847,19 +2683,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get effortHint => 'RPE：10 表示一次都做不动了，8 表示还能再做两次。RIR 表示还剩几次。记录后，估算 1RM 会使用 RPE 表。';
 
   @override
-  String get rirTitle => '余力 (RIR)';
-
-  @override
   String get rirHint => '0 表示一次都做不动了，2 表示还能再做两次。';
 
   @override
   String get addWeekWidget => '添加本周小组件';
 
   @override
-  String get gamificationSetting => '勋章（游戏化）';
-
-  @override
-  String get gamificationHint => '勋章、运动员等级与里程碑庆祝';
+  String get gamificationSetting => '勋章和等级';
 
   @override
   String repCount(int n) {
@@ -3007,6 +2837,352 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backToTop => '回到顶部';
+
+  @override
+  String get deleteExerciseTitle => '删除这个动作？';
+
+  @override
+  String deleteExerciseBody(String name) {
+    return '“$name”将从动作库和训练计划中移除，之前的训练记录会保留。';
+  }
+
+  @override
+  String get exportForStravaHint => '请在浏览器中打开 strava.com/upload/select 上传（Strava 应用无法导入文件），会显示为带组数的力量训练。';
+
+  @override
+  String get manualStartTime => '开始时间';
+
+  @override
+  String get manualDuration => '时长';
+
+  @override
+  String get manualDurationUnset => '添加时长';
+
+  @override
+  String get stravaRow => '导出到 Strava（测试版）';
+
+  @override
+  String get stravaBeta => '测试版';
+
+  @override
+  String get stravaIntro =>
+      '选择一次训练导出到 Strava。你会得到一个 .fit 文件：在浏览器中打开 strava.com/upload/select 上传，会显示为带组数的力量训练。';
+
+  @override
+  String get stravaEmpty => '还没有可导出的训练。';
+
+  @override
+  String get tapToPause => '点按暂停';
+
+  @override
+  String get holdPausedHint => '已暂停 · 点按继续';
+
+  @override
+  String get finishHoldNow => '现在完成这组';
+
+  @override
+  String get barWeightExercise => '杠铃杆或滑车重量';
+
+  @override
+  String get barWeightHint => '杠铃片计算器会用到';
+
+  @override
+  String get barWeightCustom => '自定义 · 点按重置';
+
+  @override
+  String get groupRename => '重命名分组';
+
+  @override
+  String get groupUngroup => '取消分组,保留计划';
+
+  @override
+  String get groupDeleteAll => '删除分组及其计划';
+
+  @override
+  String groupDeleteTitle(String name) {
+    return '删除“$name”?';
+  }
+
+  @override
+  String groupDeleteBody(String count) {
+    return '将删除$count。训练记录会保留。';
+  }
+
+  @override
+  String get tplRr => 'r/bodyweightfitness 的经典计划:每周三天全身训练。变轻松了就进阶到下一级。';
+
+  @override
+  String get levelUpKicker => '下一步';
+
+  @override
+  String levelUpBody(int reps, String name) {
+    return '$name 连续两次训练完成 3×$reps。准备好进阶了吗?';
+  }
+
+  @override
+  String levelUpSwap(String routine) {
+    return '在$routine中替换';
+  }
+
+  @override
+  String get levelUpSee => '看看怎么做';
+
+  @override
+  String get levelUpLater => '以后再说';
+
+  @override
+  String get levelUpStay => '继续做这个';
+
+  @override
+  String levelUpSwapped(String name, String routine) {
+    return '$name 已加入$routine';
+  }
+
+  @override
+  String get levelUpStayed => '不再为这个动作提示进阶';
+
+  @override
+  String get levelHintsSetting => '提示下一步进阶';
+
+  @override
+  String get heatmapLabelsSetting => '在活动图上显示星期和月份';
+
+  @override
+  String get rmPercent => '百分比';
+
+  @override
+  String rmAtPercent(String pct) {
+    return '最大重量的 $pct';
+  }
+
+  @override
+  String get copyWorkout => '复制为文本';
+
+  @override
+  String get goalSet => '设定目标';
+
+  @override
+  String get goalTargetReps => '目标次数';
+
+  @override
+  String goalToGo(String value) {
+    return '还差 $value';
+  }
+
+  @override
+  String get goalReached => '目标达成';
+
+  @override
+  String goalDaysLeft(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '还剩 $n 天');
+    return '$_temp0';
+  }
+
+  @override
+  String get goalOverdue => '已过期限';
+
+  @override
+  String get goalDeadline => '截止日期';
+
+  @override
+  String get goalNoDeadline => '无截止日期';
+
+  @override
+  String get goalRemove => '删除目标';
+
+  @override
+  String get exerciseNameMissing => '请输入名称';
+
+  @override
+  String get aliasesLabel => '别名（可选）';
+
+  @override
+  String get aliasesHint => '其他叫法，用逗号分隔';
+
+  @override
+  String alsoCalled(String names) {
+    return '又称：$names';
+  }
+
+  @override
+  String get addToRoutine => '加入计划';
+
+  @override
+  String inRoutines(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '已在 $n 个计划中', zero: '还没加入任何计划');
+    return '$_temp0';
+  }
+
+  @override
+  String get alreadyInRoutine => '已在其中';
+
+  @override
+  String get restInRoutine => '本计划中的休息';
+
+  @override
+  String get restInRoutineHint => '与动作设置相同';
+
+  @override
+  String get restInRoutineReset => '仅此处 · 点按恢复';
+
+  @override
+  String get swapExercise => '更换动作';
+
+  @override
+  String get swapShort => '更换';
+
+  @override
+  String swapHint(String name) {
+    return '今天用它代替$name。结束时可以保留到计划中。';
+  }
+
+  @override
+  String get swapKeepsDone => '已完成的组会保留，新动作接着做剩下的。';
+
+  @override
+  String swapSameMuscle(String muscle) {
+    return '同一肌群 · $muscle';
+  }
+
+  @override
+  String get swapDoneBefore => '做过';
+
+  @override
+  String get multiPlanSettingHint => '同一天安排多个计划。';
+
+  @override
+  String get levelHintsHint => '动作变轻松时，推荐更难的版本。';
+
+  @override
+  String get focusCardHint => '今天的计划，显示在首页顶部。';
+
+  @override
+  String get gamificationHint => '奖章、等级和完成时的庆祝。';
+
+  @override
+  String get exerciseSettings => '此动作的设置';
+
+  @override
+  String get placeActiveNow => '你在这里';
+
+  @override
+  String get placeTapToUse => '点按在这里训练';
+
+  @override
+  String get intervalDays => '天';
+
+  @override
+  String goalDaysShort(int done, int target) {
+    return '$done/$target 天';
+  }
+
+  @override
+  String get toolNameRpe => '按 RPE 算重量';
+
+  @override
+  String get toolTitleRpe => '按 RPE 算重量';
+
+  @override
+  String get toolDescRpe => '想要的强度该用多重';
+
+  @override
+  String get toolNameDots => '力量水平';
+
+  @override
+  String get toolTitleDots => '力量水平（DOTS）';
+
+  @override
+  String get toolDescDots => '相对体重的力量';
+
+  @override
+  String rpeResultHint(int reps, String rpe) {
+    return '$reps 次 · RPE $rpe';
+  }
+
+  @override
+  String get rpeYourSet => '刚做完的一组';
+
+  @override
+  String get rpeGoal => '你想做的';
+
+  @override
+  String rpeOneRmLine(String value) {
+    return '预估 1RM：$value';
+  }
+
+  @override
+  String get rpeExplain => 'RPE 10 表示一次也做不了了；8 表示还剩两次。';
+
+  @override
+  String get dotsBestLifts => '你的最佳成绩';
+
+  @override
+  String get dotsSquat => '深蹲';
+
+  @override
+  String get dotsBench => '卧推';
+
+  @override
+  String get dotsDeadlift => '硬拉';
+
+  @override
+  String dotsTotalLine(String value) {
+    return '总计：$value';
+  }
+
+  @override
+  String get dotsExplain => '不论体重，都能和任何人比较力量。用你的单次最佳成绩或预估 1RM。';
+
+  @override
+  String get dotsLevel0 => '新手';
+
+  @override
+  String get dotsLevel1 => '中级';
+
+  @override
+  String get dotsLevel2 => '高级';
+
+  @override
+  String get dotsLevel3 => '很高级';
+
+  @override
+  String get dotsLevel4 => '精英';
+
+  @override
+  String get rpeEffortLabel => '强度（RPE）';
+
+  @override
+  String get restRowHint => '组间休息，动作没有单独设置时使用。';
+
+  @override
+  String get effortRowHint => '每组记录 RPE 或 RIR。';
+
+  @override
+  String get countdownHint => '第一组前 3、2、1 倒数。';
+
+  @override
+  String get keepScreenOnHint => '训练时屏幕保持常亮。';
+
+  @override
+  String get demoSizeRowHint => '训练时显示的动作图。';
+
+  @override
+  String get demoLoopRowHint => '动画循环还是停止。';
+
+  @override
+  String get trainReminderRowHint => '训练日提醒你。';
+
+  @override
+  String get alarmSoundRowHint => '休息结束时的声音。';
+
+  @override
+  String get alarmStyleRowHint => '静音模式下是否响铃。';
+
+  @override
+  String get recommendedRowHint => '首页推荐的动作。';
+
+  @override
+  String get noMusclesYet => 'No muscles selected yet — tap the body to begin.';
 
   @override
   String get googleDriveBackup => 'Google Drive backup';
@@ -3204,9 +3380,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get tapMuscles => '點選你想訓練的肌群 — 正面與背面。';
 
   @override
-  String get noMusclesYet => '尚未選擇肌群 — 點選身體開始。';
-
-  @override
   String get continueBtn => '繼續';
 
   @override
@@ -3264,14 +3437,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get nextExercise => '下一個動作';
-
-  @override
-  String get skipExercise => '略過此動作？';
-
-  @override
-  String skipExerciseBody(String name) {
-    return '你沒有將任何一組標記為完成，因此「$name」不會留下紀錄。';
-  }
 
   @override
   String get dropExerciseAction => '移除動作';
@@ -3343,9 +3508,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   }
 
   @override
-  String get saveAndExit => 'SAVE AND EXIT';
-
-  @override
   String get duration => '時長';
 
   @override
@@ -3404,52 +3566,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get restOverBody => '繼續吧 — 下一組在等你。';
 
   @override
-  String get totalVolume30d => '總訓練量 · 30 天';
-
-  @override
-  String get volumeCumulative => '你移動過的所有公斤數累計';
-
-  @override
-  String get volumeChartEmpty => '記錄一次訓練後，曲線會從這裡開始';
-
-  @override
-  String get weekRhythm => '每週節奏';
-
-  @override
-  String get weekRhythmHint => '你實際有訓練的日子。';
-
-  @override
-  String weekRhythmBest(String day) {
-    return '$day 是你的日子';
-  }
-
-  @override
-  String get weekRhythmEmpty => '記錄訓練後，你的一週會在這裡逐漸成形。';
-
-  @override
-  String get allTime => '全部時間';
-
-  @override
   String get allTimeSessions => '訓練';
 
   @override
   String get allTimeTime => '時間';
 
   @override
-  String get allTimeVolume => '舉起';
-
-  @override
   String get allTimeSets => '組數';
-
-  @override
-  String allTimeAvg(String time) {
-    return '每次訓練平均 $time';
-  }
-
-  @override
-  String hoursShort(int n) {
-    return '$n 小時';
-  }
 
   @override
   String get consistency => '持續性';
@@ -3467,12 +3590,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get bodyweight => '體重';
-
-  @override
-  String get notLoggedYet => '尚未記錄';
-
-  @override
-  String get logShort => '+ 記錄';
 
   @override
   String get logBodyweight => '記錄體重';
@@ -3515,13 +3632,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get muscleSplit => '肌群分布';
 
   @override
-  String get splitEmpty => '訓練後即可查看訓練量在各肌群間的分布。';
-
-  @override
   String get personalRecords => '個人紀錄';
-
-  @override
-  String get prEmpty => '當你記錄組數時，個人紀錄會顯示在這裡。';
 
   @override
   String get strength1rm => '力量 · 估算 1RM';
@@ -3555,9 +3666,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get bodyweightHistory => '歷史';
 
   @override
-  String get noBodyweightYet => '尚無紀錄。';
-
-  @override
   String get exercisesCaps => '動作';
 
   @override
@@ -3577,6 +3685,21 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get levelFilter => '等級';
+
+  @override
+  String get kindLabel => '類型';
+
+  @override
+  String get kindStrength => '力量';
+
+  @override
+  String get kindCalisthenics => '自重訓練';
+
+  @override
+  String get kindCardio => '有氧';
+
+  @override
+  String get kindStretch => '伸展';
 
   @override
   String get newExercise => '新增動作';
@@ -3642,11 +3765,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get notePlaceholder => '提示、設定、感受…';
 
   @override
-  String showAllNotes(int n) {
-    return '顯示全部 $n 則筆記';
-  }
-
-  @override
   String notHere(String gear, String place) {
     return '$place 沒有 $gear';
   }
@@ -3661,9 +3779,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get places => '我的地點';
 
   @override
-  String get placesShort => '地點';
-
-  @override
   String get placesHint => '設定每個地點有哪些器材，資料庫就只會顯示你實際能做的動作。';
 
   @override
@@ -3673,25 +3788,10 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get placeNew => '新增地點';
 
   @override
-  String get placeNameLabel => '名稱';
-
-  @override
   String get placeNamePlaceholder => '家、健身房、公園…';
 
   @override
   String get placeGearLabel => '可用器材';
-
-  @override
-  String placeGearCount(int n) {
-    String _temp0 = intl.Intl.pluralLogic(
-      n,
-      locale: localeName,
-      other: '$n 種器材',
-      one: '1 種器材',
-      zero: '未選擇器材',
-    );
-    return '$_temp0';
-  }
 
   @override
   String placeExercises(int n) {
@@ -4017,9 +4117,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get sharePick => '你想顯示什麼？';
 
   @override
-  String get shareSession => '上次訓練';
-
-  @override
   String get shareStreak => '連續紀錄與持續性';
 
   @override
@@ -4047,12 +4144,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get shareVolumeLabel => '訓練量';
 
   @override
-  String get shareSetsLabel => '組數';
-
-  @override
-  String get shareNothing => '請先記錄一次訓練 — 目前還沒有可顯示的內容';
-
-  @override
   String get restForExercise => '此動作的休息';
 
   @override
@@ -4075,9 +4166,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get setTypeFailure => '力竭';
-
-  @override
-  String get setTypeHint => '暖身組不計入訓練量或紀錄。';
 
   @override
   String get addWarmup => '暖身';
@@ -4154,7 +4242,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get newRoutineName => '新增課表';
 
   @override
-  String get dragToReorder => '長按並拖曳以重新排序 — 這就是訓練順序。';
+  String get dragToReorder => '拖曳帶點的把手調整順序，這就是你的訓練順序。';
 
   @override
   String reorderHandle(String name) {
@@ -4174,9 +4262,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get drop => '移除';
-
-  @override
-  String get addToWorkout => '新增動作';
 
   @override
   String get resetData => '刪除我的所有資料';
@@ -4210,9 +4295,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get cantOpenLink => '無法開啟連結';
-
-  @override
-  String get preferences => 'PREFERENCES';
 
   @override
   String get theme => '主題';
@@ -4304,7 +4386,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get importBackup => '匯入備份';
 
   @override
-  String get importHint => '選擇從 Zeus 匯出的 .zip 備份（或舊版 .json）。目前資料（包括媒體）將被取代。';
+  String get importHint => '選擇從 GymMane 匯出的 .zip 備份（或舊版 .json）。目前資料（包括媒體）將被取代。';
 
   @override
   String get import => '匯入';
@@ -4346,7 +4428,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   }
 
   @override
-  String get aboutGymmane => '關於 Zeus';
+  String get aboutGymmane => '關於 GymMane';
 
   @override
   String get yourProfile => '你的個人檔案';
@@ -4403,9 +4485,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get chooseGallery => '從相簿選擇';
 
   @override
-  String get backupCopied => '備份已複製到剪貼簿';
-
-  @override
   String get backupImported => '備份已匯入';
 
   @override
@@ -4413,9 +4492,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get nothingToExport => '尚無可匯出的內容 — 請先記錄一次訓練';
-
-  @override
-  String get athlete => '運動員';
 
   @override
   String calculatorsCount(int n) {
@@ -4461,11 +4537,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   @override
   String perSideCount(int n) {
     return '每側 × $n';
-  }
-
-  @override
-  String rampSet(String pct, int reps) {
-    return '$pct · $reps 次';
   }
 
   @override
@@ -4698,10 +4769,10 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get exercisesInsideWhy => '每個動作都有動畫與逐步說明。';
 
   @override
-  String get calculatorsInside => '6 個計算器';
+  String get calculatorsInside => '8 個計算器';
 
   @override
-  String get calculatorsInsideWhy => '1RM、槓片、BMI、卡路里、體脂與暖身 — 全都基於公開公式。';
+  String get calculatorsInsideWhy => '1RM、槓片、BMI、卡路里、體脂、暖身、RPE 重量與 DOTS 力量等級 — 全都基於公開公式。';
 
   @override
   String get mathInside => '透明計算';
@@ -4710,29 +4781,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get mathInsideWhy => '訓練量、紀錄與組數都依你的資料計算，沒有只是裝飾的數字。';
 
   @override
-  String get yourNumbers => '你的數據';
-
-  @override
-  String get sessionsCaps => '訓練';
-
-  @override
-  String get liftedCaps => '舉起';
-
-  @override
   String get streakCaps => '連續';
 
   @override
   String daysUnit(int n) {
     String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '天', one: '天');
     return '$_temp0';
-  }
-
-  @override
-  String get restDefaultLabel => '休息計時器';
-
-  @override
-  String restDefault(int s) {
-    return '預設：$s 秒 — 可在設定中變更';
   }
 
   @override
@@ -4857,9 +4911,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get unlockWorkout => '解鎖';
 
   @override
-  String get lockedCaps => '已鎖定';
-
-  @override
   String get holdToUnlock => '長按以解鎖';
 
   @override
@@ -4923,6 +4974,15 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get trainReminderHint => '在這個時間提醒你，但只會在課表排定的日子提醒。';
 
   @override
+  String get reminderExactTime => '精確時間';
+
+  @override
+  String get toastSoundSetting => '提示音';
+
+  @override
+  String get toastSoundHint => '頂部跳出提示時的輕柔提示音。';
+
+  @override
   String get notifTrainChannel => '訓練提醒';
 
   @override
@@ -4935,33 +4995,16 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get notifTrainBody => '你的課表在等你。';
 
   @override
-  String get exportCatalog => '匯出動作清單';
-
-  @override
-  String get importRoutine => '匯入課表（JSON）';
-
-  @override
   String get planIntro => '請只使用此清單中的動作為我建立訓練課表。';
 
   @override
   String get planFormat => '只以 JSON 回覆，格式如下：';
 
   @override
-  String planImported(int n) {
-    String _temp0 = intl.Intl.pluralLogic(
-      n,
-      locale: localeName,
-      other: '已新增 $n 個動作到課表',
-      one: '已新增 $n 個動作到課表',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get planNothing => '此檔案中的動作都與你的資料庫不符';
 
   @override
-  String get planFailed => '這個檔案不是 Zeus 能讀取的課表';
+  String get planFailed => '這個檔案不是 GymMane 能讀取的課表';
 
   @override
   String get routineGroup => '群組';
@@ -5085,9 +5128,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get logRpe => '記錄用力程度（RPE）';
 
   @override
-  String get rpeTitle => '用力程度（RPE）';
-
-  @override
   String get rpeHint => '10 = 無法再做一次；8 = 約還能做兩次。';
 
   @override
@@ -5103,19 +5143,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get aiRoutine => 'AI 課表';
 
   @override
-  String get aiIntro => 'Zeus 絕不直接與 AI 通訊。你先匯出動作清單，貼到你已在使用的 AI 助手，再把回覆匯入。任何資料都不會自行離開手機。';
-
-  @override
-  String get aiStep1 => '匯出動作清單。如果已選擇地點，清單只會包含你在那裡能做的動作。';
-
-  @override
-  String get aiStep2 => '把這個檔案交給你選擇的 AI，請它建立課表。';
-
-  @override
-  String get aiStep3 => '將回覆存成檔案 — JSON 或純文字都可以。';
-
-  @override
-  String get aiStep4 => '在這裡匯入。名稱會與你的資料庫比對並建立課表。';
+  String get aiIntro => 'GymMane 絕不直接與 AI 通訊。你先匯出動作清單，貼到你已在使用的 AI 助手，再把回覆匯入。任何資料都不會自行離開手機。';
 
   @override
   String aiMissing(int n) {
@@ -5141,7 +5169,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get awardFirstStepName => '第一步';
 
   @override
-  String get awardFirstStepLine => '歡迎來到 Zeus。這個送給你。';
+  String get awardFirstStepLine => '歡迎來到 GymMane。這個送給你。';
 
   @override
   String get awardFirstWorkoutName => '第一次訓練';
@@ -5201,9 +5229,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get awardsTitle => '獎牌';
 
   @override
-  String get awardWon => '已獲得';
-
-  @override
   String get yearTitle => '你的年度';
 
   @override
@@ -5228,19 +5253,10 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get awardSaved => '已儲存到相簿';
 
   @override
-  String get awardStreakBottom => '連續';
-
-  @override
-  String get awardStreak7Top => '七天';
-
-  @override
   String get awardStreak7Name => '七天';
 
   @override
   String get awardStreak7Line => '整整一週，一天都沒漏掉。';
-
-  @override
-  String get awardStreak30Top => '三十天';
 
   @override
   String get awardStreak30Name => '三十天';
@@ -5249,34 +5265,16 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get awardStreak30Line => '連續一個月。現在已成為習慣。';
 
   @override
-  String get awardWorkouts100Top => '一百';
-
-  @override
-  String get awardWorkouts100Bottom => '訓練';
-
-  @override
   String get awardWorkouts100Name => '一百次訓練';
 
   @override
   String get awardWorkouts100Line => '從頭到尾記錄一百次訓練。';
 
   @override
-  String get awardTonnes100Top => '一百';
-
-  @override
-  String get awardTonnes100Bottom => '噸';
-
-  @override
   String get awardTonnes100Name => '一百噸';
 
   @override
   String get awardTonnes100Line => '你累積舉起的重量達到 100,000 公斤。';
-
-  @override
-  String get awardSets1000Top => '一千';
-
-  @override
-  String get awardSets1000Bottom => '組';
 
   @override
   String get awardSets1000Name => '一千組';
@@ -5292,9 +5290,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get pickBadge => '徽章';
-
-  @override
-  String get badgeTitle => '你的徽章';
 
   @override
   String get statWorkouts => '訓練';
@@ -5327,16 +5322,10 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get snapNow => '現在拍攝';
 
   @override
-  String get calendarLegend => '訓練 · 照片';
-
-  @override
   String get addCover => '新增封面';
 
   @override
   String get addTodayWidget => '今日訓練是否完成';
-
-  @override
-  String get monthTitle => '本月';
 
   @override
   String get photosCard => '你的照片';
@@ -5428,11 +5417,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   }
 
   @override
-  String awardProgressLabel(String value, String goal) {
-    return '$value / $goal';
-  }
-
-  @override
   String badgeName(String id) {
     String _temp0 = intl.Intl.selectLogic(id, {'gold': '金色', 'blue': '藍色', 'green': '綠色', 'other': '徽章'});
     return '$_temp0';
@@ -5492,7 +5476,14 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   }
 
   @override
-  String get badgeHint => '選擇一種顏色，或點選目前顏色來移除。只供你自己使用 — 不會驗證，也完全免費。';
+  String photosSelected(int n) {
+    return '已選 $n 張';
+  }
+
+  @override
+  String deletePhotosTitle(int n) {
+    return '刪除 $n 張照片？';
+  }
 
   @override
   String get momentsEmptyHint => '拍下健身房、白板、上好槓片的槓鈴 — 任何你想記住的東西。照片留在手機上，只有你看得到。';
@@ -5590,6 +5581,18 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get demoOff => '隱藏';
 
   @override
+  String get demoLoopTitle => '示範動畫';
+
+  @override
+  String get demoLoopAlways => '循環';
+
+  @override
+  String get demoLoopShort => '10 秒';
+
+  @override
+  String get demoLoopHint => '播放約 10 秒後停在起始姿勢。點按示範即可再看一次。';
+
+  @override
   String get alarmStyleTitle => '休息結束時';
 
   @override
@@ -5615,12 +5618,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get suggestInWorkoutsHint => '關閉後不會出現在推薦中，但仍可手動加入。';
-
-  @override
-  String get dontSuggest => '不再推薦';
-
-  @override
-  String get noLongerSuggested => 'It won\'t be suggested again';
 
   @override
   String get onbPlaceTitle => '你在哪裡訓練？';
@@ -5698,6 +5695,21 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get setTypeRestPause => '休息暫停';
 
   @override
+  String get setTypeNormalInfo => '一般組，計入訓練量和個人紀錄。';
+
+  @override
+  String get setTypeWarmupInfo => '用於熱身的輕重量組，不計入訓練量和個人紀錄。';
+
+  @override
+  String get setTypeDropInfo => '一組結束後立刻降低重量，不休息繼續做。';
+
+  @override
+  String get setTypeFailureInfo => '做到無法再以標準動作完成一次為止。記錄實際完成的次數。';
+
+  @override
+  String get setTypeRestPauseInfo => '一組後休息 10 到 20 秒，再擠出幾次。';
+
+  @override
   String get planFormatNotes =>
       '動作名稱請完全照清單上的寫。\"sets\"、\"reps\"、\"weight\"（使用指定單位）、以秒計的 \"rest\" 和 \"days\" 都是選填。\"superset\": true 會把動作和下一個連起來。多週計畫請像第二個範例一樣，把課表放在 \"weeks\" 裡。';
 
@@ -5714,9 +5726,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get clearPlan => '清除規劃';
 
   @override
-  String get planChip => '規劃';
-
-  @override
   String get shareRoutine => '分享課表';
 
   @override
@@ -5727,14 +5736,14 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String shareMessage(String name) {
-    return '$name — 用 Zeus 開啟檔案即可加入。';
+    return '$name — 用 GymMane 開啟檔案即可加入。';
   }
 
   @override
   String get importRoutines => '匯入課表';
 
   @override
-  String get importPasteHint => '在這裡貼上課表：從 Zeus 分享的、AI 的回答、JSON 或 CSV。';
+  String get importPasteHint => '在這裡貼上課表：從 GymMane 分享的、AI 的回答、JSON 或 CSV。';
 
   @override
   String get pasteAction => '貼上';
@@ -5761,10 +5770,10 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   }
 
   @override
-  String get nothingToImport => '這裡沒有 Zeus 能匯入的內容';
+  String get nothingToImport => '這裡沒有 GymMane 能匯入的內容';
 
   @override
-  String get aiStepCopy => '複製這段請求。裡面有你的動作清單和 Zeus 讀得懂的格式。';
+  String get aiStepCopy => '複製這段請求。裡面有你的動作清單和 GymMane 讀得懂的格式。';
 
   @override
   String get aiStepAsk => '貼到任何 AI，說出你的需求：每週幾天、目標、幾週。';
@@ -5838,9 +5847,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get tapToSkip => '點一下略過';
 
   @override
-  String get tapToStop => '點一下停止';
-
-  @override
   String get screenLocked => '螢幕已鎖定';
 
   @override
@@ -5903,19 +5909,19 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get shareIntroTitle => '分享這個課表';
 
   @override
-  String get shareIntroBody => '傳給你的伴侶、朋友或家人。他們會收到一個小檔案，用 Zeus 開啟，一點就能加入，組數和重量都在。';
+  String get shareIntroBody => '傳給你的伴侶、朋友或家人。他們會收到一個小檔案，用 GymMane 開啟，一點就能加入，組數和重量都在。';
 
   @override
   String get removedFromRoutine => '已從課表移除';
 
   @override
-  String get radarTitle => '本月';
+  String get radarTitle => '最近 30 天';
 
   @override
   String get radarHint => '看看哪些部位需要多練';
 
   @override
-  String get radarEmpty => '本月訓練後就能看到你的均衡度';
+  String get radarEmpty => '練幾天就能看到你的均衡情況';
 
   @override
   String get radarBalanced => '目前很均衡';
@@ -5941,19 +5947,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get effortHint => 'RPE：10 表示一次都做不動了，8 表示還能再做兩次。RIR 表示還剩幾次。記錄後，估算 1RM 會使用 RPE 表。';
 
   @override
-  String get rirTitle => '餘力 (RIR)';
-
-  @override
   String get rirHint => '0 表示一次都做不動了，2 表示還能再做兩次。';
 
   @override
   String get addWeekWidget => '新增本週小工具';
 
   @override
-  String get gamificationSetting => '獎牌（遊戲化）';
-
-  @override
-  String get gamificationHint => '獎牌、運動員等級與里程碑慶祝';
+  String get gamificationSetting => '獎牌和等級';
 
   @override
   String repCount(int n) {
@@ -6101,6 +6101,352 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get backToTop => '回到頂端';
+
+  @override
+  String get deleteExerciseTitle => '刪除這個動作？';
+
+  @override
+  String deleteExerciseBody(String name) {
+    return '「$name」將從動作庫和課表中移除，之前的訓練紀錄會保留。';
+  }
+
+  @override
+  String get exportForStravaHint => '請在瀏覽器中開啟 strava.com/upload/select 上傳（Strava App 無法匯入檔案），會顯示為含組數的重量訓練。';
+
+  @override
+  String get manualStartTime => '開始時間';
+
+  @override
+  String get manualDuration => '時長';
+
+  @override
+  String get manualDurationUnset => '新增時長';
+
+  @override
+  String get stravaRow => '匯出到 Strava（測試版）';
+
+  @override
+  String get stravaBeta => '測試版';
+
+  @override
+  String get stravaIntro =>
+      '選擇一次訓練匯出到 Strava。你會得到一個 .fit 檔：在瀏覽器中開啟 strava.com/upload/select 上傳，會顯示為含組數的重量訓練。';
+
+  @override
+  String get stravaEmpty => '還沒有可匯出的訓練。';
+
+  @override
+  String get tapToPause => '點按暫停';
+
+  @override
+  String get holdPausedHint => '已暫停 · 點按繼續';
+
+  @override
+  String get finishHoldNow => '現在完成這組';
+
+  @override
+  String get barWeightExercise => '槓鈴桿或滑車重量';
+
+  @override
+  String get barWeightHint => '槓片計算器會用到';
+
+  @override
+  String get barWeightCustom => '自訂 · 點按重設';
+
+  @override
+  String get groupRename => '重新命名群組';
+
+  @override
+  String get groupUngroup => '取消群組,保留課表';
+
+  @override
+  String get groupDeleteAll => '刪除群組及其課表';
+
+  @override
+  String groupDeleteTitle(String name) {
+    return '刪除「$name」?';
+  }
+
+  @override
+  String groupDeleteBody(String count) {
+    return '將刪除$count。訓練紀錄會保留。';
+  }
+
+  @override
+  String get tplRr => 'r/bodyweightfitness 的經典計畫:每週三天全身訓練。變輕鬆了就進階到下一級。';
+
+  @override
+  String get levelUpKicker => '下一步';
+
+  @override
+  String levelUpBody(int reps, String name) {
+    return '$name 連續兩次訓練完成 3×$reps。準備好進階了嗎?';
+  }
+
+  @override
+  String levelUpSwap(String routine) {
+    return '在$routine中替換';
+  }
+
+  @override
+  String get levelUpSee => '看看怎麼做';
+
+  @override
+  String get levelUpLater => '以後再說';
+
+  @override
+  String get levelUpStay => '繼續做這個';
+
+  @override
+  String levelUpSwapped(String name, String routine) {
+    return '$name 已加入$routine';
+  }
+
+  @override
+  String get levelUpStayed => '不再為這個動作提示進階';
+
+  @override
+  String get levelHintsSetting => '提示下一步進階';
+
+  @override
+  String get heatmapLabelsSetting => '在活動圖上顯示星期和月份';
+
+  @override
+  String get rmPercent => '百分比';
+
+  @override
+  String rmAtPercent(String pct) {
+    return '最大重量的 $pct';
+  }
+
+  @override
+  String get copyWorkout => '複製為文字';
+
+  @override
+  String get goalSet => '設定目標';
+
+  @override
+  String get goalTargetReps => '目標次數';
+
+  @override
+  String goalToGo(String value) {
+    return '還差 $value';
+  }
+
+  @override
+  String get goalReached => '目標達成';
+
+  @override
+  String goalDaysLeft(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '還剩 $n 天');
+    return '$_temp0';
+  }
+
+  @override
+  String get goalOverdue => '已過期限';
+
+  @override
+  String get goalDeadline => '截止日期';
+
+  @override
+  String get goalNoDeadline => '無截止日期';
+
+  @override
+  String get goalRemove => '刪除目標';
+
+  @override
+  String get exerciseNameMissing => '請輸入名稱';
+
+  @override
+  String get aliasesLabel => '別名（選填）';
+
+  @override
+  String get aliasesHint => '其他叫法，用逗號分隔';
+
+  @override
+  String alsoCalled(String names) {
+    return '又稱：$names';
+  }
+
+  @override
+  String get addToRoutine => '加入課表';
+
+  @override
+  String inRoutines(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '已在 $n 個課表中', zero: '還沒加入任何課表');
+    return '$_temp0';
+  }
+
+  @override
+  String get alreadyInRoutine => '已在其中';
+
+  @override
+  String get restInRoutine => '本課表中的休息';
+
+  @override
+  String get restInRoutineHint => '與動作設定相同';
+
+  @override
+  String get restInRoutineReset => '僅此處 · 點按還原';
+
+  @override
+  String get swapExercise => '更換動作';
+
+  @override
+  String get swapShort => '更換';
+
+  @override
+  String swapHint(String name) {
+    return '今天用它代替$name。結束時可以保留到課表中。';
+  }
+
+  @override
+  String get swapKeepsDone => '已完成的組會保留，新動作接著做剩下的。';
+
+  @override
+  String swapSameMuscle(String muscle) {
+    return '同一肌群 · $muscle';
+  }
+
+  @override
+  String get swapDoneBefore => '做過';
+
+  @override
+  String get multiPlanSettingHint => '同一天安排多個課表。';
+
+  @override
+  String get levelHintsHint => '動作變輕鬆時，推薦更難的版本。';
+
+  @override
+  String get focusCardHint => '今天的課表，顯示在首頁頂部。';
+
+  @override
+  String get gamificationHint => '獎章、等級和完成時的慶祝。';
+
+  @override
+  String get exerciseSettings => '此動作的設定';
+
+  @override
+  String get placeActiveNow => '你在這裡';
+
+  @override
+  String get placeTapToUse => '點按在這裡訓練';
+
+  @override
+  String get intervalDays => '天';
+
+  @override
+  String goalDaysShort(int done, int target) {
+    return '$done/$target 天';
+  }
+
+  @override
+  String get toolNameRpe => '按 RPE 算重量';
+
+  @override
+  String get toolTitleRpe => '按 RPE 算重量';
+
+  @override
+  String get toolDescRpe => '想要的強度該用多重';
+
+  @override
+  String get toolNameDots => '力量水準';
+
+  @override
+  String get toolTitleDots => '力量水準（DOTS）';
+
+  @override
+  String get toolDescDots => '相對體重的力量';
+
+  @override
+  String rpeResultHint(int reps, String rpe) {
+    return '$reps 次 · RPE $rpe';
+  }
+
+  @override
+  String get rpeYourSet => '剛做完的一組';
+
+  @override
+  String get rpeGoal => '你想做的';
+
+  @override
+  String rpeOneRmLine(String value) {
+    return '預估 1RM：$value';
+  }
+
+  @override
+  String get rpeExplain => 'RPE 10 表示一次也做不了了；8 表示還剩兩次。';
+
+  @override
+  String get dotsBestLifts => '你的最佳成績';
+
+  @override
+  String get dotsSquat => '深蹲';
+
+  @override
+  String get dotsBench => '臥推';
+
+  @override
+  String get dotsDeadlift => '硬舉';
+
+  @override
+  String dotsTotalLine(String value) {
+    return '總計：$value';
+  }
+
+  @override
+  String get dotsExplain => '不論體重，都能和任何人比較力量。用你的單次最佳成績或預估 1RM。';
+
+  @override
+  String get dotsLevel0 => '新手';
+
+  @override
+  String get dotsLevel1 => '中級';
+
+  @override
+  String get dotsLevel2 => '高級';
+
+  @override
+  String get dotsLevel3 => '很高級';
+
+  @override
+  String get dotsLevel4 => '菁英';
+
+  @override
+  String get rpeEffortLabel => '強度（RPE）';
+
+  @override
+  String get restRowHint => '組間休息，動作沒有單獨設定時使用。';
+
+  @override
+  String get effortRowHint => '每組記錄 RPE 或 RIR。';
+
+  @override
+  String get countdownHint => '第一組前 3、2、1 倒數。';
+
+  @override
+  String get keepScreenOnHint => '訓練時螢幕保持常亮。';
+
+  @override
+  String get demoSizeRowHint => '訓練時顯示的動作圖。';
+
+  @override
+  String get demoLoopRowHint => '動畫循環還是停止。';
+
+  @override
+  String get trainReminderRowHint => '訓練日提醒你。';
+
+  @override
+  String get alarmSoundRowHint => '休息結束時的聲音。';
+
+  @override
+  String get alarmStyleRowHint => '靜音模式下是否響鈴。';
+
+  @override
+  String get recommendedRowHint => '首頁推薦的動作。';
+
+  @override
+  String get noMusclesYet => 'No muscles selected yet — tap the body to begin.';
 
   @override
   String get googleDriveBackup => 'Google Drive backup';

@@ -5,6 +5,7 @@ const int kDefaultRoutineSets = 3;
 mixin RoutinesState on FitCore, LibraryState {
   String? activeRoutineId;
   int _routineSeq = 0;
+  bool _editFromExercise = false;
 
   void goRoutines() => pushRoute('routines');
 
@@ -135,6 +136,7 @@ mixin RoutinesState on FitCore, LibraryState {
     made.sets.addAll(source.sets);
     made.chained.addAll(source.chained);
     made.plan.addAll({for (final e in source.plan.entries) e.key: [...e.value]});
+    made.rest.addAll(source.rest);
     made.group = source.group;
     made.color = source.color;
     _persist();
@@ -142,7 +144,30 @@ mixin RoutinesState on FitCore, LibraryState {
     return copy;
   }
 
+  void renameGroup(String from, String to) {
+    final name = to.trim();
+    for (final r in routines) {
+      if (r.group == from) r.group = name;
+    }
+    _persist();
+    notifyListeners();
+  }
+
+  void deleteGroup(String group) {
+    for (final id in [for (final r in routinesInGroup(group)) r.id]) {
+      _dropRoutine(id);
+    }
+    _persist();
+    notifyListeners();
+  }
+
   void deleteRoutine(String id) {
+    _dropRoutine(id);
+    _persist();
+    notifyListeners();
+  }
+
+  void _dropRoutine(String id) {
     routines.removeWhere((r) => r.id == id);
     weeklyPlan.removeWhere((_, v) => v == id);
     for (final extras in planExtras.values) {
@@ -156,8 +181,6 @@ mixin RoutinesState on FitCore, LibraryState {
       if (extras.isEmpty) planExtras.remove(day);
     }
     if (activeRoutineId == id) activeRoutineId = null;
-    _persist();
-    notifyListeners();
   }
 
   void toggleRoutineExercise(String routineId, String exId) {
@@ -166,10 +189,28 @@ mixin RoutinesState on FitCore, LibraryState {
     if (r.exerciseIds.remove(exId)) {
       r.sets.remove(exId);
       r.plan.remove(exId);
+      r.rest.remove(exId);
       r.chained.remove(exId);
     } else {
       r.exerciseIds.add(exId);
     }
+    _persist();
+    notifyListeners();
+  }
+
+  void replaceRoutineExercise(String routineId, String from, String to) {
+    final r = _routine(routineId);
+    if (r == null) return;
+    final at = r.exerciseIds.indexOf(from);
+    if (at < 0 || r.exerciseIds.contains(to)) return;
+    r.exerciseIds[at] = to;
+    final sets = r.sets.remove(from);
+    if (sets != null) r.sets[to] = sets;
+    final plan = r.plan.remove(from);
+    if (plan != null) r.plan[to] = [for (final p in plan) PlannedSet(kind: p.kind)];
+    final rest = r.rest.remove(from);
+    if (rest != null) r.rest[to] = rest;
+    if (r.chained.remove(from)) r.chained.add(to);
     _persist();
     notifyListeners();
   }
@@ -181,6 +222,7 @@ mixin RoutinesState on FitCore, LibraryState {
     if (at < 0) return null;
     final sets = r.sets[exId];
     final plan = r.plan[exId];
+    final rest = r.rest[exId];
     final chained = r.chained.contains(exId);
     toggleRoutineExercise(routineId, exId);
     return () {
@@ -189,6 +231,7 @@ mixin RoutinesState on FitCore, LibraryState {
       back.exerciseIds.insert(at.clamp(0, back.exerciseIds.length), exId);
       if (sets != null) back.sets[exId] = sets;
       if (plan != null) back.plan[exId] = plan;
+      if (rest != null) back.rest[exId] = rest;
       if (chained) back.chained.add(exId);
       _persist();
       notifyListeners();
@@ -205,6 +248,21 @@ mixin RoutinesState on FitCore, LibraryState {
   }
 
   List<PlannedSet> plannedSets(Routine r, String exId) => r.plan[exId] ?? const [];
+
+  int? routineRest(String? routineId, String exId) =>
+      routineId == null ? null : _routine(routineId)?.rest[exId];
+
+  void setRoutineRest(String routineId, String exId, int? seconds) {
+    final r = _routine(routineId);
+    if (r == null || !r.exerciseIds.contains(exId)) return;
+    if (seconds == null) {
+      r.rest.remove(exId);
+    } else {
+      r.rest[exId] = seconds <= 0 ? 0 : seconds.clamp(15, 600);
+    }
+    _persist();
+    notifyListeners();
+  }
 
   void setRoutineSetCount(String routineId, String exId, int n) {
     final r = _routine(routineId);
@@ -293,14 +351,29 @@ mixin RoutinesState on FitCore, LibraryState {
   }
 
   void openRoutine(String id) {
+    if (route != 'routine-edit') _editFromExercise = false;
     activeRoutineId = id;
     route = 'routine-edit';
     notifyListeners();
   }
 
+  void addToRoutineAndEdit(String? routineId, String exId) {
+    final id = routineId ?? createRoutine();
+    if (!routineHas(id, exId)) toggleRoutineExercise(id, exId);
+    activeRoutineId = id;
+    _editFromExercise = true;
+    pushRoute('routine-edit');
+  }
+
+  int routinesWith(String exId) => routines.where((r) => r.exerciseIds.contains(exId)).length;
+
   String routineTitle(Routine r) => r.name.isEmpty ? t.newRoutineName : r.name;
 
   void closeRoutineEdit() {
+    if (_editFromExercise) {
+      _editFromExercise = false;
+      return popRoute(fallback: 'routines');
+    }
     route = 'routines';
     notifyListeners();
   }

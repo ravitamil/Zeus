@@ -213,7 +213,7 @@ ImportFormat detectFormat(String csv) {
     return ImportFormat.fitbod;
   }
   if (cols.contains('weight_kg') && (cols.contains('est_1rm_kg') || cols.contains('volume_kg'))) {
-    return ImportFormat.zeus;
+    return ImportFormat.gymmane;
   }
   if (cols.contains('exercise') && cols.contains('category') && _pick(cols, _anyWeight) != null) {
     return ImportFormat.fitnotes;
