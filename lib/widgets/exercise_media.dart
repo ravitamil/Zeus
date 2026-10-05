@@ -12,6 +12,7 @@ import '../state/fit_state.dart';
 import '../theme/app_colors.dart';
 import 'exercise_art.dart';
 import 'shimmer.dart';
+import 'video_playback.dart';
 
 const _shortDemo = Duration(seconds: 10);
 
@@ -229,25 +230,27 @@ class _VideoTileState extends State<_VideoTile> {
   }
 
   Future<void> _load() async {
+    final c = widget.path.startsWith('assets/')
+        ? VideoPlayerController.asset(widget.path)
+        : VideoPlayerController.file(File(widget.path));
+    _c = c;
     try {
-      final c = widget.path.startsWith('assets/')
-          ? VideoPlayerController.asset(widget.path)
-          : VideoPlayerController.file(File(widget.path));
       await c.initialize();
+      if (!mounted || _c != c) return;
       await c.setLooping(true);
       await c.setVolume(0);
-      await c.play();
-      if (!mounted) {
-        c.dispose();
-        return;
-      }
+      if (!mounted || _c != c) return;
       setState(() {
         _c = c;
         _ok = true;
       });
       if (widget.short) _stop = Timer(_shortDemo, () => c.setLooping(false));
     } catch (_) {
-      if (mounted) setState(() => _failed = true);
+      if (mounted && _c == c) {
+        _c = null;
+        unawaited(c.dispose());
+        setState(() => _failed = true);
+      }
     }
   }
 
@@ -255,6 +258,7 @@ class _VideoTileState extends State<_VideoTile> {
   void didUpdateWidget(_VideoTile oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.path != widget.path) {
+      _stop?.cancel();
       _c?.dispose();
       _c = null;
       _ok = false;
@@ -295,12 +299,13 @@ class _VideoTileState extends State<_VideoTile> {
       ]);
     }
     final isAssetVideo = widget.path.startsWith('assets/videos/');
-    return _MediaFrame(
+    final frame = _MediaFrame(
       height: widget.height,
       radius: widget.radius,
       bordered: widget.bordered,
       color: isAssetVideo ? Colors.white : null,
       child: child,
     );
+    return _c == null ? frame : VideoPlayback(controller: _c!, enabled: _ok, child: frame);
   }
 }

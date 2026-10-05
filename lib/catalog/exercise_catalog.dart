@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/foundation.dart' show compute;
 import '../models/exercise.dart';
 import 'base_exercises.dart';
 
@@ -37,14 +38,19 @@ class ExerciseCatalog {
     if (_cachedExercises != null && _cachedExercises!.isNotEmpty) return;
     try {
       final jsonStr = await rootBundle.loadString('assets/catalog/exercises.json');
-      final list = jsonDecode(jsonStr) as List;
-      final videoExs = list.map((e) => Exercise.fromJson(e as Map<String, dynamic>)).toList();
-      _cachedExercises = [...kBaseExercises, ...videoExs];
+      _cachedExercises = await compute(_decodeCatalog, jsonStr);
     } catch (_) {
       final videoExs = _loadExercisesSyncFallback();
       _cachedExercises = [...kBaseExercises, ...videoExs];
     }
   }
+}
+
+List<Exercise> _decodeCatalog(String jsonStr) {
+  final list = jsonDecode(jsonStr) as List;
+  return [...kBaseExercises,
+    ...list.map((entry) => Exercise.fromJson(entry as Map<String, dynamic>)),
+  ];
 }
 
 const List<ToolMeta> kToolMeta = [

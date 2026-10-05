@@ -153,6 +153,10 @@ mixin PlacesState on FitCore, LibraryState {
 
   bool exNoGearOnly = false;
   bool exMineOnly = false;
+  List<Exercise>? _placeFilterSource;
+  List<Exercise>? _placeFilterResult;
+  Set<String> _placeFilterGear = {};
+  (bool, bool)? _placeFilterToggles;
 
   void toggleNoGearFilter() {
     exNoGearOnly = !exNoGearOnly;
@@ -172,11 +176,22 @@ mixin PlacesState on FitCore, LibraryState {
   }
 
   @override
-  List<Exercise> exercisesMatching(String query) => super
-      .exercisesMatching(query)
-      .where((ex) =>
-          (!exNoGearOnly || isNoKit(ex)) && (!exMineOnly || isCustom(ex.id)) && fitsHere(ex))
-      .toList();
+  List<Exercise> exercisesMatching(String query) {
+    final source = super.exercisesMatching(query);
+    final place = activePlace;
+    if (!exNoGearOnly && !exMineOnly && place == null) return source;
+    final gear = gearHere;
+    final toggles = (exNoGearOnly, exMineOnly);
+    if (identical(source, _placeFilterSource) && toggles == _placeFilterToggles &&
+        setEquals(gear, _placeFilterGear)) return _placeFilterResult!;
+    final customIds = customExercises.map((ex) => ex.id).toSet();
+    _placeFilterSource = source;
+    _placeFilterToggles = toggles;
+    _placeFilterGear = gear;
+    return _placeFilterResult = List.unmodifiable(source.where((ex) =>
+      (!exNoGearOnly || isNoKit(ex)) && (!exMineOnly || customIds.contains(ex.id)) &&
+      (place == null || gear.contains(ex.equipment) || customIds.contains(ex.id))));
+  }
 
   @override
   void clearExFilters() {

@@ -17,7 +17,7 @@ class GymManeApp extends StatefulWidget {
 }
 
 class _GymManeAppState extends State<GymManeApp> {
-  var _look = (fit.themeMode, fit.locale);
+  var _look = (fit.themeMode, fit.locale, fit.accentColor);
 
   @override
   void initState() {
@@ -32,34 +32,31 @@ class _GymManeAppState extends State<GymManeApp> {
   }
 
   void _watch() {
-    final look = (fit.themeMode, fit.locale);
+    final look = (fit.themeMode, fit.locale, fit.accentColor);
     if (look != _look) setState(() => _look = look);
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: fit,
-      builder: (context, _) => MaterialApp(
-        title: 'Zeus',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightWith(fit.accentColor),
-        darkTheme: AppTheme.darkWith(fit.accentColor),
-        themeMode: fit.themeMode,
-        locale: fit.locale,
-        supportedLocales: AppLocalizations.supportedLocales,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        builder: (context, child) => MediaQuery.withClampedTextScaling(
-          maxScaleFactor: GymManeApp.maxTextScale,
-          child: _ButtonNavScrim(child: child!),
-        ),
-        home: const AppShell(),
+    return MaterialApp(
+      title: 'Zeus',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightWith(fit.accentColor),
+      darkTheme: AppTheme.darkWith(fit.accentColor),
+      themeMode: fit.themeMode,
+      locale: fit.locale,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      builder: (context, child) => MediaQuery.withClampedTextScaling(
+        maxScaleFactor: GymManeApp.maxTextScale,
+        child: _ButtonNavScrim(child: child!),
       ),
+      home: const AppShell(),
     );
   }
 }

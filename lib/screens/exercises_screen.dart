@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
@@ -33,6 +34,25 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
   final Map<String, int> _countsCache = {};
   final ScrollController _scroll = ScrollController();
   final ValueNotifier<bool> _deep = ValueNotifier(false);
+  Timer? _searchDebounce;
+
+  void _search(String value) {
+    _searchDebounce?.cancel();
+    if (_viewMode != _ExViewMode.all) {
+      setState(() {});
+      return;
+    }
+    void apply() {
+      if (!mounted) return;
+      fit.setExSearch(value, notify: false);
+      setState(() {});
+    }
+    if (value.isEmpty) {
+      apply();
+    } else {
+      _searchDebounce = Timer(const Duration(milliseconds: 180), apply);
+    }
+  }
 
   @override
   void initState() {
@@ -53,6 +73,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
   void _switchView(_ExViewMode mode) {
     if (_viewMode == mode) return;
     HapticFeedback.selectionClick();
+    _searchDebounce?.cancel();
     setState(() {
       _viewMode = mode;
       _c.clear();
@@ -62,6 +83,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _c.dispose();
     _scroll.dispose();
     _deep.dispose();
@@ -179,6 +201,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
       (fit.exKindFilter == null ? 0 : 1);
 
   void _clearAll() {
+    _searchDebounce?.cancel();
     _c.clear();
     fit.clearExFilters();
   }
@@ -218,13 +241,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
             _ExViewMode.muscles => 'Search muscle groups...',
             _ExViewMode.equipment => 'Search equipment...',
           },
-          onChanged: (v) {
-            if (_viewMode == _ExViewMode.all) {
-              fit.setExSearch(v);
-            } else {
-              setState(() {});
-            }
-          },
+          onChanged: _search,
         ),
         if (_viewMode == _ExViewMode.all) ...[
           const SizedBox(height: 10),
@@ -480,7 +497,10 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
           label: active > 0 ? '${t.filters} · $active' : t.filters,
           bg: active > 0 ? gc.ember : gc.bgRaised2,
           fg: active > 0 ? gc.onEmber : gc.textSecondary,
-          onTap: () => showExerciseFilters(context, onClear: _c.clear),
+          onTap: () => showExerciseFilters(context, onClear: () {
+            _searchDebounce?.cancel();
+            _c.clear();
+          }),
           hPad: 14,
           vPad: 7,
           fontSize: 12.5,
