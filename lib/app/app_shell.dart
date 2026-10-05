@@ -78,7 +78,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   bool _celebratedOne = false;
   Timer? _awardWait;
   String? _incoming;
-  bool _scrolled = false;
+  final _scrolled = ValueNotifier(false);
   int _restTick = fit.restDoneTick;
 
   @override
@@ -132,7 +132,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   bool _onScroll(ScrollNotification n) {
     if (n.depth != 0 || n.metrics.axis != Axis.vertical) return false;
     final scrolled = n.metrics.pixels > 6;
-    if (scrolled != _scrolled) setState(() => _scrolled = scrolled);
+    _scrolled.value = scrolled;
     return false;
   }
 
@@ -142,6 +142,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     fit.removeListener(_offerIncoming);
     fit.removeListener(_queueCelebration);
     _awardWait?.cancel();
+    _scrolled.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -238,10 +239,14 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                   left: 0,
                   right: 0,
                   top: 0,
-                  child: AnimatedOpacity(
-                    opacity: _scrolled && _blurTop.contains(fit.route) ? 1 : 0,
-                    duration: const Duration(milliseconds: 220),
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: _scrolled,
                     child: EdgeBlur(height: MediaQuery.viewPaddingOf(context).top + 64, sigma: 14),
+                    builder: (context, scrolled, child) => AnimatedOpacity(
+                      opacity: scrolled && _blurTop.contains(fit.route) ? 1 : 0,
+                      duration: const Duration(milliseconds: 220),
+                      child: child,
+                    ),
                   ),
                 ),
                 if (fit.showNav)
@@ -310,7 +315,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   Widget _animatedScreen() {
     final route = fit.route;
     if (route != _lastRoute) {
-      _scrolled = false;
+      _scrolled.value = false;
       final from = _NavBarState._routes.indexOf(_lastRoute);
       final to = _NavBarState._routes.indexOf(route);
       _sideways = from >= 0 && to >= 0;

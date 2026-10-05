@@ -8,7 +8,31 @@ mixin LibraryState on FitCore {
   String? exKindFilter;
   String? activeExerciseId;
   int _customSeq = 0;
-  List<Exercise> get allExercises => [...kExercises, ...customExercises];
+  List<Exercise>? _allExercisesCache;
+  List<Exercise>? _baseSnapshot;
+  List<Exercise> _customSnapshot = [];
+  Map<String, Exercise> _exerciseIndex = {};
+  final Map<Object, List<Exercise>> _filterCache = {};
+  Map<String, bool> _favoritesSnapshot = {};
+  Set<String> _archivedSnapshot = {};
+  Map<String, String> _modesSnapshot = {};
+  String? _languageSnapshot;
+
+  List<Exercise> get allExercises {
+    final base = kExercises;
+    if (_allExercisesCache == null || !identical(base, _baseSnapshot) ||
+        !listEquals(customExercises, _customSnapshot)) {
+      _baseSnapshot = base;
+      _customSnapshot = List.of(customExercises);
+      _allExercisesCache = List.unmodifiable([...base, ...customExercises]);
+      _exerciseIndex = {};
+      for (final ex in _allExercisesCache!) {
+        _exerciseIndex.putIfAbsent(ex.id, () => ex);
+      }
+      _filterCache.clear();
+    }
+    return _allExercisesCache!;
+  }
 
   bool fitsHere(Exercise ex) => true;
 
@@ -29,10 +53,9 @@ mixin LibraryState on FitCore {
   }
 
   Exercise? exerciseById(String id) {
-    for (final e in allExercises) {
-      if (e.id == id) return e;
-    }
-    return null;
+    final targetId = id;
+    allExercises;
+    return _exerciseIndex[targetId];
   }
 
   void openExercise(String id) {
@@ -48,9 +71,10 @@ mixin LibraryState on FitCore {
     notifyListeners();
   }
 
-  void setExSearch(String v) {
+  void setExSearch(String v, {bool notify = true}) {
+    if (exSearch == v) return;
     exSearch = v;
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   CategoryItem? exCategoryFilter;
@@ -115,8 +139,25 @@ mixin LibraryState on FitCore {
   List<Exercise> get exercisesFiltered => exercisesMatching(exSearch);
 
   List<Exercise> exercisesMatching(String query) {
+    final exercises = allExercises;
+    if (!mapEquals(favorites, _favoritesSnapshot) ||
+        !setEquals(archived, _archivedSnapshot) ||
+        !mapEquals(modeOverride, _modesSnapshot) || appLanguage != _languageSnapshot) {
+      _favoritesSnapshot = Map.of(favorites);
+      _archivedSnapshot = Set.of(archived);
+      _modesSnapshot = Map.of(modeOverride);
+      _languageSnapshot = appLanguage;
+      _filterCache.clear();
+    }
+    final key = (query.trim().toLowerCase(), exArchivedOnly, exFavouritesOnly,
+        exCategoryFilter, exMuscleFilter, exDifficultyFilter, exEquipmentFilter, exKindFilter);
+    final cached = _filterCache.remove(key);
+    if (cached != null) {
+      _filterCache[key] = cached;
+      return cached;
+    }
     final matchesSearch = exerciseSearch(query);
-    final list = allExercises.where((ex) {
+    final list = exercises.where((ex) {
       if (isArchived(ex.id) != exArchivedOnly) return false;
       if (exFavouritesOnly && favorites[ex.id] != true) return false;
       if (!matchesSearch(ex)) return false;
@@ -132,10 +173,14 @@ mixin LibraryState on FitCore {
       return true;
     }).toList();
     final muscle = exMuscleFilter;
-    if (muscle == null) return _groupedByMuscle(list);
-    final primary = list.where((ex) => ex.primary == muscle);
-    final secondary = _groupedByMuscle(list.where((ex) => ex.primary != muscle).toList());
-    return [...primary, ...secondary];
+    final result = muscle == null ? _groupedByMuscle(list) : [
+      ...list.where((ex) => ex.primary == muscle),
+      ..._groupedByMuscle(list.where((ex) => ex.primary != muscle).toList()),
+    ];
+    final saved = List<Exercise>.unmodifiable(result);
+    _filterCache[key] = saved;
+    if (_filterCache.length > 8) _filterCache.remove(_filterCache.keys.first);
+    return saved;
   }
 
   List<Exercise> _groupedByMuscle(List<Exercise> list) {

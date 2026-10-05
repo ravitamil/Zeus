@@ -15,13 +15,19 @@ import 'exercise_media.dart';
 import 'glass.dart';
 import 'shimmer.dart';
 import 'ui_kit.dart';
+import 'video_playback.dart';
 
-Future<void> showExercisePreview(BuildContext context, Exercise ex, {bool suggestions = false}) {
+Future<void> showExercisePreview(BuildContext context, Exercise ex, {bool suggestions = false}) async {
   HapticFeedback.selectionClick();
-  return showAppDialog<void>(
-    context: context,
-    builder: (_) => _ExercisePreview(ex: ex, suggestions: suggestions),
-  );
+  final resume = suspendExerciseVideos();
+  try {
+    await showAppDialog<void>(
+      context: context,
+      builder: (_) => _ExercisePreview(ex: ex, suggestions: suggestions),
+    );
+  } finally {
+    resume();
+  }
 }
 
 class _ExercisePreview extends StatefulWidget {
@@ -52,8 +58,10 @@ class _ExercisePreviewState extends State<_ExercisePreview> {
     setState(() => _video = c);
     try {
       await c.initialize();
+      if (!mounted || _video != c) return;
       await c.setLooping(true);
       await c.setVolume(0);
+      if (!mounted || _video != c) return;
       await c.play();
     } catch (_) {
       if (mounted) setState(() => _video = null);

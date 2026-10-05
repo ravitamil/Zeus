@@ -1,5 +1,6 @@
 import '../catalog/exercise_aliases.dart';
 import '../models/exercise.dart';
+import '../l10n/l10n.dart' show appLanguage;
 
 const _stop = {'the', 'a', 'an', 'with', 'on', 'to', 'and', 'or', 'in', 'for', 'v', 'var'};
 
@@ -62,19 +63,39 @@ final Map<String, String> _aliasIndex = {
 
 typedef ExerciseFilter = bool Function(Exercise);
 
+final _searchEntries = <Exercise, ({List<String> plain, List<String> normalized})>{};
+String? _searchLanguage;
+
+({List<String> plain, List<String> normalized}) _searchEntry(Exercise ex) {
+  if (_searchLanguage != appLanguage) {
+    _searchEntries.clear();
+    _searchLanguage = appLanguage;
+  }
+  if (_searchEntries.length >= 8192 && !_searchEntries.containsKey(ex)) {
+    _searchEntries.remove(_searchEntries.keys.first);
+  }
+  return _searchEntries.putIfAbsent(ex, () {
+    final label = exerciseName(ex);
+    return (
+      plain: [ex.name.toLowerCase(), label.toLowerCase(),
+        ...ex.aliases.map((alias) => alias.toLowerCase())],
+      normalized: [
+        _keyOf(ex.name), _keyOf(label), ...ex.aliases.map(_keyOf),
+        ...?kExerciseAliases[ex.name]?.map(_keyOf),
+      ],
+    );
+  });
+}
+
 ExerciseFilter exerciseSearch(String query) {
   final plain = query.trim().toLowerCase();
   if (plain.isEmpty) return (_) => true;
   final key = searchKey(query);
 
   return (e) {
-    final label = exerciseName(e);
-    if (e.name.toLowerCase().contains(plain) || label.toLowerCase().contains(plain)) return true;
-    if (e.aliases.any((a) => a.toLowerCase().contains(plain))) return true;
-    if (key.isEmpty) return false;
-    if (_keyOf(e.name).contains(key) || _keyOf(label).contains(key)) return true;
-    if (e.aliases.any((a) => _keyOf(a).contains(key))) return true;
-    return kExerciseAliases[e.name]?.any((a) => _keyOf(a).contains(key)) ?? false;
+    final entry = _searchEntry(e);
+    if (entry.plain.any((name) => name.contains(plain))) return true;
+    return key.isNotEmpty && entry.normalized.any((name) => name.contains(key));
   };
 }
 

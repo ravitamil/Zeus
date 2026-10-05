@@ -749,18 +749,22 @@ class _FullVideoState extends State<_FullVideo> {
   }
 
   Future<void> _load() async {
+    final c = VideoPlayerController.file(File(widget.path));
+    _c = c;
     try {
-      final c = VideoPlayerController.file(File(widget.path));
       await c.initialize();
+      if (!mounted || _c != c) return;
       await c.setLooping(true);
+      if (!mounted || _c != c) return;
       await c.play();
-      if (!mounted) {
-        c.dispose();
-        return;
-      }
+      if (!mounted || _c != c) return;
       setState(() => _c = c);
     } catch (_) {
-      if (mounted) setState(() => _failed = true);
+      if (mounted && _c == c) {
+        _c = null;
+        c.dispose();
+        setState(() => _failed = true);
+      }
     }
   }
 
@@ -777,7 +781,7 @@ class _FullVideoState extends State<_FullVideo> {
       return const Center(
           child: Icon(PhosphorIconsRegular.videoCamera, size: 48, color: Colors.white38));
     }
-    if (c == null) {
+    if (c == null || !c.value.isInitialized) {
       return const Center(
         child: CupertinoActivityIndicator(radius: 13, color: Colors.white70),
       );
