@@ -8,6 +8,21 @@ import 'base_exercises.dart';
 
 export 'base_exercises.dart';
 
+const _routineVideoAssets = {
+  '0184': 'assets/videos/1677_Dumbbell_Seated_Lateral_Raise.mp4',
+  '0493': 'assets/videos/0043_Dumbbell_One_Arm_Bent-over_Row.mp4',
+  '1133': 'assets/videos/0228_Cable_Curl.mp4',
+  '6YUfHPL': 'assets/videos/0162_Squat.mp4',
+  'NNoHCEA': 'assets/videos/0704_Smith_Low_Bar_Squat.mp4',
+  'reverse-grip-lat-pulldown': 'assets/videos/0458_Cable_Reverse_Grip_Pulldown.mp4',
+  'rope-tricep-pushdown': 'assets/videos/0002_Triceps_Pushdown.mp4',
+};
+
+List<Exercise> _withRoutineVideos(List<Exercise> exercises) => [
+      for (final ex in exercises)
+        _routineVideoAssets.containsKey(ex.id) ? ex.copyWith(videoPath: _routineVideoAssets[ex.id]) : ex,
+    ];
+
 List<Exercise>? _cachedExercises;
 
 List<Exercise> get kExercises {
@@ -15,7 +30,7 @@ List<Exercise> get kExercises {
     return _cachedExercises!;
   }
   final videoExs = _loadExercisesSyncFallback();
-  _cachedExercises = [...kBaseExercises, ...videoExs];
+  _cachedExercises = _withRoutineVideos([...kBaseExercises, ...videoExs]);
   return _cachedExercises!;
 }
 
@@ -41,16 +56,17 @@ class ExerciseCatalog {
       _cachedExercises = await compute(_decodeCatalog, jsonStr);
     } catch (_) {
       final videoExs = _loadExercisesSyncFallback();
-      _cachedExercises = [...kBaseExercises, ...videoExs];
+      _cachedExercises = _withRoutineVideos([...kBaseExercises, ...videoExs]);
     }
   }
 }
 
 List<Exercise> _decodeCatalog(String jsonStr) {
   final list = jsonDecode(jsonStr) as List;
-  return [...kBaseExercises,
+  return _withRoutineVideos([
+    ...kBaseExercises,
     ...list.map((entry) => Exercise.fromJson(entry as Map<String, dynamic>)),
-  ];
+  ]);
 }
 
 const List<ToolMeta> kToolMeta = [
