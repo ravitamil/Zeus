@@ -479,10 +479,14 @@ class _RoutineEditScreenState extends State<RoutineEditScreen> {
             ),
           ),
         ),
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => _openPlan(ex),
-          child: SizedBox(width: 44, child: ExerciseMedia(ex: ex, height: 44, radius: 10)),
+        Semantics(
+          button: true,
+          label: exerciseName(ex),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => showExercisePreview(context, ex),
+            child: SizedBox(width: 44, child: ExerciseMedia(ex: ex, height: 44, radius: 10)),
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(
